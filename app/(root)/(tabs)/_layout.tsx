@@ -45,6 +45,7 @@ const TabLayout = () => {
 				options={{
 					title: "Categories",
 					tabBarIcon: ({ color }) => (
+						// @ts-ignore
 						<IconSymbol size={25} name="category.fill" color={color} />
 					),
 				}}
@@ -63,6 +64,7 @@ const TabLayout = () => {
 				options={{
 					title: "Profile",
 					tabBarIcon: ({ color }) => (
+						// @ts-ignore
 						<IconSymbol size={25} name="account.fill" color={color} />
 					),
 				}}

@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 const Business = () => {
 	return (
 		<View>
-			<Text>Business</Text>
+			<Text>Business Details</Text>
 		</View>
 	);
 }

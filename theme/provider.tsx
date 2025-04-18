@@ -43,7 +43,7 @@ const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 			...contrastOptions,
 			typography,
 			shadows: shadows(mode),
-			shape: { borderRadius: 8 },
+			shape: { borderRadius: 5, cardBorderRadius: 8 },
 		};
 	}, [mode, contrast, preset]);
 
@@ -59,7 +59,6 @@ const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 				theme,
 			}}
 		>
-			{console.log("Pallete here>>", palette(mode))}
 			{children}
 		</ThemeContext.Provider>
 	);
