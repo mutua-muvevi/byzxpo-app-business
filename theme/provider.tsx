@@ -36,6 +36,7 @@ const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 		const presets = { palette: { primary: getPrimary(preset) } };
 		const contrastOptions = createContrast(contrast, mode);
 
+
 		return {
 			...palette(mode),
 			...presets,
@@ -58,6 +59,7 @@ const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 				theme,
 			}}
 		>
+			{console.log("Pallete here>>", palette(mode))}
 			{children}
 		</ThemeContext.Provider>
 	);

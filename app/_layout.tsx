@@ -28,20 +28,38 @@ const RootLayout = () => {
 			}}
 		>
 			<ThemeProvider>
-				<Stack>
+				<Stack screenOptions={{ headerShown: false }}>
 					<Stack.Screen
 						name="(tabs)"
 						options={{ headerShown: false }}
 					/>
 					<Stack.Screen name="+not-found" />
+
+					<Stack.Screen
+						name="business-details/[id]"
+						options={{ headerShown: false }}
+					/>
+
+					<Stack.Screen
+						name="category/[id]"
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="my-business-details/[id]"
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen
+						name="my-businesses"
+						options={{ headerShown: false }}
+					/>
 				</Stack>
 
-				<StatusBar style="auto" />
+				{/* <StatusBar style="auto" animated /> */}
 			</ThemeProvider>
 		</SettingsProvider>
 	);
 };
 
-const style = StyleSheet.create({});
+const styles = StyleSheet.create({});
 
 export default RootLayout;
