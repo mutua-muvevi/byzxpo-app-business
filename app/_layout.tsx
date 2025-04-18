@@ -1,39 +1,47 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { SettingsProvider } from "@/components/settings/context";
+import { useCustomFonts } from "@/hooks/use-fonts";
+import ThemeProvider from "@/theme/provider";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
+import { StyleSheet } from "react-native";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+const RootLayout = () => {
+	const fontsLoaded = useCustomFonts();
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+	useEffect(() => {
+		if (fontsLoaded) {
+			SplashScreen.hideAsync();
+		}
+	}, [fontsLoaded]);
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+	if (!fontsLoaded) {
+		return null;
+	}
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+	return (
+		<SettingsProvider
+			defaultSettings={{
+				themeMode: "light", // "dark" | "light" | "system"
+				themeColorPresets: "default", // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+			}}
+		>
+			<ThemeProvider>
+				<Stack>
+					<Stack.Screen
+						name="(tabs)"
+						options={{ headerShown: false }}
+					/>
+					<Stack.Screen name="+not-found" />
+				</Stack>
 
-  if (!loaded) {
-    return null;
-  }
+				<StatusBar style="auto" />
+			</ThemeProvider>
+		</SettingsProvider>
+	);
+};
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
-}
+const style = StyleSheet.create({});
+
+export default RootLayout;
