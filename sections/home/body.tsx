@@ -13,7 +13,7 @@ import {
 	View,
 } from "react-native";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { Ionicons } from "@expo/vector-icons";
+import { Entypo, Ionicons } from "@expo/vector-icons";
 import { truncateStr } from "@/utils/format-strings";
 import { Rating } from "react-native-ratings";
 import { useBusiness } from "@/contexts/business/fetch";
@@ -54,7 +54,7 @@ const createBusinessCardStyle = (theme: any) =>
 		},
 		otherText: {
 			fontSize: 12,
-			color: theme.theme.text.primary,
+			color: theme.theme.text.secondary,
 			fontFamily: theme.theme.typography.fontFamily,
 		},
 		locationSection: {
@@ -103,7 +103,7 @@ const BusinessCategoryCards = ({ business }: { business: BusinessInterface }) =>
 
 					{business?.location ? (
 						<View style={styles.locationSection}>
-							<Ionicons name="location" size={12} color={theme.theme.text.primary} />
+							<Ionicons name="location" size={12} color={theme.theme.text.secondary} />
 							<Text style={styles.otherText}>
 								{business.location
 									? truncateStr(
@@ -117,23 +117,18 @@ const BusinessCategoryCards = ({ business }: { business: BusinessInterface }) =>
 						</View>
 					) : null}
 
-					{business?.location ? (
+					{business.basicInfo?.phone ? (
 						<View style={styles.locationSection}>
-							<Ionicons name="location" size={12} color={theme.theme.text.primary} />
+							<Entypo name="old-phone" size={12} color={theme.theme.text.secondary} />
 							<Text style={styles.otherText}>
-								{business.location
-									? truncateStr(
-											business.location.city +
-												", " +
-												business.location.country,
-											18,
-									  )
+								{business.basicInfo
+									? truncateStr(business.basicInfo.phone, 18)
 									: ""}
 							</Text>
 						</View>
 					) : null}
 
-					<View style={styles.ratingSection}>
+					{/* <View style={styles.ratingSection}>
 						<Rating
 							type="custom"
 							ratingCount={5}
@@ -143,25 +138,9 @@ const BusinessCategoryCards = ({ business }: { business: BusinessInterface }) =>
 							jumpValue={0.5}
 							ratingTextColor={theme.theme.text.primary}
 							startingValue={business.overalRating}
-							ratingBackgroundColor={theme.theme.primary.lighter}
+							ratingBackgroundColor={theme.theme.text.disabled}
 						/>
-					</View>
-
-					{business?.location ? (
-						<View style={styles.locationSection}>
-							<Ionicons name="location" size={12} color={theme.theme.text.primary} />
-							<Text style={styles.otherText}>
-								{business.location
-									? truncateStr(
-											business.location.city +
-												", " +
-												business.location.country,
-											18,
-									  )
-									: ""}
-							</Text>
-						</View>
-					) : null}
+					</View> */}
 				</View>
 			</View>
 		</TouchableOpacity>
@@ -183,7 +162,7 @@ const createCategorySectionStyle = (theme: any) =>
 			justifyContent: "space-between",
 		},
 		text: {
-			color: theme.theme.text.secondary,
+			color: theme.theme.text.primary,
 			fontWeight: "bold",
 		},
 	});
