@@ -49,7 +49,7 @@ const RootLayout = () => {
 							<Stack.Screen name="my-businesses" options={{ headerShown: false }} />
 						</Stack>
 
-						{/* <StatusBar style="auto" animated /> */}
+						<StatusBar style="auto" animated />
 					</ThemeProvider>
 				</SettingsProvider>
 			</CategoryProvider>

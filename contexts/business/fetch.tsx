@@ -17,6 +17,9 @@ interface BusinessContextType {
 	error: string | null;
 	fetchAllBusinesses: (pageNo?: number, pageLimit?: number) => Promise<void>;
 	pagination: any;
+
+	singleBusiness: BusinessInterface | null
+	setSingleBusinessFunction: (business: BusinessInterface) => void
 }
 
 const BusinessContext = createContext<BusinessContextType | undefined>(
@@ -31,6 +34,7 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
 	const [pagination, setPagination] = useState<any>(null);
+	const [singleBusiness, setSingleBusiness ] = useState<BusinessInterface | null>(null);
 
 	const fetchAllBusinesses = async (
 		pageNo: number = 1,
@@ -73,6 +77,8 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 				currentPage: paginationResponse?.currentPage ?? 0,
 				pageSize: paginationResponse?.pageSize ?? 0
 			})
+
+			
 		} catch (err) {
 			let errorMessage: string;
 			if (err instanceof AxiosError) {
@@ -95,6 +101,10 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 		}
 	};
 
+	const setSingleBusinessFunction = (business: BusinessInterface) => {
+		setSingleBusiness(business);
+	}
+
 	useEffect(() => {
 		fetchAllBusinesses();
 	}, []);
@@ -108,7 +118,9 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 				loading,
 				error,
 				fetchAllBusinesses,
-				pagination
+				pagination,
+				singleBusiness,
+				setSingleBusinessFunction,
 			}}
 		>
 			{children}

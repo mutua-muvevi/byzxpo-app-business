@@ -9,9 +9,15 @@ import {
 	Pressable,
 	StyleSheet,
 	Text,
+	TouchableOpacity,
 	View,
 } from "react-native";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { Ionicons } from "@expo/vector-icons";
+import { truncateStr } from "@/utils/format-strings";
+import { Rating } from "react-native-ratings";
+import { useBusiness } from "@/contexts/business/fetch";
+import { useRouter } from "expo-router";
 
 //---------------------------------------------------------------------------------------
 const ALT_THUMBNAIL_IMAGE =
@@ -26,30 +32,139 @@ const createBusinessCardStyle = (theme: any) =>
 			backgroundColor: theme.theme.background.default,
 			borderRadius: theme.theme.shape.borderRadius,
 			marginRight: 10,
-			padding: 5,
 			height: 150,
 			width: 120,
 			shadowColor: theme.theme.common.black,
 			shadowOffset: { width: 0, height: 20 },
+		},
+		thumbnail: {
+			width: "100%",
+			height: 80,
+			borderTopLeftRadius: theme.theme.shape.borderRadius,
+			borderTopRightRadius: theme.theme.shape.borderRadius,
+		},
+		contentContainer: {
+			padding: 5,
+			gap: 2,
+		},
+		businessName: {
+			fontSize: 12,
+			color: theme.theme.text.secondary,
+			fontWeight: "bold",
+		},
+		otherText: {
+			fontSize: 12,
+			color: theme.theme.text.primary,
+			fontFamily: theme.theme.typography.fontFamily,
+		},
+		locationSection: {
+			flexDirection: "row",
+			gap: 2,
+			alignItems: "center",
+			justifyContent: "flex-start",
+		},
+		ratingSection: {
+			flexDirection: "row",
+			gap: 2,
+			alignItems: "center",
+			justifyContent: "flex-start",
 		},
 	});
 
 const BusinessCategoryCards = ({ business }: { business: BusinessInterface }) => {
 	const theme = useTheme();
 	const styles = createBusinessCardStyle(theme);
+	const router = useRouter();
+	const { setSingleBusinessFunction } = useBusiness();
+
+	const handleOpenBusiness = () => {
+		setSingleBusinessFunction(business);
+
+		router.push({
+			pathname: "/business-details/[id]",
+			params: { id: business._id },
+		});
+	};
 
 	return (
-		<View style={styles.container}>
-			<Image
-				source={{ uri: business.logo || business.thumbnail || ALT_THUMBNAIL_IMAGE }}
-				style={{
-					width: "100%",
-					height: 80,
-					borderTopLeftRadius: theme.theme.shape.borderRadius,
-					borderTopRightRadius: theme.theme.shape.borderRadius,
-				}}
-			/>
-		</View>
+		<TouchableOpacity onPress={handleOpenBusiness}>
+			<View style={styles.container}>
+				<Image
+					source={{ uri: business.logo || business.thumbnail || ALT_THUMBNAIL_IMAGE }}
+					style={styles.thumbnail}
+				/>
+
+				<View style={styles.contentContainer}>
+					<Text style={styles.businessName}>
+						{business.businessName
+							? truncateStr(business.businessName, 18)
+							: "Business Name"}
+					</Text>
+
+					{business?.location ? (
+						<View style={styles.locationSection}>
+							<Ionicons name="location" size={12} color={theme.theme.text.primary} />
+							<Text style={styles.otherText}>
+								{business.location
+									? truncateStr(
+											business.location.city +
+												", " +
+												business.location.country,
+											18,
+									  )
+									: ""}
+							</Text>
+						</View>
+					) : null}
+
+					{business?.location ? (
+						<View style={styles.locationSection}>
+							<Ionicons name="location" size={12} color={theme.theme.text.primary} />
+							<Text style={styles.otherText}>
+								{business.location
+									? truncateStr(
+											business.location.city +
+												", " +
+												business.location.country,
+											18,
+									  )
+									: ""}
+							</Text>
+						</View>
+					) : null}
+
+					<View style={styles.ratingSection}>
+						<Rating
+							type="custom"
+							ratingCount={5}
+							readonly={true}
+							imageSize={12}
+							ratingColor={theme.theme.primary.main}
+							jumpValue={0.5}
+							ratingTextColor={theme.theme.text.primary}
+							startingValue={business.overalRating}
+							ratingBackgroundColor={theme.theme.primary.lighter}
+						/>
+					</View>
+
+					{business?.location ? (
+						<View style={styles.locationSection}>
+							<Ionicons name="location" size={12} color={theme.theme.text.primary} />
+							<Text style={styles.otherText}>
+								{business.location
+									? truncateStr(
+											business.location.city +
+												", " +
+												business.location.country,
+											18,
+									  )
+									: ""}
+							</Text>
+						</View>
+					) : null}
+				</View>
+			</View>
+		</TouchableOpacity>
 	);
 };
 
@@ -73,7 +188,6 @@ const createCategorySectionStyle = (theme: any) =>
 		},
 	});
 const CategoriesSection = ({ category }: { category: CategoryInterface }) => {
-	console.log("CATEGORY", category.businesses);
 	const theme = useTheme();
 	const styles = createCategorySectionStyle(theme);
 

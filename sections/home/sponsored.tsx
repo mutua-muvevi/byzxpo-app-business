@@ -1,7 +1,20 @@
+import { useBusiness } from "@/contexts/business/fetch";
 import { useTheme } from "@/theme";
 import { BusinessInterface } from "@/types/business";
+import { truncateStr } from "@/utils/format-strings";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import Entypo from '@expo/vector-icons/Entypo';
 import React from "react";
-import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from "react-native";
+import {
+	ActivityIndicator,
+	FlatList,
+	Image,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+} from "react-native";
 
 const ALT_THUMBNAIL_IMAGE =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/a-white-text-on-a-blue-background-that-s_o6eumMMYQwic5GGGDhZ3ow_qdCWpEhDShKoXRu01jruXg.jpeg";
@@ -31,46 +44,110 @@ const createSlideCardTheme = (theme: any) =>
 		},
 		contentContainer: {
 			padding: 5,
+			gap: 2,
 		},
 		businessName: {
-			fontSize: 14,
+			fontSize: 12,
+			color: theme.theme.text.primary,
+			fontFamily: theme.theme.typography.fontFamily,
+			fontWeight: "bold",
+		},
+		otherText: {
+			fontSize: 12,
 			color: theme.theme.text.primary,
 			fontFamily: theme.theme.typography.fontFamily,
 		},
+		locationSection: {
+			flexDirection: "row",
+			gap: 2,
+			alignItems: "center",
+			justifyContent: "flex-start"
+		}
 	});
 
 const SlideCard = ({ business }: SlideCardProps) => {
 	const theme = useTheme();
 	const styles = createSlideCardTheme(theme);
-	return (
-		<View style={styles.container}>
-			{business.thumbnail ||
-			business.logo ||
-			//@ts-ignore
-			business.otherImages[0] ? (
-				<Image
-					source={{
-						uri:
-							business.thumbnail ||
-							business.logo ||
-							//@ts-ignore
-							business?.otherImages[0],
-					}}
-					style={styles.thumbnail}
-					resizeMode="cover"
-				/>
-			) : (
-				<Image
-					source={{ uri: ALT_THUMBNAIL_IMAGE }}
-					style={styles.thumbnail}
-					resizeMode="cover"
-				/>
-			)}
+	const router = useRouter();
+	const { setSingleBusinessFunction } = useBusiness();
+	
 
-			<View style={styles.contentContainer}>
-				<Text style={styles.businessName}>{business.businessName}</Text>
+	const handleOpenBusiness = () => {
+		setSingleBusinessFunction(business);
+
+		router.push({
+			pathname: "/business-details/[id]",
+			params: { id: business._id },
+		});
+	};
+
+	return (
+		<TouchableOpacity onPress={handleOpenBusiness}>
+			<View style={styles.container}>
+				{business.thumbnail ||
+				business.logo ||
+				//@ts-ignore
+				business.otherImages[0] ? (
+					<Image
+						source={{
+							uri:
+								business.thumbnail ||
+								business.logo ||
+								//@ts-ignore
+								business?.otherImages[0],
+						}}
+						style={styles.thumbnail}
+						resizeMode="cover"
+					/>
+				) : (
+					<Image
+						source={{ uri: ALT_THUMBNAIL_IMAGE }}
+						style={styles.thumbnail}
+						resizeMode="cover"
+					/>
+				)}
+
+				<View style={styles.contentContainer}>
+					<Text style={styles.businessName}>
+						{business.businessName
+							? truncateStr(business.businessName, 18)
+							: "Business Name"}
+					</Text>
+					
+					{business?.location ? (
+						<View style={styles.locationSection}>
+							<Ionicons
+								name="location"
+								size={12}
+								color={theme.theme.text.primary}
+							/>
+							<Text style={styles.otherText}>
+								{business.location
+									? truncateStr(business.location.city + ", " + business.location.country, 18)
+									: ""}
+							</Text>
+						</View>
+					) : null}
+
+					{business.basicInfo ? (
+						<View style={styles.locationSection}>
+							<Entypo 
+								name="old-phone"
+								size={12}
+								color={theme.theme.text.primary}
+							/>
+							<Text style={styles.otherText}>
+								{business.basicInfo
+									? truncateStr(business.basicInfo.phone,  18)
+									: ""}
+							</Text>
+						</View>
+					) : null}
+
+
+				</View>
 			</View>
-		</View>
+		</TouchableOpacity>
 	);
 };
 
@@ -87,9 +164,19 @@ const createSponsoredSectionTheme = (theme: any) =>
 			flex: 1,
 			gap: 5,
 			marginBottom: 7.5,
+			backgroundColor: theme.theme.primary.lighter,
+			padding: 5,
+			marginTop: 10,
+		},
+		headingColor: {
+			fontSize: 16,
+			color: theme.theme.common.white,
+			fontFamily: theme.theme.typography.fontFamily,
+			fontWeight: "bold",
+			marginTop: 10,
 		},
 		flatListContainer: {
-			height: 160,
+			height: 170,
 		},
 	});
 
@@ -99,17 +186,7 @@ const SponsoredSection = ({ sponsoredBusinesses, loading }: SponsoredSectionProp
 
 	return (
 		<View style={styles.container}>
-			<Text
-				style={{
-					fontSize: 16,
-					color: theme.theme.text.primary,
-					fontFamily: theme.theme.typography.fontFamily,
-					fontWeight: "bold",
-					marginTop: 10,
-				}}
-			>
-				Sponsored Businesses
-			</Text>
+			<Text style={styles.headingColor}>Sponsored Businesses</Text>
 
 			{sponsoredBusinesses && (
 				<View style={styles.flatListContainer}>
@@ -118,7 +195,6 @@ const SponsoredSection = ({ sponsoredBusinesses, loading }: SponsoredSectionProp
 						renderItem={({ item }) => <SlideCard business={item} />}
 						keyExtractor={(item) => item._id}
 						horizontal={true}
-						showsHorizontalScrollIndicator={true}
 						ListEmptyComponent={
 							loading ? (
 								<ActivityIndicator

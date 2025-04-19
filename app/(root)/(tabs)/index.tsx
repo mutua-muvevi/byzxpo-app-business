@@ -6,6 +6,7 @@ import SponsoredSection from "@/sections/home/sponsored";
 import { useTheme } from "@/theme";
 import React from "react";
 import { StyleSheet, Text, View, ActivityIndicator, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const createStyles = (theme: any) =>
 	StyleSheet.create({
@@ -53,21 +54,24 @@ const HomeScreen = () => {
 	const styles = createStyles(theme);
 
 	return (
-		<ScrollView style={styles.container}>
-			<Search />
+		<SafeAreaView>
 
-			{sponsoredBusinessLoading ? (
-				<LoadingIndicatorView />
-			) : (
-				<SponsoredSection sponsoredBusinesses={sponsoredBusinesses} loading={sponsoredBusinessLoading} />
-			)}
+			<ScrollView style={styles.container}>
+				<Search />
 
-			{categoryLoading ? (
-				<LoadingIndicatorView />
-			) : (
-				<HomeBody categories={categoriesWithBusinesses} loading={categoryLoading} />
-			)}
-		</ScrollView>
+				{sponsoredBusinessLoading ? (
+					<LoadingIndicatorView />
+				) : (
+					<SponsoredSection sponsoredBusinesses={sponsoredBusinesses} loading={sponsoredBusinessLoading} />
+				)}
+
+				{categoryLoading ? (
+					<LoadingIndicatorView />
+				) : (
+					<HomeBody categories={categoriesWithBusinesses} loading={categoryLoading} />
+				)}
+			</ScrollView>
+		</SafeAreaView>
 	);
 };
 
