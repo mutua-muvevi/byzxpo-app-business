@@ -1,11 +1,18 @@
+import { useBusiness } from '@/contexts/business/fetch';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { useLocalSearchParams } from "expo-router";
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 const Business = () => {
+	const { singleBusiness } = useBusiness()
+	const params = useLocalSearchParams();
+
 	return (
-		<View>
-			<Text>Business</Text>
-		</View>
+		<ScrollView>
+			<Text>Business Details</Text>
+			<Text>Business Details {params.id}</Text>
+			<Text>Business Details {singleBusiness?.businessName}</Text>
+		</ScrollView>
 	);
 }
 

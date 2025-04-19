@@ -1,4 +1,6 @@
 import { SettingsProvider } from "@/components/settings/context";
+import { BusinessProvider } from "@/contexts/business/fetch";
+import { CategoryProvider } from "@/contexts/categories/fetch";
 import { useCustomFonts } from "@/hooks/use-fonts";
 import ThemeProvider from "@/theme/provider";
 import { Stack } from "expo-router";
@@ -21,27 +23,40 @@ const RootLayout = () => {
 	}
 
 	return (
-		<SettingsProvider
-			defaultSettings={{
-				themeMode: "light", // "dark" | "light" | "system"
-				themeColorPresets: "default", // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
-			}}
-		>
-			<ThemeProvider>
-				<Stack>
-					<Stack.Screen
-						name="(tabs)"
-						options={{ headerShown: false }}
-					/>
-					<Stack.Screen name="+not-found" />
-				</Stack>
+		<BusinessProvider>
+			<CategoryProvider>
+				<SettingsProvider
+					defaultSettings={{
+						themeMode: "light", // "dark" | "light" | "system"
+						themeColorPresets: "default", // 'default' | 'cyan' | 'purple' | 'blue' | 'orange' | 'red'
+					}}
+				>
+					<ThemeProvider>
+						<Stack screenOptions={{ headerShown: false }}>
+							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+							<Stack.Screen name="+not-found" />
 
-				<StatusBar style="auto" />
-			</ThemeProvider>
-		</SettingsProvider>
+							<Stack.Screen
+								name="business-details/[id]"
+								options={{ headerShown: false }}
+							/>
+
+							<Stack.Screen name="category/[id]" options={{ headerShown: false }} />
+							<Stack.Screen
+								name="my-business-details/[id]"
+								options={{ headerShown: false }}
+							/>
+							<Stack.Screen name="my-businesses" options={{ headerShown: false }} />
+						</Stack>
+
+						<StatusBar style="auto" animated />
+					</ThemeProvider>
+				</SettingsProvider>
+			</CategoryProvider>
+		</BusinessProvider>
 	);
 };
 
-const style = StyleSheet.create({});
+const styles = StyleSheet.create({});
 
 export default RootLayout;

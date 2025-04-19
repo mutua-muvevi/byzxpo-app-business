@@ -36,13 +36,14 @@ const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 		const presets = { palette: { primary: getPrimary(preset) } };
 		const contrastOptions = createContrast(contrast, mode);
 
+
 		return {
 			...palette(mode),
 			...presets,
 			...contrastOptions,
 			typography,
 			shadows: shadows(mode),
-			shape: { borderRadius: 8 },
+			shape: { borderRadius: 5, cardBorderRadius: 8 },
 		};
 	}, [mode, contrast, preset]);
 
