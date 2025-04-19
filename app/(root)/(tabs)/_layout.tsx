@@ -8,8 +8,6 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 
 const TabLayout = () => {
 	const theme = useTheme();
-	console.log("THEME", theme.theme);
-	console.log("ROOT THEME", theme);
 
 	return (
 		<Tabs
@@ -22,7 +20,7 @@ const TabLayout = () => {
 					left: 0,
 					right: 0,
 					elevation: 50,
-					backgroundColor: theme.theme.background.paper ,
+					backgroundColor: theme.theme.background.default ,
 					borderTopWidth: 0,
 					height: 60,
 					borderTopColor: theme.theme.palette.divider,

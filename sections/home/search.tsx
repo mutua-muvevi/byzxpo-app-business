@@ -9,8 +9,7 @@ const createStyles = (theme: any) =>
 		container: {
 			flexDirection: "row",
 			alignItems: "center",
-			paddingHorizontal:10,
-			paddingVertical: 10,
+			
 		},
 		searchContainer: {
 			flex: 1,
@@ -65,7 +64,7 @@ const Search = () => {
 			<View style={styles.searchContainer}>
 				<Ionicons
 					name="search"
-					size={16}
+					size={24}
 					style={styles.searchIcon}
 					color={theme.theme.primary.main} // #027cf5
 				/>
