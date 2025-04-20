@@ -1,4 +1,4 @@
-{
+export default () => ({
 	"expo": {
 		"name": "byzxpo-business",
 		"slug": "byzxpo-business",
@@ -9,13 +9,30 @@
 		"userInterfaceStyle": "automatic",
 		"newArchEnabled": true,
 		"ios": {
-			"supportsTablet": true
+			"supportsTablet": true,
+			"config": {
+				"googleMapsApiKey": process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY
+			},
+			"infoPlist": {
+				"NSLocationWhenInUseUsageDescription": "Allow location access to show nearby businesses."
+			},
+			"bundleIdentifier": "com.byzxpo"
 		},
 		"android": {
 			"adaptiveIcon": {
 				"foregroundImage": "./assets/images/adaptive-icon.png",
 				"backgroundColor": "#ffffff"
-			}
+			},
+			"config": {
+				"googleMaps": {
+					"apiKey": process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY
+				}
+			},
+			"permissions": [
+				"android.permission.ACCESS_FINE_LOCATION",
+				"android.permission.ACCESS_COARSE_LOCATION"
+			],
+			"package": "com.byzxpo"
 		},
 		"web": {
 			"bundler": "metro",
@@ -39,3 +56,4 @@
 		}
 	}
 }
+)

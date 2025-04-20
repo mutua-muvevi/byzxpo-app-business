@@ -54,7 +54,7 @@ const createSlideCardTheme = (theme: any) =>
 		},
 		otherText: {
 			fontSize: 12,
-			color: theme.theme.text.primary,
+			color: theme.theme.text.secondary,
 			fontFamily: theme.theme.typography.fontFamily,
 		},
 		locationSection: {
@@ -119,7 +119,7 @@ const SlideCard = ({ business }: SlideCardProps) => {
 							<Ionicons
 								name="location"
 								size={12}
-								color={theme.theme.text.primary}
+								color={theme.theme.text.secondary}
 							/>
 							<Text style={styles.otherText}>
 								{business.location
@@ -129,12 +129,12 @@ const SlideCard = ({ business }: SlideCardProps) => {
 						</View>
 					) : null}
 
-					{business.basicInfo ? (
+					{business.basicInfo?.phone ? (
 						<View style={styles.locationSection}>
 							<Entypo 
 								name="old-phone"
 								size={12}
-								color={theme.theme.text.primary}
+								color={theme.theme.text.secondary}
 							/>
 							<Text style={styles.otherText}>
 								{business.basicInfo

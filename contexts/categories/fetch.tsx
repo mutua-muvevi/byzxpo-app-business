@@ -12,6 +12,9 @@ interface CategoryContextType {
 	fetchAllCategories: (pageNo?: number, pageLimit?: number) => Promise<void>;
 	pagination?: CategoryPagination;
 	categoriesWithBusinesses: CategoryInterface[];
+	
+	singleCategory: CategoryInterface | null;
+	setSingleCategoryFunction: (category: CategoryInterface) => void;
 }
 
 const CategoryContext = createContext<CategoryContextType | undefined>(undefined);
@@ -25,6 +28,7 @@ const CategoryProvider = ({ children }: { children: ReactNode }) => {
 	const [categoriesWithBusinesses, setCategoriesWithBusinesses] = useState<CategoryInterface[]>(
 		[],
 	);
+	const [singleCategory, setSingleCategory] = useState<CategoryInterface | null>(null);
 
 	const fetchAllCategories = async (pageNo?: number, pageLimit?: number) => {
 		setLoading(true);
@@ -48,7 +52,7 @@ const CategoryProvider = ({ children }: { children: ReactNode }) => {
 				throw new Error("Failed to fetch categories");
 			}
 
-			setAllCategories(categories);
+			setAllCategories(categories.sort((a : any, b : any) => b.businesses.length - a.businesses.length));
 			setMeta(responseMeta);
 			setPagination({
 				currentPage: responseMeta.currentPage,
@@ -89,6 +93,10 @@ const CategoryProvider = ({ children }: { children: ReactNode }) => {
 		}
 	};
 
+	const setSingleCategoryFunction = (category: CategoryInterface) => {
+		setSingleCategory(category);
+	}
+
 	useEffect(() => {
 		fetchAllCategories();
 	}, []);
@@ -103,6 +111,9 @@ const CategoryProvider = ({ children }: { children: ReactNode }) => {
 				fetchAllCategories,
 				pagination,
 				categoriesWithBusinesses,
+
+				singleCategory,
+				setSingleCategoryFunction
 			}}
 		>
 			{children}
