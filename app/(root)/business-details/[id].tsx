@@ -1,11 +1,23 @@
 import { useBusiness } from "@/contexts/business/fetch";
 import React from "react";
-import { useLocalSearchParams } from "expo-router";
-import { Image, ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+	Image,
+	ImageBackground,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+} from "react-native";
 import { useTheme } from "@/theme";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Foundation from "@expo/vector-icons/Foundation";
+import MapComponent from "@/components/map/map";
+import { palette } from '../../../theme/palette';
+
+const CLAIM_BUSINESS_IMAGE =
+	"https://storage.googleapis.com/byzxpo-bucket/assets/business-concept-with-copy-space-office-desk-table-with-pen-focus-analysis-chart-computer-notebook-cup-coffee-desk-vintage-tone-retro-filter-selective-focus.jpg";
 
 const createBusinessDetailsStyles = (theme: any) =>
 	StyleSheet.create({
@@ -35,7 +47,7 @@ const createBusinessDetailsStyles = (theme: any) =>
 		},
 		contentView: {
 			padding: 5,
-			gap: 5,
+			gap: 10,
 		},
 		businessName: {
 			fontSize: 20,
@@ -60,11 +72,14 @@ const createBusinessDetailsStyles = (theme: any) =>
 			flexDirection: "row",
 			gap: 5,
 		},
+		mapContainer: {
+			width: "100%",
+			height: 200,
+		},
 	});
 
 const BusinessDetails = () => {
 	const { singleBusiness } = useBusiness();
-	const params = useLocalSearchParams();
 
 	const theme = useTheme();
 	const styles = createBusinessDetailsStyles(theme);
@@ -141,14 +156,71 @@ const BusinessDetails = () => {
 					</View>
 				)}
 
-				<Text>
-					MAP
-				</Text>
+				{singleBusiness?.location ? (
+					<View style={styles.descriptionView}>
+						<Text style={styles.descriptionTitle}>Location</Text>
+
+						<View style={styles.mapContainer}>
+							<MapComponent />
+						</View>
+					</View>
+				) : null}
+
+				{singleBusiness?.otherImages ? (
+					<View style={{ ...styles.descriptionView, gap: 10 }}>
+						<Text style={styles.descriptionTitle}>Business Photos</Text>
+
+						{singleBusiness?.otherImages.map((images, index) => (
+							<View key={images}>
+								<Image
+									source={{ uri: images }}
+									alt={singleBusiness.businessName + index}
+									style={{
+										height: 200,
+										borderRadius: 5,
+									}}
+								/>
+							</View>
+						))}
+					</View>
+				) : null}
+
+				<TouchableOpacity>
+					<ImageBackground
+						source={{
+							uri: CLAIM_BUSINESS_IMAGE,
+						}}
+						style={{
+							height: 200,
+							width: "100%",
+							justifyContent: "center",
+							alignItems: "center",
+							backgroundColor: "linear",
+						}}
+					>
+						<View
+							style={{
+								padding: 20,
+								borderWidth: 5,
+								borderColor: theme.theme.palette.primary.main,
+							}}
+						>
+							<Text
+								style={{
+									textTransform: "uppercase",
+									color: theme.theme.palette.primary.main,
+									fontSize: 30,
+									fontWeight: "bold",
+								}}
+							>
+								Claim Business
+							</Text>
+						</View>
+					</ImageBackground>
+				</TouchableOpacity>
 			</View>
 		</ScrollView>
 	);
 };
-
-const styles = StyleSheet.create({});
 
 export default BusinessDetails;
