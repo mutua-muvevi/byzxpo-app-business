@@ -4,6 +4,7 @@ import HomeBody from "@/sections/home/body";
 import Search from "@/sections/home/search";
 import SponsoredSection from "@/sections/home/sponsored";
 import { useTheme } from "@/theme";
+import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, Text, View, ActivityIndicator, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -31,7 +32,7 @@ const LoadingIndicatorView = () => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.loadingContainer}>
-				<ActivityIndicator size="large" color="#0000ff" />
+				<ActivityIndicator size="large" color={theme.theme.palette.primary.main} />
 			</View>
 		</View>
 	);
@@ -55,6 +56,7 @@ const HomeScreen = () => {
 
 	return (
 		<SafeAreaView>
+			<StatusBar backgroundColor={theme.theme.primary.main} />
 
 			<ScrollView style={styles.container}>
 				<Search />

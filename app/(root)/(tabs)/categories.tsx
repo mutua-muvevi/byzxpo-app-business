@@ -1,11 +1,56 @@
+import { useCategory } from '@/contexts/categories/fetch';
+import { useTheme } from '@/theme';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { palette } from '../../../theme/palette';
+import CategoriesSection from '@/sections/categories/categories';
+
+const createCategoriesStyles = (theme: any)	=> StyleSheet.create({
+	container: {
+		paddingHorizontal: 10,
+		paddingVertical: 10,
+		backgroundColor: theme.theme.background.paper
+	},
+	loadingContainer: {
+		height: "100%",
+		justifyContent: "center",
+		alignItems: "center",
+	},
+})
+
+//--------------------------------------------------------------------------------
+
+const LoadingIndicatorView = () => {
+	const theme = useTheme();
+	const styles = createCategoriesStyles(theme);
+	
+	return (
+		<View style={styles.container}>
+			<View style={styles.loadingContainer}>
+				<ActivityIndicator size="large" color={theme.theme.palette.primary.main} />
+			</View>
+		</View>
+	);
+};
+//--------------------------------------------------------------------------------
 
 const Categories = () => {
+	const { allCategories : categories, loading, error } = useCategory();
+	const theme = useTheme();
+	const styles = createCategoriesStyles(theme);
+
 	return (
-		<View>
-			<Text>Categories</Text>
-		</View>
+		<SafeAreaView style={styles.container}>
+			<Text style={{ fontSize: 16, marginBottom: 10 }}>Categories</Text>
+
+
+			{loading ? (
+				<LoadingIndicatorView />
+			) : (
+				<CategoriesSection categories={categories} loading={loading} />
+			)}
+		</SafeAreaView>
 	);
 }
 

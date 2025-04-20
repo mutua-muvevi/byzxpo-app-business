@@ -15,6 +15,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Foundation from "@expo/vector-icons/Foundation";
 import MapComponent from "@/components/map/map";
 import { palette } from '../../../theme/palette';
+import { StatusBar } from "expo-status-bar";
 
 const CLAIM_BUSINESS_IMAGE =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/business-concept-with-copy-space-office-desk-table-with-pen-focus-analysis-chart-computer-notebook-cup-coffee-desk-vintage-tone-retro-filter-selective-focus.jpg";
@@ -109,6 +110,7 @@ const BusinessDetails = () => {
 
 	return (
 		<ScrollView>
+			<StatusBar backgroundColor="transparent" />
 			<ImageBackground
 				source={{
 					uri: (singleBusiness?.thumbnail ||
@@ -184,6 +186,20 @@ const BusinessDetails = () => {
 						))}
 					</View>
 				) : null}
+
+				{/* {
+					singleBusiness?.socialMedia ? (
+						<View style={styles.descriptionView}>
+							<Text style={styles.descriptionTitle}>Social Media</Text>
+
+							<Text>
+							{JSON.stringify(singleBusiness.socialMedia)}
+							{JSON.stringify(singleBusiness.socialMedia)}
+
+							</Text>
+						</View>
+					) : null
+				} */}
 
 				<TouchableOpacity>
 					<ImageBackground
