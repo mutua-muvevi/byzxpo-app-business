@@ -142,7 +142,7 @@ const NoAvailableBusiness = () => {
 					// resizeMode: "contain"
 				}}
 			/>
-			<Text style={{ fontSize: 18, fontWeight: "bold", color: theme.theme.text.primary }}>
+			<Text style={{ fontSize: 15, fontWeight: "bold", color: theme.theme.text.primary }}>
 				No Businesses Available in this Category
 			</Text>
 		</View>

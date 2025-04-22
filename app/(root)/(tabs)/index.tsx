@@ -1,3 +1,4 @@
+import UnavailableContentPage from "@/components/ui/UnavailablePage";
 import { useBusiness } from "@/contexts/business/fetch";
 import { useCategory } from "@/contexts/categories/fetch";
 import HomeBody from "@/sections/home/body";
@@ -6,45 +7,44 @@ import SponsoredSection from "@/sections/home/sponsored";
 import { useTheme } from "@/theme";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View, ActivityIndicator, ScrollView } from "react-native";
+import { StyleSheet, View, ActivityIndicator, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const createStyles = (theme: any) =>
 	StyleSheet.create({
 		container: {
-			paddingHorizontal: 10,
-			paddingVertical: 10,
-			backgroundColor: theme.theme.background.paper
+			flex: 1,
+			backgroundColor: theme.theme.background.paper,
+			paddingBottom: 50,
 		},
 		loadingContainer: {
-			height: "100%",
+			flex: 1,
 			justifyContent: "center",
 			alignItems: "center",
 		},
+		contentContainer: {
+			paddingHorizontal: 10,
+			paddingVertical: 10,
+		},
 	});
-
-//--------------------------------------------------------------------------------
 
 const LoadingIndicatorView = () => {
 	const theme = useTheme();
 	const styles = createStyles(theme);
 
 	return (
-		<View style={styles.container}>
-			<View style={styles.loadingContainer}>
-				<ActivityIndicator size="large" color={theme.theme.palette.primary.main} />
-			</View>
+		<View style={styles.loadingContainer}>
+			<ActivityIndicator size="large" color={theme.theme.palette.primary.main} />
 		</View>
 	);
 };
 
-//--------------------------------------------------------------------------------
 const HomeScreen = () => {
 	const {
 		allBusinesses,
 		sponsoredBusinesses,
 		loading: sponsoredBusinessLoading,
-		error,
+		error: businessError,
 	} = useBusiness();
 	const {
 		categoriesWithBusinesses,
@@ -55,24 +55,39 @@ const HomeScreen = () => {
 	const styles = createStyles(theme);
 
 	return (
-		<SafeAreaView>
+		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor={theme.theme.primary.main} />
-
-			<ScrollView style={styles.container}>
-				<Search />
-
-				{sponsoredBusinessLoading ? (
-					<LoadingIndicatorView />
-				) : (
-					<SponsoredSection sponsoredBusinesses={sponsoredBusinesses} loading={sponsoredBusinessLoading} />
+			<FlatList
+				data={categoriesWithBusinesses}
+				keyExtractor={(item) => item._id}
+				renderItem={({ item }) => (
+					<HomeBody
+						categories={[item]} // Pass single category to HomeBody
+						loading={categoryLoading}
+					/>
 				)}
-
-				{categoryLoading ? (
-					<LoadingIndicatorView />
-				) : (
-					<HomeBody categories={categoriesWithBusinesses} loading={categoryLoading} />
-				)}
-			</ScrollView>
+				ListHeaderComponent={
+					<>
+						<Search />
+						{sponsoredBusinessLoading ? (
+							<LoadingIndicatorView />
+						) : (
+							<SponsoredSection
+								sponsoredBusinesses={sponsoredBusinesses}
+								loading={sponsoredBusinessLoading}
+							/>
+						)}
+					</>
+				}
+				ListEmptyComponent={
+					sponsoredBusinessLoading || categoryLoading ? (
+						<LoadingIndicatorView />
+					) : (
+						<UnavailableContentPage text="No Businesses" />
+					)
+				}
+				contentContainerStyle={styles.contentContainer}
+			/>
 		</SafeAreaView>
 	);
 };

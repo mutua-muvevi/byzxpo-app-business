@@ -9,6 +9,7 @@ const createStyles = (theme: any) =>
 		container: {
 			flexDirection: "row",
 			alignItems: "center",
+			marginBottom: 20
 			
 		},
 		searchContainer: {
