@@ -27,7 +27,9 @@ const TabLayout = () => {
 				},
 				headerShown: false,
 				tabBarButton: HapticTab,
+				tabBarHideOnKeyboard: true,
 			}}
+			initialRouteName="index"
 		>
 			<Tabs.Screen
 				name="index"

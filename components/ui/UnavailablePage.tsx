@@ -11,6 +11,7 @@ const UnavailableContentPage = ({text} : { text: string }) => {
 				flex: 1,
 				padding: 20,
 				gap: 10,
+				backgroundColor: theme.theme.background.paper
 			}}
 		>
 			<Image

@@ -12,50 +12,51 @@ const placeHolderImage =
 
 //------------------------------------------------------------------------------
 const CategorySection = ({ category }: { category: CategoryInterface }) => {
-	const {setSingleCategoryFunction} = useCategory();
+	const { setSingleCategoryFunction } = useCategory();
 
 	const theme = useTheme();
 	const router = useRouter();
 
 	const handlePressCategory = () => {
 		setSingleCategoryFunction(category);
-		
+
 		router.push({
 			pathname: "/category/[id]",
 			params: { id: category._id },
-		})
-	}
+		});
+	};
 
 	return (
 		<TouchableOpacity onPress={handlePressCategory}>
-			<ImageBackground
-				source={{
-					uri: placeHolderImage,
-				}}
-				style={{
-					width: "100%",
-					height: 100,
-				}}
-			>
-				<View
+			<View style={{borderRadius: 10}}>
+
+				<ImageBackground
+					source={{
+						uri: placeHolderImage,
+					}}
 					style={{
 						width: "100%",
-						height: "100%",
-						backgroundColor:
-							"linear-gradient(to top,rgba(0, 0, 0, 0.27) 0%,rgba(0, 0, 0, 0.62) 100%)",
-
-						justifyContent: "center",
-						alignItems: "center",
-						padding: 10,
-						borderWidth: 3,
-						borderColor: theme.theme.palette.primary.main,
+						height: 100,
 					}}
-				>
-					<Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>
-						{category.name}
-					</Text>
-				</View>
-			</ImageBackground>
+					>
+					<View
+						style={{
+							width: "100%",
+							height: "100%",
+							backgroundColor:
+								"linear-gradient(to top,rgba(0, 0, 0, 0.57) 0%,rgba(0, 0, 0, 0.62) 100%)",
+
+							justifyContent: "center",
+							alignItems: "center",
+							padding: 10,
+						}}
+					>
+						<Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>
+							{category.name}
+						</Text>
+					</View>
+				</ImageBackground>
+			</View>
 		</TouchableOpacity>
 	);
 };
@@ -84,7 +85,16 @@ const CategoriesSection = ({
 						<Text>No Businesses</Text>
 					)
 				}
-				ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+				ItemSeparatorComponent={() => (
+					<View
+						style={{
+							borderWidth: 1,
+							borderColor: "#ccc",
+							marginVertical: 20,
+							borderStyle: "dashed",
+						}}
+					/>
+				)}
 			/>
 		</View>
 	);

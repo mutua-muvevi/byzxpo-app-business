@@ -87,6 +87,10 @@ const HomeScreen = () => {
 					)
 				}
 				contentContainerStyle={styles.contentContainer}
+				//item separator
+				ItemSeparatorComponent={() => (
+					<View style={{ borderWidth: 1, borderColor: "#ccc", marginVertical:10, borderStyle: "dashed" }} />
+				)}
 			/>
 		</SafeAreaView>
 	);
