@@ -14,8 +14,9 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Foundation from "@expo/vector-icons/Foundation";
 import MapComponent from "@/components/map/map";
-import { palette } from '../../../theme/palette';
+import { palette } from "../../../theme/palette";
 import { StatusBar } from "expo-status-bar";
+import { Rating } from "react-native-ratings";
 
 const CLAIM_BUSINESS_IMAGE =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/business-concept-with-copy-space-office-desk-table-with-pen-focus-analysis-chart-computer-notebook-cup-coffee-desk-vintage-tone-retro-filter-selective-focus.jpg";
@@ -168,6 +169,31 @@ const BusinessDetails = () => {
 					</View>
 				) : null}
 
+				{singleBusiness?.overalRating ? (
+					<View
+						style={{
+							...styles.descriptionView,
+							flexDirection: "column",
+							alignItems: "flex-start",
+						}}
+					>
+						<Text style={styles.descriptionTitle}>Ratings and Reviews</Text>
+
+						<Rating
+							type="custom"
+							ratingCount={5}
+							readonly={true}
+							imageSize={15}
+							ratingColor={theme.theme.primary.main}
+							jumpValue={0.5}
+							ratingTextColor={theme.theme.text.primary}
+							startingValue={singleBusiness.overalRating}
+							ratingBackgroundColor={theme.theme.text.disabled}
+							style={{ width: "100%", height: 20 }}
+						/>
+					</View>
+				) : null}
+
 				{singleBusiness?.otherImages ? (
 					<View style={{ ...styles.descriptionView, gap: 10 }}>
 						<Text style={styles.descriptionTitle}>Business Photos</Text>
@@ -207,7 +233,7 @@ const BusinessDetails = () => {
 							uri: CLAIM_BUSINESS_IMAGE,
 						}}
 						style={{
-							height: 200,
+							height: 150,
 							width: "100%",
 							justifyContent: "center",
 							alignItems: "center",
@@ -233,6 +259,26 @@ const BusinessDetails = () => {
 							</Text>
 						</View>
 					</ImageBackground>
+				</TouchableOpacity>
+
+				<TouchableOpacity
+					style={{
+						justifyContent: "center",
+						alignItems: "center",
+						borderRadius: 5,
+						backgroundColor: theme.theme.palette.primary.main,
+						height: 50
+					}}
+				>
+					<Text
+						style={{
+							color: theme.theme.palette.primary.contrastText,
+							fontSize: 20,
+							fontWeight: "bold",
+						}}
+					>
+						Message This Business
+					</Text>
 				</TouchableOpacity>
 			</View>
 		</ScrollView>

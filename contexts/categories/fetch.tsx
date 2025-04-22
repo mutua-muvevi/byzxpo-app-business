@@ -3,6 +3,7 @@ import axios, { AxiosError } from "axios";
 import Toast from "react-native-toast-message";
 import { BusinessInterface } from "@/types/business";
 import { CategoryPagination, CategoryInterface, CategoryResponse } from "@/types/category";
+import { useBusiness } from "../business/fetch";
 
 interface CategoryContextType {
 	allCategories: CategoryInterface[];
@@ -15,6 +16,8 @@ interface CategoryContextType {
 	
 	singleCategory: CategoryInterface | null;
 	setSingleCategoryFunction: (category: CategoryInterface) => void;
+
+	setBusinessFromCategory: (business: BusinessInterface) => void
 }
 
 const CategoryContext = createContext<CategoryContextType | undefined>(undefined);
@@ -29,6 +32,8 @@ const CategoryProvider = ({ children }: { children: ReactNode }) => {
 		[],
 	);
 	const [singleCategory, setSingleCategory] = useState<CategoryInterface | null>(null);
+	const [businessSet, setBusinessSet] = useState<BusinessInterface[] | null>(null);
+	const { singleBusiness, allBusinesses } = useBusiness()
 
 	const fetchAllCategories = async (pageNo?: number, pageLimit?: number) => {
 		setLoading(true);
@@ -97,6 +102,11 @@ const CategoryProvider = ({ children }: { children: ReactNode }) => {
 		setSingleCategory(category);
 	}
 
+	const setBusinessFromCategory = (business: BusinessInterface) => {
+		const businessSetFromCategory = allBusinesses.filter((b : any) => b._id === business._id);
+		setBusinessSet(businessSetFromCategory);
+	}
+
 	useEffect(() => {
 		fetchAllCategories();
 	}, []);
@@ -113,7 +123,9 @@ const CategoryProvider = ({ children }: { children: ReactNode }) => {
 				categoriesWithBusinesses,
 
 				singleCategory,
-				setSingleCategoryFunction
+				setSingleCategoryFunction,
+
+				setBusinessFromCategory
 			}}
 		>
 			{children}

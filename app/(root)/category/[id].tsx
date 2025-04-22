@@ -121,6 +121,36 @@ const FlatListComponent = ({ business }: { business: BusinessInterface }) => {
 
 //-----------------------------------------------------------------------------
 
+const NoAvailableBusiness = () => {
+	const theme = useTheme();
+	return (
+		<View
+			style={{
+				alignItems: "center",
+				justifyContent: "center",
+				flex: 1,
+				padding: 20,
+				gap: 10,
+			}}
+		>
+			<Image
+				source={require("../../../assets/images/unavailable.png")}
+				alt="Business not available"
+				style={{
+					height: 300,
+					width: "100%",
+					// resizeMode: "contain"
+				}}
+			/>
+			<Text style={{ fontSize: 18, fontWeight: "bold", color: theme.theme.text.primary }}>
+				No Businesses Available in this Category
+			</Text>
+		</View>
+	);
+};
+
+//-----------------------------------------------------------------------------
+
 const Category = () => {
 	const { singleCategory: category, loading } = useCategory();
 	const theme = useTheme();
@@ -138,7 +168,7 @@ const Category = () => {
 					loading ? (
 						<ActivityIndicator size="large" color={theme.theme.palette.primary.main} />
 					) : (
-						<Text>No Businesses Available in this Category</Text>
+						<NoAvailableBusiness />
 					)
 				}
 			/>
