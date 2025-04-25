@@ -39,17 +39,21 @@ export const RHFSelect = ({
 						className="border border-grey-300 rounded-lg"
 						style={{
 							borderColor: error
-								? theme.palette.error.main
-								: theme.palette.grey[300],
-							backgroundColor: theme.palette.grey[0],
+								? theme.error.main
+								: theme.grey[300],
+							backgroundColor: theme.grey[0],
+							borderRadius: 5,
 						}}
 					>
 						<Picker
 							selectedValue={field.value}
 							onValueChange={field.onChange}
 							style={{
-								height: 50,
-								color: theme.palette.grey[900],
+								backgroundColor: theme.grey[200],
+								borderColor: error
+									? theme.error.main
+									: theme.grey[900],
+								borderRadius: 5,
 							}}
 							{...other}
 						>
@@ -58,7 +62,7 @@ export const RHFSelect = ({
 									label={placeholder}
 									value=""
 									enabled={false}
-									style={{ color: theme.palette.grey[500] }}
+									style={{ color: theme.grey[500] }}
 								/>
 							)}
 							{options.map((option) => (
@@ -75,8 +79,8 @@ export const RHFSelect = ({
 							className="text-caption mt-1"
 							style={{
 								color: error
-									? theme.palette.error.main
-									: theme.palette.grey[600],
+									? theme.error.main
+									: theme.grey[600],
 							}}
 						>
 							{error?.message || helperText}
@@ -120,16 +124,16 @@ export const RHFMultiSelect = ({
 					<View
 						style={{
 							borderColor: error
-								? theme.palette.error.main
-								: theme.palette.grey[300],
-							backgroundColor: theme.palette.grey[0],
+								? theme.error.main
+								: theme.grey[300],
+							backgroundColor: theme.grey[0],
 						}}
 					>
 						<Text
 							style={{
 								color: field.value?.length
-									? theme.palette.grey[900]
-									: theme.palette.grey[500],
+									? theme.grey[900]
+									: theme.grey[500],
 							}}
 						>
 							{field.value?.length
@@ -176,8 +180,8 @@ export const RHFMultiSelect = ({
 						<Text
 							style={{
 								color: error
-									? theme.palette.error.main
-									: theme.palette.grey[600],
+									? theme.error.main
+									: theme.grey[600],
 							}}
 						>
 							{error?.message || helperText}

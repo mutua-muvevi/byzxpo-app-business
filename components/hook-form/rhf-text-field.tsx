@@ -1,13 +1,13 @@
 // components/hook-form/rhf-text-field.tsx
 import { Controller, useFormContext } from "react-hook-form";
 import { TextInput, Text, View } from "react-native";
-import { useTheme } from "@/theme";
+import { useTheme } from "@/theme/provider";
 
 interface RHFTextFieldProps {
 	name: string;
-	placeholder?: string;
+	placeholder?: string | undefined;
 	type?: "text" | "number" | "password";
-	helperText?: string;
+	helperText?: string | undefined;
 	[key: string]: any;
 }
 
@@ -25,45 +25,48 @@ const RHFTextField = ({
 		<Controller
 			name={name}
 			control={control}
-			render={({ field, fieldState: { error } }) => (
-				<View>
-					<TextInput
-						{...field}
-						placeholder={placeholder}
-						secureTextEntry={type === "password"}
-						keyboardType={type === "number" ? "numeric" : "default"}
-						value={
-							type === "number" && field.value === 0
-								? ""
-								: String(field.value)
-						}
-						onChangeText={(value) =>
-							field.onChange(
-								type === "number" ? Number(value) || 0 : value,
-							)
-						}
-						placeholderTextColor={theme.palette.grey[500]}
-						style={{
-							backgroundColor: theme.palette.grey[0],
-							borderColor: error
-								? theme.palette.error.main
-								: theme.palette.grey[300],
-						}}
-						{...other}
-					/>
-					{(error || helperText) && (
-						<Text
+			render={({ field, fieldState: { error } }) => {
+				return (
+					<View>
+						<TextInput
+							{...field}
+							placeholder={placeholder}
+							secureTextEntry={type === "password"}
+							keyboardType={type === "number" ? "numeric" : "default"}
+							value={
+								type === "number" && field.value === 0 ? "" : String(field.value)
+							}
+							onChangeText={(value) =>
+								field.onChange(type === "number" ? Number(value) || 0 : value)
+							}
+							placeholderTextColor={theme.grey[500]}
 							style={{
-								color: error
-									? theme.palette.error.main
-									: theme.palette.grey[600],
+								backgroundColor: theme.grey[200],
+								borderColor: error
+									? theme.error.main
+									: theme.grey[900],
+								borderRadius: 5,
+								padding:20
 							}}
-						>
-							{error?.message || helperText}
-						</Text>
-					)}
-				</View>
-			)}
+							{...other}
+						/>
+						{(error || helperText) && (
+							<Text
+								style={{
+									color: error
+										? theme.error.main
+										: theme.text.secondary,
+									fontSize: 12,
+									padding:1,
+									marginBottom:5
+								}}
+							>
+								{error?.message || helperText}
+							</Text>
+						)}
+					</View>
+				);
+			}}
 		/>
 	);
 };

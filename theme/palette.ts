@@ -132,7 +132,7 @@ export const palette = (mode: "light" | "dark") => {
 		text: {
 			primary: grey[800],
 			secondary: grey[600],
-			disabled: grey[500],
+			disabled: "#C4CDD5",
 		},
 		background: {
 			paper: grey[200],

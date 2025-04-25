@@ -1,3 +1,4 @@
+import { useAuth } from "@/auth/provider";
 import UnavailableContentPage from "@/components/ui/UnavailablePage";
 import { useBusiness } from "@/contexts/business/fetch";
 import { useCategory } from "@/contexts/categories/fetch";
@@ -54,6 +55,9 @@ const HomeScreen = () => {
 	const theme = useTheme();
 	const styles = createStyles(theme);
 
+	const auth = useAuth();
+	console.log(auth);
+
 	return (
 		<SafeAreaView style={styles.container}>
 			<StatusBar backgroundColor={theme.theme.primary.main} />
@@ -89,7 +93,14 @@ const HomeScreen = () => {
 				contentContainerStyle={styles.contentContainer}
 				//item separator
 				ItemSeparatorComponent={() => (
-					<View style={{ borderWidth: 1, borderColor: "#ccc", marginVertical:10, borderStyle: "dashed" }} />
+					<View
+						style={{
+							borderWidth: 1,
+							borderColor: "#ccc",
+							marginVertical: 10,
+							borderStyle: "dashed",
+						}}
+					/>
 				)}
 			/>
 		</SafeAreaView>
