@@ -27,8 +27,8 @@ const AppLayout = () => {
 					<Stack.Screen name="business-details/[id]" options={{ headerShown: false }} />
 					<Stack.Screen name="category/[id]" options={{ headerShown: false }} />
 					<Stack.Screen
-						name="my-business-details/[id]"
-						options={{ headerShown: false }}
+						name="my-business-details/(tabs)"
+						options={{ headerShown: false }} // Header disabled
 					/>
 					<Stack.Screen name="my-businesses" options={{ headerShown: false }} />
 					<Stack.Screen name="profile" options={{ headerShown: false }} />

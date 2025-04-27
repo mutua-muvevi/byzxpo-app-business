@@ -25,7 +25,9 @@ const Login = () => {
 	const { theme } = useTheme();
 	const router = useRouter();
 	const auth = useAuth();
-	console.log("auth", auth);
+	const [errorMsg, setError] = React.useState<string | null>(null);
+	const [ loadingState, setLoading ] = React.useState<boolean>(false);
+
 
 	const methods = useForm<LoginFormValues>({
 		resolver: yupResolver(loginSchema),
@@ -36,12 +38,25 @@ const Login = () => {
 
 	const onSubmit = async (data: LoginFormValues) => {
 		try {
+			setLoading(true);
+			setError(null);
+
 			const result = await login(data);
-			console.log("result >>>>>>>>>>>>>>>>>>", result);
+			
+			if (result) {
+				router.push("/");
+			}
 			
 		} catch (error) {
 			console.log("error >>>>>>>>>>>>>>>>>>", error);
 			console.log("error >>>>>>>>>>>>>>>>>>", typeof(error));
+			
+			if (error instanceof Error) {
+				setError(error.message);
+			}
+		} finally {
+			// setLoading(false);
+			setLoading(false)
 		}
 	};
 
@@ -58,14 +73,14 @@ const Login = () => {
 				error && (
 					<View
 						style={{
-							backgroundColor: theme.palette.error.main,
+							backgroundColor: theme.error.main,
 							padding: 12,
 							borderRadius: 8,
 							alignItems: "center",
 							marginTop: 16,
 						}}
 					>
-						<Text style={{ color: theme.palette.error.contrastText, fontWeight: "bold" }}>
+						<Text style={{ color: theme.error.contrastText, fontWeight: "bold" }}>
 							{error}
 						</Text>
 					</View>
@@ -88,7 +103,7 @@ const Login = () => {
 					<RHFTextField name="password" placeholder="Password" type="password" />
 					<TouchableOpacity
 						style={{
-							backgroundColor: theme.palette.primary.main,
+							backgroundColor: theme.primary.main,
 							padding: 12,
 							borderRadius: 8,
 							alignItems: "center",
@@ -97,7 +112,7 @@ const Login = () => {
 						onPress={handleSubmit(onSubmit)}
 						disabled={loading}
 					>
-						<Text style={{ color: theme.palette.primary.contrastText, fontWeight: "bold" }}>
+						<Text style={{ color: theme.primary.contrastText, fontWeight: "bold" }}>
 							{loading ? "Logging in..." : "Login"}
 						</Text>
 					</TouchableOpacity>
@@ -105,12 +120,12 @@ const Login = () => {
 			</FormProvider>
 			
 			<TouchableOpacity onPress={() => router.push("/forgot-password")}>
-				<Text style={{ color: theme.palette.primary.main, marginTop: 16 }}>
+				<Text style={{ color: theme.primary.main, marginTop: 16 }}>
 					Forgot Password?
 				</Text>
 			</TouchableOpacity>
 			<TouchableOpacity onPress={() => router.push("/register")}>
-				<Text style={{ color: theme.palette.primary.main, marginTop: 8 }}>
+				<Text style={{ color: theme.primary.main, marginTop: 8 }}>
 					Don't have an account? Register
 				</Text>
 			</TouchableOpacity> 

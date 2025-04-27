@@ -17,7 +17,7 @@ axios.defaults.headers.common["Content-Type"] = "application/json";
 // Helper to set auth token
 const setAuthToken = (token: string | null) => {
 	if (token) {
-		axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+		axios.defaults.headers.common["Authorization"] = `${token}`;
 	} else {
 		delete axios.defaults.headers.common["Authorization"];
 	}
@@ -111,7 +111,7 @@ export const refreshTokenAPI = async (refreshToken: string) => {
 export const fetchMeAPI = async (token: string): Promise<User> => {
 	try {
 		const response = await axios.get(`${API_URL}/user/fetch/me`, {
-			headers: { Authorization: `Bearer ${token}` },
+			headers: { Authorization: token },
 		});
 		return response.data;
 	} catch (error) {

@@ -5,6 +5,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { palette } from "../../../theme/palette";
 import { HapticTab } from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { Ionicons } from "@expo/vector-icons";
 
 const TabLayout = () => {
 	const theme = useTheme();
@@ -33,10 +34,11 @@ const TabLayout = () => {
 		>
 			<Tabs.Screen
 				name="index"
+				
 				options={{
 					title: "Home",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={25} name="house.fill" color={color} />
+						<IconSymbol size={24} name="house.fill" color={color} />
 					),
 				}}
 			/>
@@ -46,7 +48,17 @@ const TabLayout = () => {
 					title: "Categories",
 					tabBarIcon: ({ color }) => (
 						// @ts-ignore
-						<IconSymbol size={25} name="category.fill" color={color} />
+						<IconSymbol size={24} name="category.fill" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="bookmark"
+				options={{
+					title: "Bookmarks",
+					tabBarIcon: ({ color }) => (
+						// @ts-ignore
+						<Ionicons size={20} name="bookmarks-sharp" color={color} />
 					),
 				}}
 			/>
@@ -55,7 +67,7 @@ const TabLayout = () => {
 				options={{
 					title: "Messages",
 					tabBarIcon: ({ color }) => (
-						<IconSymbol size={25} name="message.fill" color={color} />
+						<IconSymbol size={24} name="message.fill" color={color} />
 					),
 				}}
 			/>
@@ -65,7 +77,7 @@ const TabLayout = () => {
 					title: "Profile",
 					tabBarIcon: ({ color }) => (
 						// @ts-ignore
-						<IconSymbol size={25} name="account.fill" color={color} />
+						<IconSymbol size={24} name="account.fill" color={color} />
 					),
 				}}
 			/>
