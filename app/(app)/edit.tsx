@@ -27,7 +27,6 @@ const editSchema = Yup.object({
 
 const ProfileEditHeader = () => {
 	const { theme } = useTheme();
-	const { user } = useAuth();
 
 	return (
 		<View style={{ padding: 16, backgroundColor: theme.palette.primary.main }}>
@@ -38,10 +37,7 @@ const ProfileEditHeader = () => {
 					color: theme.palette.primary.contrastText,
 				}}
 			>
-				{user?.name || "User Profile"}
-			</Text>
-			<Text style={{ fontSize: 16, color: theme.palette.primary.contrastText }}>
-				{user?.email || "User Email"}
+				Edit My profile
 			</Text>
 		</View>
 	);
@@ -51,7 +47,6 @@ const EditProfile = () => {
 	const { theme } = useTheme();
 
 	const { user } = useAuth();
-	console.log("Userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr", user);
 
 	const defaultValues = {
 		name: user?.name || "",
@@ -80,7 +75,7 @@ const EditProfile = () => {
 
 				<View style={{ flex: 1, backgroundColor: theme.background.default }}>
 					<FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-						<View style={{ gap:20, padding: 10 }}>
+						<View style={{ gap: 20, padding: 10 }}>
 							<RHFTextField
 								name="name"
 								label="Name"
@@ -119,7 +114,6 @@ const EditProfile = () => {
 								</Text>
 							</TouchableOpacity>
 						</View>
-
 					</FormProvider>
 				</View>
 			</ScrollView>

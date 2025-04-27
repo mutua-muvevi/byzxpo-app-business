@@ -13,7 +13,7 @@ import {
 	View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { palette } from "../../../theme/palette";
+import { palette } from '../../../theme/palette';
 import { useBusiness } from "@/contexts/business/fetch";
 import { useRouter } from "expo-router";
 import UnavailableContentPage from "@/components/ui/UnavailablePage";
@@ -25,25 +25,36 @@ const businessImagePlaceHolder =
 
 const FlatListHeaderComponent = () => {
 	const { singleCategory: category } = useCategory();
-	const theme = useTheme();
-	console.log(theme);
+	const { theme } = useTheme();
+	console.log("Single Category", category);
 
 	return (
 		<View
 			style={{
-				padding: 5,
-				backgroundColor: theme.theme.primary.main,
+				paddingHorizontal: 5,
+				paddingVertical: 10,
+				backgroundColor: theme.palette.primary.main,
 			}}
 		>
 			<Text
 				style={{
 					fontSize: 20,
-					color: theme.theme.primary.contrastText,
+					color: theme.palette.primary.contrastText,
 					fontWeight: "bold",
 				}}
 			>
 				{category?.name}
 			</Text>
+			{category?.description && (
+				<Text
+					style={{
+						color: theme.palette.primary.contrastText,
+						marginTop: 5,
+					}}
+				>
+					{category?.description}
+				</Text>
+			)}
 		</View>
 	);
 };
@@ -51,7 +62,7 @@ const FlatListHeaderComponent = () => {
 //-----------------------------------------------------------------------------
 
 const FlatListComponent = ({ business }: { business: BusinessInterface }) => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const { setSingleBusinessFunction } = useBusiness();
 	const router = useRouter();
 
@@ -65,58 +76,61 @@ const FlatListComponent = ({ business }: { business: BusinessInterface }) => {
 	};
 
 	return (
-		<View
-			style={{
-				flexDirection: "row",
-				gap: 5,
-				backgroundColor: theme.theme.background.default,
-				height: 80,
-				padding: 0,
-			}}
-		>
-			<Image
-				source={{
-					uri: businessImagePlaceHolder,
-				}}
+		<TouchableOpacity onPress={handleOpenBusiness} style={{
+			
+			borderRadius: 5,
+		}}>
+			<View
 				style={{
-					width: 80,
-					height: "100%",
-					borderWidth: 2.5,
-					borderColor: theme.theme.background.default,
+					flexDirection: "row",
+					gap: 5,
+					backgroundColor: theme.background.paper,
+					height: 80,
+					padding: 0,
 				}}
-			/>
-
-			<TouchableOpacity onPress={handleOpenBusiness}>
+			>
+				<Image
+					resizeMode="cover"
+					source={{
+						uri: businessImagePlaceHolder,
+					}}
+					style={{
+						width: 80,
+						height: "100%",
+					}}
+				/>
 				<View
 					style={{
 						flexDirection: "column",
 						overflowY: "scroll",
+						padding:5,
+						justifyContent: "center"
 					}}
 				>
-					<Text style={{ fontSize: 15, color: theme.theme.text.primary }}>
+					<Text style={{ color: theme.text.primary, fontWeight: "bold" }}>
 						{business?.businessName}
 					</Text>
 
 					{business?.location?.city && business?.location?.country && (
-						<Text style={{ fontSize: 13, color: theme.theme.text.secondary }}>
+						<Text style={{color: theme.text.secondary }}>
 							{business?.location?.city}, {business?.location?.country}
 						</Text>
 					)}
 
-					{business?.basicInfo?.email && (
-						<Text style={{ fontSize: 13, color: theme.theme.text.secondary }}>
+					{/* {business?.basicInfo?.email && (
+						<Text style={{ fontSize: 13, color: theme.text.secondary }}>
 							{business?.basicInfo?.email}
 						</Text>
-					)}
+					)} */}
 
-					{business?.basicInfo?.phone && (
-						<Text style={{ fontSize: 13, color: theme.theme.text.secondary }}>
+					{/* {business?.basicInfo?.phone && (
+						<Text style={{ fontSize: 13, color: theme.text.secondary }}>
 							{business?.basicInfo?.phone}
 						</Text>
-					)}
+					)} */}
 				</View>
-			</TouchableOpacity>
-		</View>
+			</View>
+		</TouchableOpacity>
 	);
 };
 
@@ -124,10 +138,10 @@ const FlatListComponent = ({ business }: { business: BusinessInterface }) => {
 
 const Category = () => {
 	const { singleCategory: category, loading } = useCategory();
-	const theme = useTheme();
+	const { theme } = useTheme();
 	return (
-		<SafeAreaView style={{ gap: 5, backgroundColor: theme.theme.background.default }}>
-			<StatusBar backgroundColor={theme.theme.primary.main} />
+		<SafeAreaView style={{ gap: 5, backgroundColor: theme.background.default }}>
+			<StatusBar backgroundColor={theme.primary.main} />
 
 			<FlatList
 				data={category?.businesses}
@@ -136,7 +150,7 @@ const Category = () => {
 				ListHeaderComponent={<FlatListHeaderComponent />}
 				ListEmptyComponent={
 					loading ? (
-						<ActivityIndicator size="large" color={theme.theme.palette.primary.main} />
+						<ActivityIndicator size="large" color={theme.palette.primary.main} />
 					) : (
 						<UnavailableContentPage text="No Businesses" />
 					)
@@ -144,13 +158,15 @@ const Category = () => {
 				ItemSeparatorComponent={() => (
 					<View
 						style={{
-							borderWidth: 1,
-							borderColor: "#ccc",
-							marginVertical: 10,
-							borderStyle: "dashed",
+							marginVertical: 5,
 						}}
 					/>
 				)}
+				style={{
+					backgroundColor: theme.background.default,
+					marginBottom: 10,
+					height: "100%",
+				}}
 			/>
 		</SafeAreaView>
 	);
