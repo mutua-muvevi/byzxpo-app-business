@@ -32,10 +32,10 @@ const BusinessLayout = () => {
 				}}
 			/>
 			<Tabs.Screen
-				name="messages"
+				name="conversations"
 				options={{
-					title: "Messages",
-					href: "/my-business-details/messages",
+					title: "Conversations",
+					href: "/my-business-details/conversations",
 					tabBarIcon: ({ color }) => (
 						<MaterialIcons size={24} name="message" color={color} />
 					),
