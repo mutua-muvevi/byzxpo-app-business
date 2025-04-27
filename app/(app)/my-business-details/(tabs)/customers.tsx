@@ -158,7 +158,9 @@ const CustomerCards = ({ item }: any) => {
 				padding: 20,
 				borderBottomWidth: 1,
 				borderBottomColor: "#ccc",
-				backgroundColor: "#fff",
+				backgroundColor: theme.background.default,
+				shadowColor: theme.common.black,
+				shadowOffset: { width: 0, height: 2 },
 				borderRadius: 10,
 				marginBottom: 10,
 			}}
@@ -183,12 +185,12 @@ const CustomerCards = ({ item }: any) => {
 				<Text style={{ color: theme.text.secondary }}>{item.description}</Text>
 
 				<View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-					<FontAwesome name="calendar"  color={theme.text.main} />
+					<FontAwesome name="calendar" color={theme.text.main} />
 					<Text style={{ color: theme.text.secondary }}> {item.date}</Text>
 				</View>
 
 				<View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-					<Entypo name="old-phone"  color={theme.text.main} />
+					<Entypo name="old-phone" color={theme.text.main} />
 					<Text style={{ color: theme.text.secondary }}> {item.date}</Text>
 				</View>
 			</View>
@@ -196,9 +198,32 @@ const CustomerCards = ({ item }: any) => {
 	);
 };
 
-const Customers = () => {
-	const myMadeUpCostomers = Array.from({ length: 100 }, (_, i) => `Customer ${i + 1}`);
+const CustomerFooterButton = () => {
+	const { theme } = useTheme();
 
+	return (
+		<TouchableOpacity
+			style={{
+				padding: 20,
+				backgroundColor: theme.palette.primary.main,
+				marginBottom: 20,
+				alignItems: "center",
+			}}
+		>
+			<Text
+				style={{
+					color: theme.palette.primary.contrastText,
+					fontSize: 16,
+					fontWeight: "bold",
+				}}
+			>
+				Add New Customer
+			</Text>
+		</TouchableOpacity>
+	);
+};
+
+const Customers = () => {
 	return (
 		<SafeAreaView style={{ flex: 1 }}>
 			<FlatList
@@ -207,6 +232,7 @@ const Customers = () => {
 				renderItem={({ item }) => <CustomerCards item={item} />}
 				contentContainerStyle={{ paddingBottom: 20 }}
 				ListHeaderComponent={<CustomerHeader />}
+				ListFooterComponent={<CustomerFooterButton />}
 			/>
 		</SafeAreaView>
 	);

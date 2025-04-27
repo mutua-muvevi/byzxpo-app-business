@@ -17,64 +17,41 @@ const imageHolderUri =
 const HeaderComponent = () => {
 	const { theme } = useTheme();
 	return (
-		<View style={{ backgroundColor: theme.palette.primary.lighter, padding: 10 }}>
-			<Text style={{ fontSize: 20, fontWeight: "bold", color: theme.palette.primary.contrastText }}>My Businesses</Text>
-			<Text style={{ fontSize: 14, color: theme.palette.primary.contrastText }}>
-				Manage your businesses here
-			</Text>
+		<View
+			style={{
+				padding: 20,
+				backgroundColor: theme.palette.primary.main,
+				borderBottomWidth: 1,
+				borderBottomColor: "#ccc",
+				flexDirection: "row",
+				justifyContent: "space-between",
+				alignItems: "center",
+				gap: 5,
+			}}
+		>
+			<View>
+				<Text
+					style={{
+						fontSize: 18,
+						fontWeight: "bold",
+						color: theme.palette.primary.contrastText,
+					}}
+				>
+					My Businesses
+				</Text>
+
+				<Text style={{ fontSize: 14, color: theme.palette.primary.contrastText }}>
+					Manage your businesses here
+				</Text>
+			</View>
 		</View>
 	);
 };
 
-const createBusinessCardStyle = (theme: any) =>
-	StyleSheet.create({
-		container: {
-			backgroundColor: theme.background.default,
-			borderRadius: theme.shape.borderRadius,
-			marginRight: 10,
-			height: 150,
-			width: "100%",
-			shadowColor: theme.common.black,
-			shadowOffset: { width: 0, height: 20 },
-		},
-		thumbnail: {
-			width: "100%",
-			height: 80,
-			borderTopLeftRadius: theme.shape.borderRadius,
-			borderTopRightRadius: theme.shape.borderRadius,
-		},
-		contentContainer: {
-			padding: 5,
-			gap: 2,
-		},
-		businessName: {
-			fontSize: 12,
-			color: theme.text.secondary,
-			fontWeight: "bold",
-		},
-		otherText: {
-			fontSize: 12,
-			color: theme.text.secondary,
-			fontFamily: theme.typography.fontFamily,
-		},
-		locationSection: {
-			flexDirection: "row",
-			gap: 2,
-			alignItems: "center",
-			justifyContent: "flex-start",
-		},
-		ratingSection: {
-			flexDirection: "row",
-			gap: 2,
-			alignItems: "center",
-			justifyContent: "flex-start",
-		},
-	});
-
 const BusinessCard = ({ business }: { business: any }) => {
 	const { theme } = useTheme();
 	const { setMySingleBusinessFunction } = useBusiness();
-	const styles = createBusinessCardStyle(theme);
+
 	const ALT_THUMBNAIL_IMAGE = imageHolderUri;
 	const router = useRouter();
 
@@ -86,38 +63,63 @@ const BusinessCard = ({ business }: { business: any }) => {
 
 	return (
 		<TouchableOpacity onPress={handleOpenBusiness}>
-			<View style={styles.container}>
+			<View
+				style={{
+					flexDirection: "row",
+					gap: 10,
+					height: 80,
+					width: "100%",
+					backgroundColor: theme.background.paper,
+				}}
+			>
 				<Image
-					source={{ uri: business.logo || business.thumbnail || ALT_THUMBNAIL_IMAGE }}
-					style={styles.thumbnail}
+					source={
+						business?.thumbnail
+							? { uri: business?.thumbnail }
+							: { uri: ALT_THUMBNAIL_IMAGE }
+					}
+					style={{
+						width: 80,
+						height: 80,
+						backgroundColor: theme.palette.primary.main,
+					}}
 				/>
-				<View style={styles.contentContainer}>
-					<Text style={styles.businessName}>
-						{business.businessName
-							? truncateStr(business.businessName, 18)
-							: "Business Name"}
+				<View style={{ flex: 1, justifyContent: "center" }}>
+					<Text
+						style={{
+							color: theme.text.primary,
+							fontWeight: "bold",
+						}}
+					>
+						{truncateStr(business?.businessName, 20)}
 					</Text>
-					{business?.location && (
-						<View style={styles.locationSection}>
-							<Ionicons name="location" size={12} color={theme.text.secondary} />
-							<Text style={styles.otherText}>
-								{truncateStr(
-									`${business.location.city}, ${business.location.country}`,
-									18,
-								)}
-							</Text>
-						</View>
-					)}
-					{business.basicInfo?.phone && (
-						<View style={styles.locationSection}>
-							<Entypo name="old-phone" size={12} color={theme.text.secondary} />
-							<Text style={styles.otherText}>
-								{truncateStr(business.basicInfo.phone, 18)}
-							</Text>
-						</View>
-					)}
 				</View>
 			</View>
+		</TouchableOpacity>
+	);
+};
+
+const BusinessFooterButton = () => {
+	const { theme } = useTheme();
+
+	return (
+		<TouchableOpacity
+			style={{
+				padding: 20,
+				backgroundColor: theme.palette.primary.main,
+				marginVertical: 10,
+				alignItems: "center",
+			}}
+		>
+			<Text
+				style={{
+					color: theme.palette.primary.contrastText,
+					fontSize: 16,
+					fontWeight: "bold",
+				}}
+			>
+				Add New Business
+			</Text>
 		</TouchableOpacity>
 	);
 };
@@ -125,36 +127,28 @@ const BusinessCard = ({ business }: { business: any }) => {
 const MyBusinesses = () => {
 	const { theme } = useTheme();
 	const { myBusinesses } = useBusiness();
-	console.log("myBusinesses", myBusinesses);
+
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: theme.background.default }}>
 			<StatusBar backgroundColor={theme.palette.primary.main} style="light" />
-			<View>
-				<FlatList
-					data={myBusinesses}
-					keyExtractor={(item) => item._id.toString()}
-					renderItem={({ item }) => (
-						<View
-							style={{
-								backgroundColor: theme.background.default,
-								padding: 10,
-								borderRadius: 5,
-								marginBottom: 10,
-								width: "50%",
-								overflow: "hidden",
-							}}
-						>
-							<BusinessCard business={item} />
-						</View>
-					)}
-					ListEmptyComponent={<UnavailableContentPage text="No Businesses" />}
-					showsVerticalScrollIndicator={false}
-					contentContainerStyle={{ paddingBottom: 20 }}
-					style={{ backgroundColor: theme.background.default }}
-					ListHeaderComponent={HeaderComponent}
-					numColumns={2}
-				/>
-			</View>
+			<FlatList
+				data={myBusinesses}
+				keyExtractor={(item) => item._id.toString()}
+				renderItem={({ item }) => <BusinessCard business={item} />}
+				ListEmptyComponent={<UnavailableContentPage text="No Businesses" />}
+				showsVerticalScrollIndicator={false}
+				style={{ backgroundColor: theme.background.default }}
+				ListHeaderComponent={HeaderComponent}
+				ItemSeparatorComponent={() => (
+					<View
+						style={{
+							height: 10,
+							backgroundColor: theme.background.default,
+						}}
+					/>
+				)}
+				ListFooterComponent={<BusinessFooterButton />}
+			/>
 		</SafeAreaView>
 	);
 };
