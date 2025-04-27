@@ -9,13 +9,14 @@ const createStyles = (theme: any) =>
 		container: {
 			flexDirection: "row",
 			alignItems: "center",
+			marginBottom: 20
 			
 		},
 		searchContainer: {
 			flex: 1,
 			flexDirection: "row",
 			alignItems: "center",
-			backgroundColor: theme.theme.background.paper,
+			backgroundColor: theme.theme.background.default,
 			borderTopStartRadius: theme.theme.shape.borderRadius, 
 			borderBottomStartRadius: theme.theme.shape.borderRadius, 
 			paddingHorizontal: 12,

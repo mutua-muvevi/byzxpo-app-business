@@ -15,18 +15,16 @@ import {
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { truncateStr } from "@/utils/format-strings";
-import { Rating } from "react-native-ratings";
 import { useBusiness } from "@/contexts/business/fetch";
 import { useRouter } from "expo-router";
+import UnavailableContentPage from "@/components/ui/UnavailablePage";
 
-//---------------------------------------------------------------------------------------
 const ALT_THUMBNAIL_IMAGE =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/a-white-text-on-a-blue-background-that-s_o6eumMMYQwic5GGGDhZ3ow_qdCWpEhDShKoXRu01jruXg.jpeg";
 const ALT_LOGO_IMAGE =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/business%20logo%20here.jpg";
 
-//---------------------------------------------------------------------------------------
-const createBusinessCardStyle = (theme: any) =>
+const createBusinessCardStyle = (theme : any) =>
 	StyleSheet.create({
 		container: {
 			backgroundColor: theme.theme.background.default,
@@ -79,7 +77,6 @@ const BusinessCategoryCards = ({ business }: { business: BusinessInterface }) =>
 
 	const handleOpenBusiness = () => {
 		setSingleBusinessFunction(business);
-
 		router.push({
 			pathname: "/business-details/[id]",
 			params: { id: business._id },
@@ -93,79 +90,59 @@ const BusinessCategoryCards = ({ business }: { business: BusinessInterface }) =>
 					source={{ uri: business.logo || business.thumbnail || ALT_THUMBNAIL_IMAGE }}
 					style={styles.thumbnail}
 				/>
-
 				<View style={styles.contentContainer}>
 					<Text style={styles.businessName}>
 						{business.businessName
 							? truncateStr(business.businessName, 18)
 							: "Business Name"}
 					</Text>
-
-					{business?.location ? (
+					{business?.location && (
 						<View style={styles.locationSection}>
-							<Ionicons name="location" size={12} color={theme.theme.text.secondary} />
+							<Ionicons
+								name="location"
+								size={12}
+								color={theme.theme.text.secondary}
+							/>
 							<Text style={styles.otherText}>
-								{business.location
-									? truncateStr(
-											business.location.city +
-												", " +
-												business.location.country,
-											18,
-									  )
-									: ""}
+								{truncateStr(
+									`${business.location.city}, ${business.location.country}`,
+									18,
+								)}
 							</Text>
 						</View>
-					) : null}
-
-					{business.basicInfo?.phone ? (
+					)}
+					{business.basicInfo?.phone && (
 						<View style={styles.locationSection}>
 							<Entypo name="old-phone" size={12} color={theme.theme.text.secondary} />
 							<Text style={styles.otherText}>
-								{business.basicInfo
-									? truncateStr(business.basicInfo.phone, 18)
-									: ""}
+								{truncateStr(business.basicInfo.phone, 18)}
 							</Text>
 						</View>
-					) : null}
-
-					{/* <View style={styles.ratingSection}>
-						<Rating
-							type="custom"
-							ratingCount={5}
-							readonly={true}
-							imageSize={12}
-							ratingColor={theme.theme.primary.main}
-							jumpValue={0.5}
-							ratingTextColor={theme.theme.text.primary}
-							startingValue={business.overalRating}
-							ratingBackgroundColor={theme.theme.text.disabled}
-						/>
-					</View> */}
+					)}
 				</View>
 			</View>
 		</TouchableOpacity>
 	);
 };
 
-//---------------------------------------------------------------------------------------
-
-const createCategorySectionStyle = (theme: any) =>
+const createCategorySectionStyle = (theme : any) =>
 	StyleSheet.create({
 		container: {
-			flex: 1,
 			gap: 5,
-			marginBottom: 7.5,
+			marginBottom: 5,
 		},
 		header: {
-			flex: 1,
 			flexDirection: "row",
 			justifyContent: "space-between",
+			paddingHorizontal: 5,
 		},
 		text: {
 			color: theme.theme.text.primary,
 			fontWeight: "bold",
+			fontSize: 16,
 		},
 	});
+
 const CategoriesSection = ({ category }: { category: CategoryInterface }) => {
 	const theme = useTheme();
 	const styles = createCategorySectionStyle(theme);
@@ -174,46 +151,41 @@ const CategoriesSection = ({ category }: { category: CategoryInterface }) => {
 		<View style={styles.container}>
 			<View style={styles.header}>
 				<Text style={styles.text}>{category.name}</Text>
-
 				<Pressable>
 					<IconSymbol name="chevron.right" size={20} color={theme.theme.primary.main} />
 				</Pressable>
 			</View>
-
 			<FlatList
 				data={category.businesses}
 				renderItem={({ item }) => <BusinessCategoryCards business={item} />}
 				keyExtractor={(item) => item._id}
-				ListEmptyComponent={<Text>No Businesses</Text>}
-				horizontal={true}
+				ListEmptyComponent={<UnavailableContentPage text="No Businesses" />}
+				horizontal
 				showsHorizontalScrollIndicator={false}
+				contentContainerStyle={{ paddingHorizontal: 5 }}
 			/>
 		</View>
 	);
 };
-
-//---------------------------------------------------------------------------------------
 
 interface HomeBodyProps {
 	categories: CategoryInterface[];
 	loading: boolean;
 }
 
-const createhomebodyStyle = (theme: any) =>
+const createHomeBodyStyle = (theme : any) =>
 	StyleSheet.create({
 		container: {
-			flex: 1,
-			gap: 10,
-			paddingBottom: 100,
+			gap: 5,
 		},
 	});
+
 const HomeBody = ({ categories, loading }: HomeBodyProps) => {
 	const theme = useTheme();
-	const style = createhomebodyStyle(theme);
+	const style = createHomeBodyStyle(theme);
 
 	return (
 		<View style={style.container}>
-			{/* <Text>Categories</Text> */}
 			<FlatList
 				data={categories}
 				renderItem={({ item }) => <CategoriesSection category={item} />}
@@ -222,9 +194,12 @@ const HomeBody = ({ categories, loading }: HomeBodyProps) => {
 					loading ? (
 						<ActivityIndicator size="large" color={theme.theme.palette.primary.main} />
 					) : (
-						<Text>No Businesses</Text>
+						<Text style={{ textAlign: "center", color: theme.theme.text.secondary }}>
+							No Categories
+						</Text>
 					)
 				}
+				contentContainerStyle={{ paddingBottom: 5 }}
 			/>
 		</View>
 	);

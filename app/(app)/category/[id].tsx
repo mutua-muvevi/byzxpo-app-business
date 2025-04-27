@@ -16,6 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { palette } from "../../../theme/palette";
 import { useBusiness } from "@/contexts/business/fetch";
 import { useRouter } from "expo-router";
+import UnavailableContentPage from "@/components/ui/UnavailablePage";
 
 const businessImagePlaceHolder =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/business-concept-with-copy-space-office-desk-table-with-pen-focus-analysis-chart-computer-notebook-cup-coffee-desk-vintage-tone-retro-filter-selective-focus.jpg";
@@ -121,41 +122,11 @@ const FlatListComponent = ({ business }: { business: BusinessInterface }) => {
 
 //-----------------------------------------------------------------------------
 
-const NoAvailableBusiness = () => {
-	const theme = useTheme();
-	return (
-		<View
-			style={{
-				alignItems: "center",
-				justifyContent: "center",
-				flex: 1,
-				padding: 20,
-				gap: 10,
-			}}
-		>
-			<Image
-				source={require("../../../assets/images/unavailable.png")}
-				alt="Business not available"
-				style={{
-					height: 300,
-					width: "100%",
-					// resizeMode: "contain"
-				}}
-			/>
-			<Text style={{ fontSize: 18, fontWeight: "bold", color: theme.theme.text.primary }}>
-				No Businesses Available in this Category
-			</Text>
-		</View>
-	);
-};
-
-//-----------------------------------------------------------------------------
-
 const Category = () => {
 	const { singleCategory: category, loading } = useCategory();
 	const theme = useTheme();
 	return (
-		<SafeAreaView style={{ gap: 5 }}>
+		<SafeAreaView style={{ gap: 5, backgroundColor: theme.theme.background.default }}>
 			<StatusBar backgroundColor={theme.theme.primary.main} />
 
 			<FlatList
@@ -163,14 +134,23 @@ const Category = () => {
 				renderItem={({ item }) => <FlatListComponent business={item} />}
 				keyExtractor={(item) => item._id}
 				ListHeaderComponent={<FlatListHeaderComponent />}
-				ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
 				ListEmptyComponent={
 					loading ? (
 						<ActivityIndicator size="large" color={theme.theme.palette.primary.main} />
 					) : (
-						<NoAvailableBusiness />
+						<UnavailableContentPage text="No Businesses" />
 					)
 				}
+				ItemSeparatorComponent={() => (
+					<View
+						style={{
+							borderWidth: 1,
+							borderColor: "#ccc",
+							marginVertical: 10,
+							borderStyle: "dashed",
+						}}
+					/>
+				)}
 			/>
 		</SafeAreaView>
 	);

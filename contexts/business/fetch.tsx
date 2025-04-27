@@ -4,10 +4,12 @@ import {
 	useState,
 	useEffect,
 	ReactNode,
+	useMemo,
 } from "react";
 import axios, { AxiosError } from "axios";
 import Toast from "react-native-toast-message";
 import { BusinessInterface, BusinessResponse } from "@/types/business";
+import { useAuth } from "@/auth";
 
 interface BusinessContextType {
 	allBusinesses: BusinessInterface[];
@@ -20,6 +22,11 @@ interface BusinessContextType {
 
 	singleBusiness: BusinessInterface | null
 	setSingleBusinessFunction: (business: BusinessInterface) => void
+
+	myBusinesses: BusinessInterface[]
+
+	myBusiness: BusinessInterface | null
+	setMySingleBusinessFunction: (business: BusinessInterface) => void
 }
 
 const BusinessContext = createContext<BusinessContextType | undefined>(
@@ -35,6 +42,10 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 	const [error, setError] = useState<string | null>(null);
 	const [pagination, setPagination] = useState<any>(null);
 	const [singleBusiness, setSingleBusiness ] = useState<BusinessInterface | null>(null);
+	const [myBusinesses, setMyBusinesses] = useState<BusinessInterface[]>([]);
+	const [myBusiness, setMyBusiness] = useState<BusinessInterface | null>(null);
+	const { user } = useAuth() // Updated line without destructuring
+
 
 	const fetchAllBusinesses = async (
 		pageNo: number = 1,
@@ -103,25 +114,56 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 
 	const setSingleBusinessFunction = (business: BusinessInterface) => {
 		setSingleBusiness(business);
+	};
+
+	const setMySingleBusinessFunction = (business: BusinessInterface) => {
+		setMyBusiness(business);
 	}
+
+	useEffect(() => {
+		if (user) {
+			//@ts-ignore
+			setMyBusinesses(user?.myBusinesses);
+		}
+	}, [user, allBusinesses]);
 
 	useEffect(() => {
 		fetchAllBusinesses();
 	}, []);
 
+	const memoizedContext = useMemo(
+		() => ({
+			allBusinesses,
+			sponsoredBusinesses,
+			meta,
+			loading,
+			error,
+			fetchAllBusinesses,
+			pagination,
+			singleBusiness,
+			setSingleBusinessFunction,
+			myBusinesses,
+
+			myBusiness,
+			setMySingleBusinessFunction
+		}),
+		[
+			allBusinesses,
+			sponsoredBusinesses,
+			meta,
+			loading,
+			error,
+			fetchAllBusinesses,
+			pagination,
+			singleBusiness,
+			myBusinesses,
+			myBusiness,
+		],
+	);
+
 	return (
 		<BusinessContext.Provider
-			value={{
-				allBusinesses,
-				sponsoredBusinesses,
-				meta,
-				loading,
-				error,
-				fetchAllBusinesses,
-				pagination,
-				singleBusiness,
-				setSingleBusinessFunction,
-			}}
+			value={memoizedContext}
 		>
 			{children}
 		</BusinessContext.Provider>

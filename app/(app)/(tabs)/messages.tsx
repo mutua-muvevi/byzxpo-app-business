@@ -1,12 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Messages = () => {
 	return (
-		<View>
+		<SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
 			<Text>Message</Text>
 			<Text>Reply</Text>
-		</View>
+		</SafeAreaView>
 	);
 }
 
