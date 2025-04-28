@@ -114,9 +114,7 @@ const Bookmark = () => {
 	return (
 		<SafeAreaView>
 			<StatusBar
-				backgroundColor={
-					mode === "light" ? theme.palette.primary.main : theme.background.default
-				}
+				backgroundColor={theme.palette.primary.main}
 			/>
 			<FlatList
 				data={allBusinesses}

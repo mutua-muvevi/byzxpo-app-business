@@ -215,9 +215,9 @@ const MessagesCards = ({ item }: { item: (typeof conversations)[0] }) => {
 				padding: 20,
 				borderBottomWidth: 1,
 				borderBottomColor: "#ccc",
-				backgroundColor: "#fff",
 				borderRadius: 10,
 				marginBottom: 10,
+				backgroundColor: theme.background.paper
 			}}
 		>
 			<View style={{ flexDirection: "row", alignItems: "flex-start", gap: 10 }}>
@@ -231,8 +231,8 @@ const MessagesCards = ({ item }: { item: (typeof conversations)[0] }) => {
 				</View>
 
 				<View style={{ flex: 1 }}>
-					<Text style={{ fontSize: 16, fontWeight: "bold" }}>{item.name}</Text>
-					<Text style={{ color: "#888" }}>{item.title}</Text>
+					<Text style={{ fontSize: 16, fontWeight: "bold", color: theme.text.primary }}>{item.name}</Text>
+					<Text style={{ color: theme.text.secondary }}>{item.title}</Text>
 				</View>
 			</View>
 
@@ -251,8 +251,9 @@ const MessagesCards = ({ item }: { item: (typeof conversations)[0] }) => {
 };
 
 const Messages = () => {
+	const { theme } = useTheme();	
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
+		<SafeAreaView style={{ flex: 1, backgroundColor: theme.background.default }}>
 			<FlatList
 				data={conversations}
 				keyExtractor={(item) => item.title}
