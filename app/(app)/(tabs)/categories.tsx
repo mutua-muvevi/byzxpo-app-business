@@ -6,11 +6,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import CategoriesSection from "@/sections/categories/categories";
 import LoadingStateIndicator from "@/components/ui/LoadingStateIndicator";
 import { StatusBar } from "expo-status-bar";
+import { palette } from '../../../theme/palette';
 
 const createCategoriesStyles = (theme: any) =>
 	StyleSheet.create({
 		container: {
-			backgroundColor: theme.background.paper,
+			backgroundColor: theme.background.default,
 		},
 		loadingContainer: {
 			height: "100%",
@@ -29,7 +30,7 @@ const Categories = () => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<StatusBar backgroundColor={theme.primary.main} />			
+			<StatusBar backgroundColor={theme.palette.primary.main} />			
 			<CategoriesSection categories={categories} loading={loading} />
 		</SafeAreaView>
 	);

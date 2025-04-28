@@ -9,6 +9,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 const Profile = () => {
 	const {
@@ -16,8 +17,8 @@ const Profile = () => {
 		user,
 		logout,
 	} = useAuth();
-	
-	const { theme } = useTheme();
+
+	const { theme, mode } = useTheme();
 	const router = useRouter();
 
 	const navigationHandler = (link: any) => {
@@ -62,8 +63,14 @@ const Profile = () => {
 				paddingLeft: 5,
 				paddingRight: 5,
 				justifyContent: "center",
+				backgroundColor: theme.background.default,
 			}}
 		>
+			<StatusBar
+				backgroundColor={
+					mode === "light" ? theme.palette.primary.main : theme.background.default
+				}
+			/>
 			<View
 				style={{
 					justifyContent: "center",

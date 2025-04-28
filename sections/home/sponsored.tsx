@@ -4,8 +4,9 @@ import { BusinessInterface } from "@/types/business";
 import { truncateStr } from "@/utils/format-strings";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import Entypo from '@expo/vector-icons/Entypo';
+import Entypo from "@expo/vector-icons/Entypo";
 import React from "react";
+import { palette } from '../../theme/palette';
 import {
 	ActivityIndicator,
 	FlatList,
@@ -28,19 +29,19 @@ interface SlideCardProps {
 const createSlideCardTheme = (theme: any) =>
 	StyleSheet.create({
 		container: {
-			backgroundColor: theme.theme.background.default,
-			borderRadius: theme.theme.shape.borderRadius,
+			backgroundColor: theme.background.default,
+			borderRadius: theme.shape.borderRadius,
 			marginRight: 10,
 			height: 150,
 			width: 120,
-			shadowColor: theme.theme.common.black,
+			shadowColor: theme.common.black,
 			shadowOffset: { width: 0, height: 20 },
 		},
 		thumbnail: {
 			width: "100%",
 			height: 80,
-			borderTopLeftRadius: theme.theme.shape.borderRadius,
-			borderTopRightRadius: theme.theme.shape.borderRadius,
+			borderTopLeftRadius: theme.shape.borderRadius,
+			borderTopRightRadius: theme.shape.borderRadius,
 		},
 		contentContainer: {
 			padding: 5,
@@ -48,29 +49,28 @@ const createSlideCardTheme = (theme: any) =>
 		},
 		businessName: {
 			fontSize: 12,
-			color: theme.theme.text.primary,
-			fontFamily: theme.theme.typography.fontFamily,
+			color: theme.text.primary,
+			fontFamily: theme.typography.fontFamily,
 			fontWeight: "bold",
 		},
 		otherText: {
 			fontSize: 12,
-			color: theme.theme.text.secondary,
-			fontFamily: theme.theme.typography.fontFamily,
+			color: theme.text.secondary,
+			fontFamily: theme.typography.fontFamily,
 		},
 		locationSection: {
 			flexDirection: "row",
 			gap: 2,
 			alignItems: "center",
-			justifyContent: "flex-start"
-		}
+			justifyContent: "flex-start",
+		},
 	});
 
 const SlideCard = ({ business }: SlideCardProps) => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const styles = createSlideCardTheme(theme);
 	const router = useRouter();
 	const { setSingleBusinessFunction } = useBusiness();
-	
 
 	const handleOpenBusiness = () => {
 		setSingleBusinessFunction(business);
@@ -113,17 +113,18 @@ const SlideCard = ({ business }: SlideCardProps) => {
 							? truncateStr(business.businessName, 18)
 							: "Business Name"}
 					</Text>
-					
+
 					{business?.location ? (
 						<View style={styles.locationSection}>
-							<Ionicons
-								name="location"
-								size={12}
-								color={theme.theme.text.secondary}
-							/>
+							<Ionicons name="location" size={12} color={theme.text.secondary} />
 							<Text style={styles.otherText}>
 								{business.location
-									? truncateStr(business.location.city + ", " + business.location.country, 18)
+									? truncateStr(
+											business.location.city +
+												", " +
+												business.location.country,
+											18,
+									  )
 									: ""}
 							</Text>
 						</View>
@@ -131,20 +132,14 @@ const SlideCard = ({ business }: SlideCardProps) => {
 
 					{business.basicInfo?.phone ? (
 						<View style={styles.locationSection}>
-							<Entypo 
-								name="old-phone"
-								size={12}
-								color={theme.theme.text.secondary}
-							/>
+							<Entypo name="old-phone" size={12} color={theme.text.secondary} />
 							<Text style={styles.otherText}>
 								{business.basicInfo
-									? truncateStr(business.basicInfo.phone,  18)
+									? truncateStr(business.basicInfo.phone, 18)
 									: ""}
 							</Text>
 						</View>
 					) : null}
-
-
 				</View>
 			</View>
 		</TouchableOpacity>
@@ -160,33 +155,39 @@ interface SponsoredSectionProps {
 
 const createSponsoredSectionTheme = (theme: any) =>
 	StyleSheet.create({
-		container: {
-			flex: 1,
-			gap: 5,
-			marginBottom: 7.5,
-			backgroundColor: theme.theme.primary.lighter,
-			padding: 5,
-			marginTop: 10,
-		},
-		headingColor: {
-			fontSize: 16,
-			color: theme.theme.common.white,
-			fontFamily: theme.theme.typography.fontFamily,
-			fontWeight: "bold",
-			marginTop: 10,
-		},
+		container: {},
+
 		flatListContainer: {
 			height: 170,
 		},
 	});
 
 const SponsoredSection = ({ sponsoredBusinesses, loading }: SponsoredSectionProps) => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const styles = createSponsoredSectionTheme(theme);
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.headingColor}>Sponsored Businesses</Text>
+		<View
+			style={{
+				flex: 1,
+				gap: 5,
+				marginBottom: 7.5,
+				backgroundColor: theme.palette.primary.main,
+				padding: 5,
+				marginTop: 10,
+			}}
+		>
+			<Text
+				style={{
+					fontSize: 16,
+					color: theme.common.white,
+					fontFamily: theme.typography.fontFamily,
+					fontWeight: "bold",
+					marginTop: 10,
+				}}
+			>
+				Sponsored Businesses
+			</Text>
 
 			{sponsoredBusinesses && (
 				<View style={styles.flatListContainer}>
@@ -199,7 +200,7 @@ const SponsoredSection = ({ sponsoredBusinesses, loading }: SponsoredSectionProp
 							loading ? (
 								<ActivityIndicator
 									size="large"
-									color={theme.theme.palette.primary.main}
+									color={theme.palette.primary.main}
 								/>
 							) : (
 								<Text>No Businesses</Text>
