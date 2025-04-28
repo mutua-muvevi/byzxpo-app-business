@@ -21,21 +21,31 @@ interface ThemeContextType {
 	setPreset: (preset: ThemePreset) => void;
 
 	theme: any;
+
+	setModeFunction: (mode: ThemeMode) => void;
+	setPresetFunction: (preset: ThemePreset) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
-const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
-	children,
-}) => {
+const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [mode, setMode] = useState<ThemeMode>("light");
 	const [contrast, setContrast] = useState<ThemeContrast>("default");
 	const [preset, setPreset] = useState<ThemePreset>("default");
 
+	const setModeFunction = (newMode: ThemeMode) => {
+		console.log("Setting mode to:", newMode);
+		setMode(newMode);
+	};
+
+	const setPresetFunction = (newPreset: ThemePreset) => {
+		console.log("Setting preset to:", newPreset);
+		setPreset(newPreset);
+	};
+
 	const theme = useMemo(() => {
 		const presets = { palette: { primary: getPrimary(preset) } };
 		const contrastOptions = createContrast(contrast, mode);
-
 
 		return {
 			...palette(mode),
@@ -47,17 +57,23 @@ const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 		};
 	}, [mode, contrast, preset]);
 
+	const memoizedTheme = useMemo(() => {
+		return {
+			mode,
+			setMode,
+			contrast,
+			setContrast,
+			preset,
+			setPreset,
+			theme,
+			setModeFunction,
+			setPresetFunction,
+		};
+	}, [theme, mode, contrast, preset]);
+
 	return (
 		<ThemeContext.Provider
-			value={{
-				mode,
-				setMode,
-				contrast,
-				setContrast,
-				preset,
-				setPreset,
-				theme,
-			}}
+			value={memoizedTheme}
 		>
 			{children}
 		</ThemeContext.Provider>
