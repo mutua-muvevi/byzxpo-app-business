@@ -69,9 +69,7 @@ const Settings = () => {
 			edges={["top", "left", "right"]}
 		>
 			<StatusBar
-				backgroundColor={
-					mode === "light" ? theme.palette.primary.main : theme.background.default
-				}
+				backgroundColor={theme.palette.primary.main}
 			/>
 
 			<ScrollView>

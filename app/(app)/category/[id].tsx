@@ -116,18 +116,6 @@ const FlatListComponent = ({ business }: { business: BusinessInterface }) => {
 							{business?.location?.city}, {business?.location?.country}
 						</Text>
 					)}
-
-					{/* {business?.basicInfo?.email && (
-						<Text style={{ fontSize: 13, color: theme.text.secondary }}>
-							{business?.basicInfo?.email}
-						</Text>
-					)} */}
-
-					{/* {business?.basicInfo?.phone && (
-						<Text style={{ fontSize: 13, color: theme.text.secondary }}>
-							{business?.basicInfo?.phone}
-						</Text>
-					)} */}
 				</View>
 			</View>
 		</TouchableOpacity>

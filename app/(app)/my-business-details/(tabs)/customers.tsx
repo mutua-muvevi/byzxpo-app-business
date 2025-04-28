@@ -158,10 +158,10 @@ const CustomerCards = ({ item }: any) => {
 				padding: 20,
 				borderBottomWidth: 1,
 				borderBottomColor: "#ccc",
-				backgroundColor: theme.background.default,
+				backgroundColor: theme.background.paper,
 				shadowColor: theme.common.black,
 				shadowOffset: { width: 0, height: 2 },
-				borderRadius: 10,
+				borderRadius: 5,
 				marginBottom: 10,
 			}}
 		>
@@ -177,7 +177,7 @@ const CustomerCards = ({ item }: any) => {
 				</View>
 
 				<View style={{ flex: 1 }}>
-					<Text style={{ fontSize: 16, fontWeight: "bold" }}>{item.name}</Text>
+					<Text style={{ fontSize: 16, fontWeight: "bold", color: theme.text.primary }}>{item.name}</Text>
 					<Text style={{ color: "#888" }}>{item.email}</Text>
 				</View>
 			</View>
@@ -224,8 +224,9 @@ const CustomerFooterButton = () => {
 };
 
 const Customers = () => {
+	const { theme } = useTheme();
 	return (
-		<SafeAreaView style={{ flex: 1 }}>
+		<SafeAreaView style={{ flex: 1, backgroundColor: theme.background.default }}>
 			<FlatList
 				data={customers}
 				keyExtractor={(item) => item.name}
@@ -233,6 +234,7 @@ const Customers = () => {
 				contentContainerStyle={{ paddingBottom: 20 }}
 				ListHeaderComponent={<CustomerHeader />}
 				ListFooterComponent={<CustomerFooterButton />}
+				
 			/>
 		</SafeAreaView>
 	);

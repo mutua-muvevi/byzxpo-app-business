@@ -66,11 +66,9 @@ const Profile = () => {
 				backgroundColor: theme.background.default,
 			}}
 		>
-			<StatusBar
-				backgroundColor={
-					mode === "light" ? theme.palette.primary.main : theme.background.default
-				}
-			/>
+			{/* <StatusBar
+				backgroundColor={theme.palette.primary.main}
+			/> */}
 			<View
 				style={{
 					justifyContent: "center",

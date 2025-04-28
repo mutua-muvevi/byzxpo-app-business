@@ -59,7 +59,7 @@ const MyBusinessDetails = () => {
 	console.log("Mybusibness", myBusiness);
 
 	return (
-		<SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
+		<SafeAreaView style={{ flex: 1, backgroundColor: theme.background.default }} edges={["top", "left", "right"]}>
 			<StatusBar backgroundColor={theme.palette.primary.main} style="light" />
 
 			<ScrollView>
@@ -128,8 +128,7 @@ const MyBusinessDetails = () => {
 							>
 								{myBusiness?.businessName}
 							</Text>
-							<Text>{myBusiness?.businessName || "Business Details Not Found"}</Text>
-							<Text>{myBusiness?.basicInfo?.email || "Email Not Available"}</Text>
+							<Text style={{ color: theme.text.secondary }}>{myBusiness?.basicInfo?.email || "Email Not Available"}</Text>
 						</View>
 
 						<TouchableOpacity
@@ -203,7 +202,5 @@ const MyBusinessDetails = () => {
 		</SafeAreaView>
 	);
 };
-
-const styles = StyleSheet.create({});
 
 export default MyBusinessDetails;
