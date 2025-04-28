@@ -25,6 +25,7 @@ export interface CategoryInterface {
 	updatedAt?: string;
 	createdBy?: CreatedByInterface;
 	__v?: number;
+	description?: string;
 }
 
 export interface CategoryResponse {

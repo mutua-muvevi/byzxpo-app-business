@@ -4,12 +4,17 @@ export interface User {
 	name: string;
 	email: string;
 	role: string;
+	phone?: string;
+	phoneVerified?: boolean;
 	image?: string;
 	country?: string;
 	emailVerified: boolean;
 	isBanned: boolean;
 	business?: string[];
 	token?: string;
+	createdAt?: string;
+	updatedAt?: string;
+	memberType?: string;
 }
 
 export interface AuthState {

@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import axios, { AxiosError } from "axios";
 import Toast from "react-native-toast-message";
-import { BusinessInterface } from "@/types/business";
+import { BusinessInterface, BusinessResponse } from "@/types/business";
 import { CategoryPagination, CategoryInterface, CategoryResponse } from "@/types/category";
 import { useBusiness } from "../business/fetch";
 
@@ -10,14 +10,15 @@ interface CategoryContextType {
 	meta?: any;
 	loading: boolean;
 	error: string | null;
-	fetchAllCategories: (pageNo?: number, pageLimit?: number) => Promise<void>;
 	pagination?: CategoryPagination;
 	categoriesWithBusinesses: CategoryInterface[];
 	
 	singleCategory: CategoryInterface | null;
 	setSingleCategoryFunction: (category: CategoryInterface) => void;
-
+	
+	fetchAllCategories: (pageNo?: number, pageLimit?: number) => Promise<void>;
 	setBusinessFromCategory: (business: BusinessInterface) => void
+	fetchAllBusinesses: (pageNo?: number, pageLimit?: number) => Promise<void>;
 }
 
 const CategoryContext = createContext<CategoryContextType | undefined>(undefined);
@@ -98,6 +99,56 @@ const CategoryProvider = ({ children }: { children: ReactNode }) => {
 		}
 	};
 
+	const fetchAllBusinesses = async (pageNo?: number, pageLimit?: number) => {
+		setLoading(true);
+		setError(null);
+
+		try {
+			const response = await axios.get<BusinessResponse[]>(
+				"https://byzxpo-server.onrender.com/api/businesses/fetch/all",
+				{
+					params: {
+						page: pageNo,
+						limit: pageLimit,
+					},
+				},
+			);
+
+			const { businesses, success } : any = response.data;
+
+			if (!success) {
+				throw new Error("Failed to fetch businesses");
+			}
+
+			setAllCategories(businesses.sort((a : any, b : any) => b.businesses.length - a.businesses.length));
+			Toast.show({
+				type: "success",
+				text1: "Success",
+				text2: "Businesses fetched successfully",
+			});
+		} catch (err) {
+			let errorMessage: string;
+			if (err instanceof AxiosError) {
+				errorMessage = err.response?.data?.error || "An unexpected error occurred";
+			} else if (err instanceof Error) {
+				errorMessage = err.message;
+			} else {
+				errorMessage = "An unknown error occurred";
+			}
+
+			setError(errorMessage);
+			Toast.show({
+				type: "error",
+				text1: "Error",
+				text2: errorMessage,
+			});
+		} finally {
+			setLoading(false);
+		}
+	}
+
+
+
 	const setSingleCategoryFunction = (category: CategoryInterface) => {
 		setSingleCategory(category);
 	}
@@ -111,22 +162,26 @@ const CategoryProvider = ({ children }: { children: ReactNode }) => {
 		fetchAllCategories();
 	}, []);
 
+	const memoizedCategoryValues = {
+		allCategories,
+		meta,
+		loading,
+		error,
+		pagination,
+		categoriesWithBusinesses,
+		
+		singleCategory,
+		setSingleCategoryFunction,
+
+		fetchAllCategories,
+
+		setBusinessFromCategory,
+		fetchAllBusinesses,
+	}
+
 	return (
 		<CategoryContext.Provider
-			value={{
-				allCategories,
-				meta,
-				loading,
-				error,
-				fetchAllCategories,
-				pagination,
-				categoriesWithBusinesses,
-
-				singleCategory,
-				setSingleCategoryFunction,
-
-				setBusinessFromCategory
-			}}
+			value={memoizedCategoryValues}
 		>
 			{children}
 		</CategoryContext.Provider>

@@ -26,7 +26,7 @@ interface BusinessContextType {
 	myBusinesses: BusinessInterface[]
 
 	myBusiness: BusinessInterface | null
-	setMySingleBusinessFunction: (business: BusinessInterface) => void
+	setMySingleBusinessFunction: (business: BusinessInterface) => void,
 }
 
 const BusinessContext = createContext<BusinessContextType | undefined>(

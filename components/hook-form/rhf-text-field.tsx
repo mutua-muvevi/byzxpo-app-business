@@ -8,6 +8,7 @@ interface RHFTextFieldProps {
 	placeholder?: string | undefined;
 	type?: "text" | "number" | "password";
 	helperText?: string | undefined;
+	style?: object | undefined;
 	[key: string]: any;
 }
 
@@ -16,6 +17,7 @@ const RHFTextField = ({
 	placeholder,
 	type = "text",
 	helperText,
+	style,
 	...other
 }: RHFTextFieldProps) => {
 	const { control } = useFormContext();
@@ -46,7 +48,8 @@ const RHFTextField = ({
 									? theme.error.main
 									: theme.grey[900],
 								borderRadius: 5,
-								padding:20
+								padding:20,
+								...style
 							}}
 							{...other}
 						/>

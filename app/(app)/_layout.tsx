@@ -32,6 +32,9 @@ const AppLayout = () => {
 					/>
 					<Stack.Screen name="my-businesses" options={{ headerShown: false }} />
 					<Stack.Screen name="profile" options={{ headerShown: false }} />
+					<Stack.Screen name="account" options={{ headerShown: false }} />
+					<Stack.Screen name="edit" options={{ headerShown: false }} />
+					<Stack.Screen name="settings" options={{ headerShown: false }} />
 				</Stack>
 			</CategoryProvider>
 		</BusinessProvider>

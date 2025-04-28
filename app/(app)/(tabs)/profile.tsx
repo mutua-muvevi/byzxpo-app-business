@@ -37,22 +37,17 @@ const Profile = () => {
 		},
 		{
 			name: "My Account Details",
-			route: "/profile/account",
+			route: "/account",
 			icon: <MaterialIcons name="account-box" size={15} color={theme.text.secondary} />,
 		},
 		{
-			name: "My Bookmarks",
-			route: "/profile/account",
-			icon: <Ionicons name="bookmarks-sharp" size={15} color={theme.text.secondary} />,
-		},
-		{
 			name: "Edit Profile",
-			route: "/profile/edit",
+			route: "/edit",
 			icon: <FontAwesome5 name="user-edit" size={15} color={theme.text.secondary} />,
 		},
 		{
 			name: "Settings",
-			route: "/profile/settings",
+			route: "/settings",
 			icon: <Ionicons name="settings" size={15} color={theme.text.secondary} />,
 		},
 	];

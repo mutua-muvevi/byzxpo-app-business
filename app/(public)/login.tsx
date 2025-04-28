@@ -9,6 +9,7 @@ import { useTheme } from "@/theme";
 import { useAuth } from "@/auth/provider";
 import FormProvider from "@/components/hook-form/form-provider";
 import RHFTextField from "@/components/hook-form/rhf-text-field";
+import LoadingStateIndicator from "@/components/ui/LoadingStateIndicator";
 // import { useAuth } from "../../auth/provider";
 
 const loginSchema = yup
@@ -25,7 +26,7 @@ const Login = () => {
 	const { theme } = useTheme();
 	const router = useRouter();
 	const auth = useAuth();
-	const [errorMsg, setError] = React.useState<string | null>(null);
+	const [errorMsg, setError] = React.useState<any | null>(null);
 	const [ loadingState, setLoading ] = React.useState<boolean>(false);
 
 
@@ -49,7 +50,6 @@ const Login = () => {
 			
 		} catch (error) {
 			console.log("error >>>>>>>>>>>>>>>>>>", error);
-			console.log("error >>>>>>>>>>>>>>>>>>", typeof(error));
 			
 			if (error instanceof Error) {
 				setError(error.message);
@@ -60,7 +60,7 @@ const Login = () => {
 		}
 	};
 
-	return (
+	return loading === true ? <LoadingStateIndicator text={"Authenticating ..."} /> : (
 		<View
 			style={{
 				flex: 1,
@@ -69,19 +69,23 @@ const Login = () => {
 				justifyContent: "center",
 			}}
 		>
+
 			{
-				error && (
+				errorMsg && (
 					<View
 						style={{
 							backgroundColor: theme.error.main,
 							padding: 12,
-							borderRadius: 8,
+							borderRadius: 5,
 							alignItems: "center",
 							marginTop: 16,
+							marginBottom: 16,
+							
+
 						}}
 					>
 						<Text style={{ color: theme.error.contrastText, fontWeight: "bold" }}>
-							{error}
+							{errorMsg}
 						</Text>
 					</View>
 				)
@@ -113,7 +117,7 @@ const Login = () => {
 						disabled={loading}
 					>
 						<Text style={{ color: theme.primary.contrastText, fontWeight: "bold" }}>
-							{loading ? "Logging in..." : "Login"}
+							{loading ? "Authenticating..." : "Login"}
 						</Text>
 					</TouchableOpacity>
 				</View>
