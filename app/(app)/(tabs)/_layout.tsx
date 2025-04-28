@@ -2,7 +2,7 @@ import { useTheme } from "@/theme";
 import { Tabs } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View, Platform } from "react-native";
-import { palette, common } from '../../../theme/palette';
+import { palette, common } from "../../../theme/palette";
 import { HapticTab } from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Ionicons } from "@expo/vector-icons";
@@ -11,14 +11,16 @@ const TabLayout = () => {
 	const { theme } = useTheme();
 
 	// Custom tab bar component to add shadow view
-	const CustomTabBar = ({ state, descriptors, navigation } : any) => {
+	const CustomTabBar = ({ state, descriptors, navigation }: any) => {
 		return (
-			<View style={{
-				position: "absolute",
-				bottom: 0,
-				left: 0,
-				right: 0,
-			}}>
+			<View
+				style={{
+					position: "absolute",
+					bottom: 0,
+					left: 0,
+					right: 0,
+				}}
+			>
 				{/* Shadow line at the top */}
 				<View
 					style={{
@@ -59,7 +61,7 @@ const TabLayout = () => {
 						},
 					]}
 				>
-					{state.routes.map((route : any, index : number) => {
+					{state.routes.map((route: any, index: number) => {
 						const { options } = descriptors[route.key];
 						const label = options.title || route.name;
 						const isFocused = state.index === index;
