@@ -1,4 +1,5 @@
 import { useAuth } from "@/auth/provider";
+import LoadingStateIndicator from "@/components/ui/LoadingStateIndicator";
 import UnavailableContentPage from "@/components/ui/UnavailablePage";
 import { useBusiness } from "@/contexts/business/fetch";
 import { useCategory } from "@/contexts/categories/fetch";
@@ -8,14 +9,14 @@ import SponsoredSection from "@/sections/home/sponsored";
 import { useTheme } from "@/theme";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, View, ActivityIndicator, FlatList } from "react-native";
+import { StyleSheet, View, ActivityIndicator, FlatList, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const createStyles = (theme: any) =>
 	StyleSheet.create({
 		container: {
 			flex: 1,
-			backgroundColor: theme.theme.background.paper,
+			backgroundColor: theme.background.paper,
 			paddingBottom: 50,
 		},
 		loadingContainer: {
@@ -30,12 +31,12 @@ const createStyles = (theme: any) =>
 	});
 
 const LoadingIndicatorView = () => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const styles = createStyles(theme);
 
 	return (
 		<View style={styles.loadingContainer}>
-			<ActivityIndicator size="large" color={theme.theme.palette.primary.main} />
+			<ActivityIndicator size="large" color={theme.palette.primary.main} />
 		</View>
 	);
 };
@@ -46,21 +47,24 @@ const HomeScreen = () => {
 		sponsoredBusinesses,
 		loading: sponsoredBusinessLoading,
 		error: businessError,
+		fetchAllBusinesses,
 	} = useBusiness();
 	const {
 		categoriesWithBusinesses,
 		error: categoryError,
 		loading: categoryLoading,
 	} = useCategory();
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const styles = createStyles(theme);
 
 	const auth = useAuth();
 	console.log(auth);
 
-	return (
+	return sponsoredBusinessLoading || categoryLoading ? (
+		<LoadingStateIndicator text={"Loading businesses..."} />
+	) : (
 		<SafeAreaView style={styles.container}>
-			<StatusBar backgroundColor={theme.theme.primary.main} />
+			<StatusBar backgroundColor={theme.primary.main} />
 			<FlatList
 				data={categoriesWithBusinesses}
 				keyExtractor={(item) => item._id}
@@ -102,6 +106,16 @@ const HomeScreen = () => {
 						}}
 					/>
 				)}
+				refreshControl={
+					<RefreshControl
+						colors={[theme.palette.primary.main]}
+						tintColor={theme.palette.primary.main}
+						refreshing={sponsoredBusinessLoading || categoryLoading}
+						onRefresh={() => {
+							fetchAllBusinesses();
+						}}
+					/>
+				}
 			/>
 		</SafeAreaView>
 	);

@@ -80,6 +80,8 @@ const Login = () => {
 							alignItems: "center",
 							marginTop: 16,
 							marginBottom: 16,
+							
+
 						}}
 					>
 						<Text style={{ color: theme.error.contrastText, fontWeight: "bold" }}>
@@ -115,7 +117,7 @@ const Login = () => {
 						disabled={loading}
 					>
 						<Text style={{ color: theme.primary.contrastText, fontWeight: "bold" }}>
-							{loading ? "Logging in..." : "Login"}
+							{loading ? "Authenticating..." : "Login"}
 						</Text>
 					</TouchableOpacity>
 				</View>
