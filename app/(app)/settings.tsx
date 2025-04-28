@@ -1,14 +1,10 @@
 import { useTheme } from "@/theme";
-import React, { useEffect } from "react";
+import React from "react";
 import { StyleSheet, Text, View, ScrollView, Switch, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useForm, FormProvider } from "react-hook-form";
-import { RHFCheckbox } from "@/components/hook-form/rhf-checkbox";
-import RHFRadioGroup from "@/components/hook-form/rhf-radio-group";
-import RHFSwitch from "@/components/hook-form/rhf-switch";
 import { presetOptions } from "@/theme/presets";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { palette } from "../../theme/palette";
+import { StatusBar } from "expo-status-bar";
 
 const SettingsHeader = () => {
 	const { theme } = useTheme();
@@ -24,24 +20,6 @@ const SettingsHeader = () => {
 			>
 				My Settings
 			</Text>
-		</View>
-	);
-};
-
-// Custom indicator for color presets
-const ColorIndicator = ({ value, isSelected }: { value: string; isSelected: boolean }) => {
-	const { theme } = useTheme();
-	return (
-		<View style={styles.colorIndicator}>
-			<View style={[styles.colorCircle, { backgroundColor: value }]} />
-			{isSelected && (
-				<MaterialIcons
-					name="check"
-					size={14}
-					color={theme.grey[0]}
-					style={styles.checkmark}
-				/>
-			)}
 		</View>
 	);
 };
@@ -90,6 +68,12 @@ const Settings = () => {
 			style={{ flex: 1, backgroundColor: theme.background.default }}
 			edges={["top", "left", "right"]}
 		>
+			<StatusBar
+				backgroundColor={
+					mode === "light" ? theme.palette.primary.main : theme.background.default
+				}
+			/>
+
 			<ScrollView>
 				<SettingsHeader />
 				<View style={styles.container}>

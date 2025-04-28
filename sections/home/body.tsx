@@ -24,22 +24,22 @@ const ALT_THUMBNAIL_IMAGE =
 const ALT_LOGO_IMAGE =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/business%20logo%20here.jpg";
 
-const createBusinessCardStyle = (theme : any) =>
+const createBusinessCardStyle = (theme: any) =>
 	StyleSheet.create({
 		container: {
-			backgroundColor: theme.theme.background.default,
-			borderRadius: theme.theme.shape.borderRadius,
+			backgroundColor: theme.background.default,
+			borderRadius: theme.shape.borderRadius,
 			marginRight: 10,
 			height: 150,
 			width: 120,
-			shadowColor: theme.theme.common.black,
+			shadowColor: theme.common.black,
 			shadowOffset: { width: 0, height: 20 },
 		},
 		thumbnail: {
 			width: "100%",
 			height: 80,
-			borderTopLeftRadius: theme.theme.shape.borderRadius,
-			borderTopRightRadius: theme.theme.shape.borderRadius,
+			borderTopLeftRadius: theme.shape.borderRadius,
+			borderTopRightRadius: theme.shape.borderRadius,
 		},
 		contentContainer: {
 			padding: 5,
@@ -47,13 +47,13 @@ const createBusinessCardStyle = (theme : any) =>
 		},
 		businessName: {
 			fontSize: 12,
-			color: theme.theme.text.secondary,
+			color: theme.text.secondary,
 			fontWeight: "bold",
 		},
 		otherText: {
 			fontSize: 12,
-			color: theme.theme.text.secondary,
-			fontFamily: theme.theme.typography.fontFamily,
+			color: theme.text.secondary,
+			fontFamily: theme.typography.fontFamily,
 		},
 		locationSection: {
 			flexDirection: "row",
@@ -70,7 +70,7 @@ const createBusinessCardStyle = (theme : any) =>
 	});
 
 const BusinessCategoryCards = ({ business }: { business: BusinessInterface }) => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const styles = createBusinessCardStyle(theme);
 	const router = useRouter();
 	const { setSingleBusinessFunction } = useBusiness();
@@ -98,11 +98,7 @@ const BusinessCategoryCards = ({ business }: { business: BusinessInterface }) =>
 					</Text>
 					{business?.location && (
 						<View style={styles.locationSection}>
-							<Ionicons
-								name="location"
-								size={12}
-								color={theme.theme.text.secondary}
-							/>
+							<Ionicons name="location" size={12} color={theme.text.secondary} />
 							<Text style={styles.otherText}>
 								{truncateStr(
 									`${business.location.city}, ${business.location.country}`,
@@ -113,7 +109,7 @@ const BusinessCategoryCards = ({ business }: { business: BusinessInterface }) =>
 					)}
 					{business.basicInfo?.phone && (
 						<View style={styles.locationSection}>
-							<Entypo name="old-phone" size={12} color={theme.theme.text.secondary} />
+							<Entypo name="old-phone" size={12} color={theme.text.secondary} />
 							<Text style={styles.otherText}>
 								{truncateStr(business.basicInfo.phone, 18)}
 							</Text>
@@ -125,7 +121,7 @@ const BusinessCategoryCards = ({ business }: { business: BusinessInterface }) =>
 	);
 };
 
-const createCategorySectionStyle = (theme : any) =>
+const createCategorySectionStyle = (theme: any) =>
 	StyleSheet.create({
 		container: {
 			gap: 5,
@@ -137,14 +133,14 @@ const createCategorySectionStyle = (theme : any) =>
 			paddingHorizontal: 5,
 		},
 		text: {
-			color: theme.theme.text.primary,
+			color: theme.text.primary,
 			fontWeight: "bold",
 			fontSize: 16,
 		},
 	});
 
 const CategoriesSection = ({ category }: { category: CategoryInterface }) => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const styles = createCategorySectionStyle(theme);
 
 	return (
@@ -152,7 +148,7 @@ const CategoriesSection = ({ category }: { category: CategoryInterface }) => {
 			<View style={styles.header}>
 				<Text style={styles.text}>{category.name}</Text>
 				<Pressable>
-					<IconSymbol name="chevron.right" size={20} color={theme.theme.primary.main} />
+					<IconSymbol name="chevron.right" size={20} color={theme.primary.main} />
 				</Pressable>
 			</View>
 			<FlatList
@@ -173,7 +169,7 @@ interface HomeBodyProps {
 	loading: boolean;
 }
 
-const createHomeBodyStyle = (theme : any) =>
+const createHomeBodyStyle = (theme: any) =>
 	StyleSheet.create({
 		container: {
 			gap: 5,
@@ -181,7 +177,7 @@ const createHomeBodyStyle = (theme : any) =>
 	});
 
 const HomeBody = ({ categories, loading }: HomeBodyProps) => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const style = createHomeBodyStyle(theme);
 
 	return (
@@ -192,9 +188,9 @@ const HomeBody = ({ categories, loading }: HomeBodyProps) => {
 				keyExtractor={(item) => item._id}
 				ListEmptyComponent={
 					loading ? (
-						<ActivityIndicator size="large" color={theme.theme.palette.primary.main} />
+						<ActivityIndicator size="large" color={theme.palette.primary.main} />
 					) : (
-						<Text style={{ textAlign: "center", color: theme.theme.text.secondary }}>
+						<Text style={{ textAlign: "center", color: theme.text.secondary }}>
 							No Categories
 						</Text>
 					)

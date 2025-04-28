@@ -16,12 +16,12 @@ const createStyles = (theme: any) =>
 			flex: 1,
 			flexDirection: "row",
 			alignItems: "center",
-			backgroundColor: theme.theme.background.default,
-			borderTopStartRadius: theme.theme.shape.borderRadius, 
-			borderBottomStartRadius: theme.theme.shape.borderRadius, 
+			backgroundColor: theme.background.default,
+			borderTopStartRadius: theme.shape.borderRadius, 
+			borderBottomStartRadius: theme.shape.borderRadius, 
 			paddingHorizontal: 12,
 			paddingVertical: 5,
-			shadowColor: theme.theme.common.black,
+			shadowColor: theme.common.black,
 			shadowOffset: { width: 0, height: 2 },
 			shadowOpacity: 0.1,
 			shadowRadius: 4,
@@ -34,17 +34,17 @@ const createStyles = (theme: any) =>
 		searchInput: {
 			flex: 1,
 			fontSize: 16,
-			color: theme.theme.text.primary, 
-			fontFamily: theme.theme.typography.fontFamily,
+			color: theme.text.primary, 
+			fontFamily: theme.typography.fontFamily,
 		},
 		filterButton: {
-			backgroundColor: theme.theme.primary.main,
-			borderTopEndRadius: theme.theme.shape.borderRadius,
-			borderBottomEndRadius: theme.theme.shape.borderRadius,
+			backgroundColor: theme.palette.primary.main,
+			borderTopEndRadius: theme.shape.borderRadius,
+			borderBottomEndRadius: theme.shape.borderRadius,
 			padding: 5,
 			justifyContent: "center",
 			alignItems: "center",
-			shadowColor: theme.theme.common.black,
+			shadowColor: theme.common.black,
 			shadowOffset: { width: 0, height: 2 },
 			shadowOpacity: 0.2,
 			shadowRadius: 4,
@@ -56,7 +56,7 @@ const createStyles = (theme: any) =>
 	});
 
 const Search = () => {
-	const theme = useTheme();
+	const {theme} = useTheme();
 	const styles = createStyles(theme); // Create styles with theme
 
 	return (
@@ -67,12 +67,12 @@ const Search = () => {
 					name="search"
 					size={24}
 					style={styles.searchIcon}
-					color={theme.theme.primary.main} // #027cf5
+					color={theme.palette.primary.main} // #027cf5
 				/>
 				<TextInput
 					style={styles.searchInput}
 					placeholder="Search..."
-					placeholderTextColor={theme.theme.text.secondary} // #637381
+					placeholderTextColor={theme.text.secondary} // #637381
 				/>
 			</View>
 
@@ -81,7 +81,7 @@ const Search = () => {
 				<Ionicons
 					name="filter"
 					size={24}
-					color={theme.theme.primary.contrastText} // #FFFFFF
+					color={theme.palette.primary.contrastText} // #FFFFFF
 				/>
 			</TouchableOpacity>
 		</View>
