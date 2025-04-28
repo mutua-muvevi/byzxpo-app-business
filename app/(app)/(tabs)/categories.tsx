@@ -11,7 +11,7 @@ const createCategoriesStyles = (theme: any) =>
 		container: {
 			paddingHorizontal: 10,
 			paddingVertical: 10,
-			backgroundColor: theme.theme.background.paper,
+			backgroundColor: theme.background.paper,
 		},
 		loadingContainer: {
 			height: "100%",
@@ -23,13 +23,13 @@ const createCategoriesStyles = (theme: any) =>
 //--------------------------------------------------------------------------------
 
 const LoadingIndicatorView = () => {
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const styles = createCategoriesStyles(theme);
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.loadingContainer}>
-				<ActivityIndicator size="large" color={theme.theme.palette.primary.main} />
+				<ActivityIndicator size="large" color={theme.palette.primary.main} />
 			</View>
 		</View>
 	);
@@ -38,7 +38,7 @@ const LoadingIndicatorView = () => {
 
 const Categories = () => {
 	const { allCategories: categories, loading, error } = useCategory();
-	const theme = useTheme();
+	const { theme } = useTheme();
 	const styles = createCategoriesStyles(theme);
 
 	return (
@@ -47,7 +47,7 @@ const Categories = () => {
 				style={{
 					fontSize: 18,
 					marginBottom: 10,
-					color: theme.theme.text.primary,
+					color: theme.text.primary,
 					fontWeight: "bold",
 				}}
 			>

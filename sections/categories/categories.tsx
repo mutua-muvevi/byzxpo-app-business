@@ -6,19 +6,18 @@ import React from "react";
 import { ActivityIndicator, TouchableOpacity } from "react-native";
 import { FlatList, ImageBackground, StyleSheet, Text, View } from "react-native";
 
-//---------------------------------------------------------------------------
-const placeHolderImage =
-	"https://storage.googleapis.com/byzxpo-bucket/assets/business-concept-with-copy-space-office-desk-table-with-pen-focus-analysis-chart-computer-notebook-cup-coffee-desk-vintage-tone-retro-filter-selective-focus.jpg";
-
 //------------------------------------------------------------------------------
-const CategorySection = ({ category }: { category: CategoryInterface }) => {
+const CategorySection = ({ category, backgroundColor }: { category: CategoryInterface, backgroundColor: any }) => {
 	const { setSingleCategoryFunction } = useCategory();
+	const { main, contrastText } = backgroundColor;
+	console.log("backgroundColor", backgroundColor);
 
 	const theme = useTheme();
 	const router = useRouter();
 
 	const handlePressCategory = () => {
 		setSingleCategoryFunction(category);
+
 
 		router.push({
 			pathname: "/category/[id]",
@@ -28,24 +27,11 @@ const CategorySection = ({ category }: { category: CategoryInterface }) => {
 
 	return (
 		<TouchableOpacity onPress={handlePressCategory}>
-			<View style={{borderRadius: 10}}>
-
-				<ImageBackground
-					source={{
-						uri: placeHolderImage,
-					}}
-					style={{
-						width: "100%",
-						height: 100,
-					}}
-					>
+			<View style={{ borderRadius: 5, height: 120, backgroundColor: main  }}>
 					<View
 						style={{
 							width: "100%",
 							height: "100%",
-							backgroundColor:
-								"linear-gradient(to top,rgba(0, 0, 0, 0.57) 0%,rgba(0, 0, 0, 0.62) 100%)",
-
 							justifyContent: "center",
 							alignItems: "center",
 							padding: 10,
@@ -54,8 +40,11 @@ const CategorySection = ({ category }: { category: CategoryInterface }) => {
 						<Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>
 							{category.name}
 						</Text>
+
+						<Text style={{ fontSize: 16, color: "white",}}>
+							{(category.businesses?.length ?? 0)} Businesses
+						</Text>
 					</View>
-				</ImageBackground>
 			</View>
 		</TouchableOpacity>
 	);
@@ -70,17 +59,22 @@ const CategoriesSection = ({
 	categories: CategoryInterface[];
 	loading: boolean;
 }) => {
-	const theme = useTheme();
+	const { theme } = useTheme();
+	console.log("theme", theme);
+
+	const { primary, orange, success, error, brown, } = theme
+	
+	const  colors = [primary, orange, success, error, brown]
 
 	return (
 		<View>
 			<FlatList
 				data={categories}
-				renderItem={({ item }) => <CategorySection category={item} />}
+				renderItem={({ item, index }) => <CategorySection category={item} backgroundColor={colors[index % colors.length]} />}
 				keyExtractor={(item) => item._id}
 				ListEmptyComponent={
 					loading ? (
-						<ActivityIndicator size="large" color={theme.theme.palette.primary.main} />
+						<ActivityIndicator size="large" color={theme.palette.primary.main} />
 					) : (
 						<Text>No Businesses</Text>
 					)
