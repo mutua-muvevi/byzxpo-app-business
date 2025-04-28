@@ -2,6 +2,7 @@
 import { Controller, useFormContext } from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "@/theme";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 interface RHFCheckboxProps {
 	name: string;
@@ -16,6 +17,8 @@ export const RHFCheckbox = ({
 	name,
 	label,
 	helperText,
+	size,
+	flexDirection,
 	...other
 }: RHFCheckboxProps) => {
 	const { control } = useFormContext();
@@ -27,26 +30,34 @@ export const RHFCheckbox = ({
 			control={control}
 			render={({ field, fieldState: { error } }) => (
 				<View>
-					<TouchableOpacity
-						onPress={() => field.onChange(!field.value)}
-					>
-						<Text
-							style={{ color: theme.palette.grey[900] }}
+					<TouchableOpacity onPress={() => field.onChange(!field.value)}>
+						<View
+							style={{
+								flexDirection: flexDirection ? flexDirection : "row",
+								alignItems: "center",
+								gap: 12,
+							}}
 						>
-							{field.value ? "☑" : "⬜"}
-						</Text>
-						<Text
-							style={{ color: theme.palette.grey[900] }}
-						>
-							{label}
-						</Text>
+							{field.value ? (
+								<FontAwesome
+									name="check-square"
+									size={size ? size : 24}
+									color={theme.palette.primary.main}
+								/>
+							) : (
+								<FontAwesome
+									name="square-o"
+									size={size ? size : 24}
+									color={theme.palette.primary.main}
+								/>
+							)}
+							<Text style={{ color: theme.grey[900] }}>{label}</Text>
+						</View>
 					</TouchableOpacity>
 					{(error || helperText) && (
 						<Text
 							style={{
-								color: error
-									? theme.palette.error.main
-									: theme.palette.grey[600],
+								color: error ? theme.error.main : theme.grey[600],
 							}}
 						>
 							{error?.message || helperText}
@@ -56,7 +67,7 @@ export const RHFCheckbox = ({
 			)}
 		/>
 	);
-}
+};
 
 //---------------------------------------------------------------------------
 
@@ -86,53 +97,46 @@ export const RHFMultiCheckbox = ({
 			control={control}
 			render={({ field, fieldState: { error } }) => (
 				<View>
-					{label && (
-						<Text
-							style={{ color: theme.palette.grey[900] }}
-						>
-							{label}
-						</Text>
-					)}
-					<View >
+					{label && <Text style={{ color: theme.grey[900] }}>{label}</Text>}
+					<View>
 						{options.map((option) => (
 							<TouchableOpacity
 								key={option.value}
 								onPress={() => {
-									const newValue = field.value?.includes(
-										option.value,
-									)
-										? field.value.filter(
-												(v: string) =>
-													v !== option.value,
-										  )
-										: [
-												...(field.value || []),
-												option.value,
-										  ];
+									const newValue = field.value?.includes(option.value)
+										? field.value.filter((v: string) => v !== option.value)
+										: [...(field.value || []), option.value];
 									field.onChange(newValue);
 								}}
 							>
-								<Text
-									style={{ color: theme.palette.grey[900] }}
+								{/* <Text
+									style={{ color: theme.grey[900],  }}
 								>
 									{field.value?.includes(option.value)
 										? "☑"
 										: "⬜"}
-								</Text>
-								<Text
-									style={{ color: theme.palette.grey[900] }}
-								>
-									{option.label}
-								</Text>
+								</Text> */}
+								{field.value?.includes(option.value) ? (
+									<FontAwesome
+										name="check-square"
+										size={24}
+										color={theme.palette.primary.main}
+									/>
+								) : (
+									<FontAwesome
+										name="square-o"
+										size={24}
+										color={theme.palette.primary.main}
+									/>
+								)}
+								<Text style={{ color: theme.grey[900] }}>{option.label}</Text>
 							</TouchableOpacity>
 						))}
 					</View>
 					{(error || helperText) && (
 						<Text
 							style={{
-								color: error
-									? theme.palette.error.main
-									: theme.palette.grey[600],
+								color: error ? theme.error.main : theme.grey[600],
 							}}
 						>
 							{error?.message || helperText}
@@ -142,4 +146,4 @@ export const RHFMultiCheckbox = ({
 			)}
 		/>
 	);
-}
+};

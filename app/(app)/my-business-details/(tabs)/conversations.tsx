@@ -146,7 +146,7 @@ const conversations = [
 	},
 ];
 
-const ReviewsHeader = () => {
+const ConversationHeader = () => {
 	const { theme } = useTheme();
 	return (
 		<View
@@ -257,7 +257,7 @@ const Conversations = () => {
 				data={conversations}
 				keyExtractor={(item) => item.title}
 				renderItem={({ item }) => <ConversationCards item={item} />}
-				ListHeaderComponent={<ReviewsHeader />}
+				ListHeaderComponent={<ConversationHeader />}
 				contentContainerStyle={{ paddingBottom: 20 }}
 			/>
 		</SafeAreaView>

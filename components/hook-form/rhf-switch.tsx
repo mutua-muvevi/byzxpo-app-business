@@ -1,4 +1,3 @@
-// components/hook-form/rhf-switch.tsx
 import { Controller, useFormContext } from "react-hook-form";
 import { Switch, Text, View } from "react-native";
 import { useTheme } from "@/theme";
@@ -7,10 +6,20 @@ interface RHFSwitchProps {
 	name: string;
 	label: string;
 	helperText?: string;
+	customComponent?: React.ComponentType<{
+		value: boolean;
+		onChange: (value: boolean) => void;
+	}>;
 	[key: string]: any;
 }
 
-const RHFSwitch = ({ name, label, helperText, ...other }: RHFSwitchProps) => {
+const RHFSwitch = ({
+	name,
+	label,
+	helperText,
+	customComponent: CustomComponent,
+	...other
+}: RHFSwitchProps) => {
 	const { control } = useFormContext();
 	const { theme } = useTheme();
 
@@ -19,20 +28,33 @@ const RHFSwitch = ({ name, label, helperText, ...other }: RHFSwitchProps) => {
 			name={name}
 			control={control}
 			render={({ field, fieldState: { error } }) => (
-				<View>
-					<View>
-						<Switch
-							value={field.value}
-							onValueChange={field.onChange}
-							trackColor={{
-								false: theme.palette.grey[300],
-								true: theme.palette.primary.main,
-							}}
-							thumbColor={theme.palette.grey[0]}
-							{...other}
-						/>
+				<View style={{ marginBottom: 16 }}>
+					<View
+						style={{
+							flexDirection: "row",
+							alignItems: "center",
+							gap: 12,
+						}}
+					>
+						{CustomComponent ? (
+							<CustomComponent value={field.value} onChange={field.onChange} />
+						) : (
+							<Switch
+								value={field.value}
+								onValueChange={field.onChange}
+								trackColor={{
+									false: theme.grey[300],
+									true: theme.primary.main,
+								}}
+								thumbColor={theme.grey[0]}
+								{...other}
+							/>
+						)}
 						<Text
-							style={{ color: theme.palette.grey[900] }}
+							style={{
+								color: theme.grey[900],
+								fontSize: 16,
+							}}
 						>
 							{label}
 						</Text>
@@ -40,9 +62,9 @@ const RHFSwitch = ({ name, label, helperText, ...other }: RHFSwitchProps) => {
 					{(error || helperText) && (
 						<Text
 							style={{
-								color: error
-									? theme.palette.error.main
-									: theme.palette.grey[600],
+								color: error ? theme.error.main : theme.grey[600],
+								fontSize: 12,
+								marginTop: 4,
 							}}
 						>
 							{error?.message || helperText}
