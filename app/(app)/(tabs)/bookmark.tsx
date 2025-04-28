@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { Rating } from "react-native-ratings";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 
 const ALT_IMAGE =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/a-white-text-on-a-blue-background-that-s_o6eumMMYQwic5GGGDhZ3ow_qdCWpEhDShKoXRu01jruXg.jpeg";
@@ -25,8 +26,7 @@ const BookmarkHeader = () => {
 	return (
 		<View
 			style={{
-				paddingHorizontal: 5,
-				paddingVertical: 10,
+				padding: 10,
 				backgroundColor: theme.palette.primary.main,
 			}}
 		>
@@ -69,8 +69,19 @@ const BookmarkCardComponents = ({ business }: any) => {
 					loadingIndicatorSource={{ uri: ALT_IMAGE }}
 				/>
 
-				<View style={{ padding: 5, gap: 5, backgroundColor: theme.background.default }}>
-					<Text style={{ fontWeight: "bold" }}>{business.businessName}</Text>
+				<View
+					style={{
+						paddingVertical: 12,
+						paddingHorizontal: 10,
+						gap: 5,
+						backgroundColor: theme.background.paper,
+						borderBottomLeftRadius: 5,
+						borderBottomRightRadius: 5,
+					}}
+				>
+					<Text style={{ fontWeight: "bold", color: theme.text.primary }}>
+						{business.businessName}
+					</Text>
 					{business?.basicInfo?.email ? (
 						<Text style={{ color: theme.text.secondary }}>
 							{truncateStr(business?.basicInfo?.email, 20)}{" "}
@@ -98,9 +109,15 @@ const BookmarkCardComponents = ({ business }: any) => {
 
 const Bookmark = () => {
 	const { allBusinesses } = useBusiness();
+	const { theme, mode } = useTheme();
 
 	return (
 		<SafeAreaView>
+			<StatusBar
+				backgroundColor={
+					mode === "light" ? theme.palette.primary.main : theme.background.default
+				}
+			/>
 			<FlatList
 				data={allBusinesses}
 				keyExtractor={(item) => item._id.toString()}
@@ -130,10 +147,14 @@ const Bookmark = () => {
 						refreshing={false}
 						onRefresh={() => {
 							/* Add refresh logic here */
-							//fetch bookmark businesses for this user here	
+							//fetch bookmark businesses for this user here
 						}}
 					/>
 				}
+				style={{
+					backgroundColor: theme.background.default,
+					paddingBottom: 10,
+				}}
 			/>
 		</SafeAreaView>
 	);
