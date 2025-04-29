@@ -217,7 +217,7 @@ const MessagesCards = ({ item }: { item: (typeof conversations)[0] }) => {
 				borderBottomColor: "#ccc",
 				borderRadius: 10,
 				marginBottom: 10,
-				backgroundColor: theme.background.paper
+				backgroundColor: theme.background.paper,
 			}}
 		>
 			<View style={{ flexDirection: "row", alignItems: "flex-start", gap: 10 }}>
@@ -231,7 +231,9 @@ const MessagesCards = ({ item }: { item: (typeof conversations)[0] }) => {
 				</View>
 
 				<View style={{ flex: 1 }}>
-					<Text style={{ fontSize: 16, fontWeight: "bold", color: theme.text.primary }}>{item.name}</Text>
+					<Text style={{ fontSize: 16, fontWeight: "bold", color: theme.text.primary }}>
+						{item.name}
+					</Text>
 					<Text style={{ color: theme.text.secondary }}>{item.title}</Text>
 				</View>
 			</View>
@@ -242,7 +244,7 @@ const MessagesCards = ({ item }: { item: (typeof conversations)[0] }) => {
 				<Text style={{ color: theme.text.secondary }}>{item.message}</Text>
 
 				<View style={{ flexDirection: "row", alignItems: "flex-start", gap: 5 }}>
-					<FontAwesome5 name="clock" size={16} color={theme.text.main} />
+					<FontAwesome5 name="clock" size={16} color={theme.text.primary} />
 					<Text style={{ color: theme.text.secondary }}>Last updated: {item.date}</Text>
 				</View>
 			</View>
@@ -251,7 +253,7 @@ const MessagesCards = ({ item }: { item: (typeof conversations)[0] }) => {
 };
 
 const Messages = () => {
-	const { theme } = useTheme();	
+	const { theme } = useTheme();
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: theme.background.default }}>
 			<FlatList

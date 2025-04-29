@@ -79,13 +79,22 @@ const TabLayout = () => {
 						};
 
 						return (
-							<HapticTab key={route.key} onPress={onPress} style={styles.tabButton}>
+							<HapticTab
+								key={route.key}
+								onPress={onPress}
+								style={{
+									flex: 1,
+									justifyContent: "center",
+									alignItems: "center",
+								}}
+							>
 								{options.tabBarIcon?.({
 									color: isFocused
 										? theme.palette.primary.main
 										: theme.text.secondary,
 									focused: isFocused,
 									size: 24,
+									lineHeight: 0,
 								})}
 								<Text
 									style={{
@@ -170,11 +179,7 @@ const TabLayout = () => {
 };
 
 const styles = StyleSheet.create({
-	tabButton: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-	},
+	tabButton: {},
 });
 
 export default TabLayout;

@@ -62,7 +62,13 @@ const BookmarkCardComponents = ({ business }: any) => {
 			<View style={{ backgroundColor: theme.background.paper, borderRadius: 5 }}>
 				<Image
 					source={{ uri: business.thumbnail || ALT_IMAGE }}
-					style={{ width: "100%", height: 100, marginBottom: 5 }}
+					style={{
+						width: "100%",
+						height: 100,
+						marginBottom: 5,
+						borderTopLeftRadius: 5,
+						borderTopRightRadius: 5,
+					}}
 					resizeMethod="resize"
 					resizeMode="cover"
 					blurRadius={1}
@@ -113,9 +119,7 @@ const Bookmark = () => {
 
 	return (
 		<SafeAreaView>
-			<StatusBar
-				backgroundColor={theme.palette.primary.main}
-			/>
+			<StatusBar backgroundColor={theme.palette.primary.main} />
 			<FlatList
 				data={allBusinesses}
 				keyExtractor={(item) => item._id.toString()}
@@ -157,7 +161,5 @@ const Bookmark = () => {
 		</SafeAreaView>
 	);
 };
-
-const styles = StyleSheet.create({});
 
 export default Bookmark;

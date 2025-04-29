@@ -16,7 +16,7 @@ const createStyles = (theme: any) =>
 	StyleSheet.create({
 		container: {
 			flex: 1,
-			backgroundColor: theme.background.paper,
+			backgroundColor: theme.background.default,
 			paddingBottom: 50,
 		},
 		loadingContainer: {
@@ -58,7 +58,6 @@ const HomeScreen = () => {
 	const styles = createStyles(theme);
 
 	const auth = useAuth();
-	console.log(auth);
 
 	return sponsoredBusinessLoading || categoryLoading ? (
 		<LoadingStateIndicator text={"Loading businesses..."} />
@@ -100,9 +99,10 @@ const HomeScreen = () => {
 					<View
 						style={{
 							borderWidth: 1,
-							borderColor: "#ccc",
+							borderColor: theme.palette.primary.main,
 							marginVertical: 10,
 							borderStyle: "dashed",
+							height:1
 						}}
 					/>
 				)}

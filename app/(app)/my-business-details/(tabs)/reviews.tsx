@@ -180,7 +180,6 @@ const ReviewsHeader = () => {
 			}}
 		>
 			<View>
-
 				<Text
 					style={{
 						fontSize: 18,
@@ -207,7 +206,7 @@ const ReviewsHeader = () => {
 					backgroundColor: theme.success.main,
 					borderRadius: 5,
 					flexDirection: "row",
-					gap:5
+					gap: 5,
 				}}
 			>
 				<Text
@@ -220,11 +219,7 @@ const ReviewsHeader = () => {
 					Filter
 				</Text>
 
-				<FontAwesome5
-					name="filter"
-					size={16}
-					color={theme.palette.primary.contrastText}
-				/>
+				<FontAwesome5 name="filter" size={16} color={theme.palette.primary.contrastText} />
 			</TouchableOpacity>
 		</View>
 	);
@@ -241,20 +236,31 @@ const ReviewItems = ({ item }: { item: any }) => {
 				borderBottomColor: "#ccc",
 			}}
 		>
-			
-			<Text style={{ fontSize: 16, color: theme.text.primary, fontWeight: "bold", paddingBottom :5 }} >{item.name}</Text>
-			<Text style={{ color: theme.text.secondary, fontWeight: "bold", }}>{item.title}</Text>
+			<Text
+				style={{
+					fontSize: 16,
+					color: theme.text.primary,
+					fontWeight: "bold",
+					paddingBottom: 5,
+				}}
+			>
+				{item.name}
+			</Text>
+			<Text style={{ color: theme.text.secondary, fontWeight: "bold" }}>{item.title}</Text>
 			<Text style={{ color: theme.text.secondary }}>{item.description}</Text>
 
-				
-			<View style={{ flexDirection: "row", alignItems: "flex-start"}}>
+			<View style={{ flexDirection: "row", alignItems: "flex-start" }}>
 				<Rating
 					type="star"
 					ratingCount={5}
 					imageSize={20}
 					readonly
 					startingValue={item.rating}
-					style={{ justifyContent: "flex-start", marginLeft: 0 }}
+					style={{
+						justifyContent: "flex-start",
+						marginLeft: 0,
+						backgroundColor: theme.background.default,
+					 }}
 					ratingColor={theme.palette.primary.main}
 				/>
 			</View>

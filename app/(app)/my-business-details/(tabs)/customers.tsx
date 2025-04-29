@@ -177,7 +177,9 @@ const CustomerCards = ({ item }: any) => {
 				</View>
 
 				<View style={{ flex: 1 }}>
-					<Text style={{ fontSize: 16, fontWeight: "bold", color: theme.text.primary }}>{item.name}</Text>
+					<Text style={{ fontSize: 16, fontWeight: "bold", color: theme.text.primary }}>
+						{item.name}
+					</Text>
 					<Text style={{ color: "#888" }}>{item.email}</Text>
 				</View>
 			</View>
@@ -185,12 +187,12 @@ const CustomerCards = ({ item }: any) => {
 				<Text style={{ color: theme.text.secondary }}>{item.description}</Text>
 
 				<View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-					<FontAwesome name="calendar" color={theme.text.main} />
+					<FontAwesome name="calendar" color={theme.text.primary} />
 					<Text style={{ color: theme.text.secondary }}> {item.date}</Text>
 				</View>
 
 				<View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-					<Entypo name="old-phone" color={theme.text.main} />
+					<Entypo name="old-phone" color={theme.text.primary} />
 					<Text style={{ color: theme.text.secondary }}> {item.date}</Text>
 				</View>
 			</View>
@@ -234,7 +236,6 @@ const Customers = () => {
 				contentContainerStyle={{ paddingBottom: 20 }}
 				ListHeaderComponent={<CustomerHeader />}
 				ListFooterComponent={<CustomerFooterButton />}
-				
 			/>
 		</SafeAreaView>
 	);

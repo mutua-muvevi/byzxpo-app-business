@@ -108,11 +108,11 @@ const CategoriesSection = ({
 			ListEmptyComponent={
 				<LoadingStateIndicator text={"Loading categories..."} /> 
 			}
-			ItemSeparatorComponent={() => (
+			ItemSeparatorComponent={({ item, index,  }) => (
 				<View
 					style={{
 						borderWidth: 1,
-						borderColor: "#ccc",
+						borderColor: theme.palette.primary.main,
 						marginVertical: 20,
 						borderStyle: "dashed",
 					}}

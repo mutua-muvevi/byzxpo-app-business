@@ -244,7 +244,7 @@ const ConversationCards = ({ item }: { item: (typeof conversations)[0] }) => {
 				<Text style={{ color: theme.text.secondary }}>{item.message}</Text>
 
 				<View style={{ flexDirection: "row", alignItems: "flex-start", gap: 5 }}>
-					<FontAwesome5 name="clock" size={16} color={theme.text.main} />
+					<FontAwesome5 name="clock" size={16} color={theme.text.primary} />
 					<Text style={{ color: theme.text.secondary }}>Last updated: {item.date}</Text>
 				</View>
 			</View>
