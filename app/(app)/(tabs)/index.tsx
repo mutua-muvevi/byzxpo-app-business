@@ -58,6 +58,7 @@ const HomeScreen = () => {
 	const styles = createStyles(theme);
 
 	const auth = useAuth();
+	console.log("auth", auth.user);
 
 	return sponsoredBusinessLoading || categoryLoading ? (
 		<LoadingStateIndicator text={"Loading businesses..."} />

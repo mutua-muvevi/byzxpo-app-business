@@ -19,6 +19,8 @@ import {
 	refreshTokenAPI,
 	logoutAPI,
 	fetchMeAPI,
+	saveBusiness,
+	removeBusiness,
 } from "./api";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -101,9 +103,11 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 					error: null,
 				});
 				Toast.show({ type: "success", text1: "Success", text2: "Logged in successfully" });
-				return {accessToken, refreshToken, user};
+				return { accessToken, refreshToken, user } as { accessToken: any; refreshToken: any; user: any };
 
 			}
+
+			return null
 
 
 		} catch (error : any) {
@@ -111,14 +115,14 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 			setState((prev) => ({
 				...prev,
 				loading: false,
-				error: error instanceof Error ? error?.error : "An unknown error occurred",
+				error: error ? error?.error : "An unknown error occurred",
 			}));
 			Toast.show({
 				type: "error",
 				text1: "Error",
-				text2: error instanceof Error ? error?.error : "An unknown error occurred",
+				text2: error ? error?.error : "An unknown error occurred",
 			});
-			throw error;
+			throw error ?? new Error("An unknown error occurred");
 		}
 	};
 
@@ -158,12 +162,12 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 			setState((prev) => ({
 				...prev,
 				loading: false,
-				error: error instanceof Error ? error?.error : "An unknown error occurred",
+				error: error ? error?.error : "An unknown error occurred",
 			}));
 			Toast.show({
 				type: "error",
 				text1: "Error",
-				text2: error instanceof Error ? error?.error : "An unknown error occurred",
+				text2: error ? error?.error : "An unknown error occurred",
 			});
 			throw error;
 		}
@@ -201,17 +205,17 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 			}
 
-		} catch (error) {
+		} catch (error : any) {
 			console.log("THE ERROR IS", error)
 			setState((prev) => ({
 				...prev,
 				loading: false,
-				error: error instanceof Error ? error?.error : "An unknown error occurred",
+				error: error ? error?.error : "An unknown error occurred",
 			}));
 			Toast.show({
 				type: "error",
 				text1: "Error",
-				text2: error instanceof Error ? error?.error : "An unknown error occurred",
+				text2: error ? error?.error : "An unknown error occurred",
 			});
 			throw error;
 		}
@@ -223,9 +227,19 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 			await resetPasswordAPI(credentials);
 			setState((prev) => ({ ...prev, loading: false }));
 			Toast.show({ type: "success", text1: "Success", text2: "Password reset successful" });
-		} catch (error) {
-			setState((prev) => ({ ...prev, loading: false, error: error.message }));
-			Toast.show({ type: "error", text1: "Error", text2: error.message });
+		} catch (error : any) {
+			console.log("THE ERROR IS", error)
+			setState((prev) => ({
+				...prev,
+				loading: false,
+				error: error ? error?.error : "An unknown error occurred",
+			}));
+			Toast.show({
+				type: "error",
+				text1: "Error",
+				text2: error ? error?.error : "An unknown error occurred",
+			});
+			throw error;
 		}
 	};
 
@@ -275,6 +289,65 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 		}
 	};
 
+	const saveABusiness = async (credentials: any) => {
+		setState((prev) => ({ ...prev, loading: true }));
+		
+		try {
+			console.log("Credentials", credentials)
+			console.log("AccessToken", state.accessToken)
+			const response = await saveBusiness(state.accessToken!, credentials);
+
+			const { success, savedBusiness, message } = response
+
+			return { success, savedBusiness, message }
+		} catch (error : any) {
+			console.log("ERRRRRRRRRRRRRROR", error)
+			setState((prev) => ({
+				...prev,
+				loading: false,
+				error: error ? error?.error : "An unknown error occurred",
+			}));
+			Toast.show({
+				type: "error",
+				text1: "Error",
+				text2: error ? error?.error : "An unknown error occurred",
+			});
+			throw error;
+		} finally {
+			setState((prev) => ({ ...prev, loading: false }));
+		}
+	}
+
+	const removeABusiness = async (businessId: any) => {
+		setState((prev) => ({ ...prev, loading: true }));
+		
+		try {
+			console.log("Credentials", businessId)
+			console.log("AccessToken", state.accessToken)
+			const response = await removeBusiness(state.accessToken!, businessId);
+
+			const { message } = response
+
+			return { message }
+
+		} catch (error : any) {
+			console.log("ERRRRRRRRRRRRRROR", error)
+			setState((prev) => ({
+				...prev,
+				loading: false,
+				error: error ? error?.error : "An unknown error occurred",
+			}));
+			Toast.show({
+				type: "error",
+				text1: "Error",
+				text2: error ? error?.error : "An unknown error occurred",
+			});
+			throw error;
+		} finally {
+			setState((prev) => ({ ...prev, loading: false }));
+		}
+	}
+
 	useEffect(() => {
 		initializeAuth();
 	}, []);
@@ -295,6 +368,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 		logout,
 		refreshAccessToken,
 		fetchMe,
+		saveABusiness,
+		removeABusiness,
 		authenticated: status === "authenticated",
 		unauthenticated: status === "unauthenticated",
 		user: state.user ? { ...state.user, token: state.accessToken ?? undefined } : null,

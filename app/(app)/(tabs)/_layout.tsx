@@ -178,8 +178,4 @@ const TabLayout = () => {
 	);
 };
 
-const styles = StyleSheet.create({
-	tabButton: {},
-});
-
 export default TabLayout;

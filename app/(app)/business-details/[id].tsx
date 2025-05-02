@@ -1,6 +1,7 @@
 import { useBusiness } from "@/contexts/business/fetch";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
+	Alert,
 	Image,
 	ImageBackground,
 	ScrollView,
@@ -17,6 +18,8 @@ import MapComponent from "@/components/map/map";
 import { StatusBar } from "expo-status-bar";
 import { Rating } from "react-native-ratings";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "@/auth";
+import { saveBusiness } from "../../../auth/api";
 
 const CLAIM_BUSINESS_IMAGE =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/business-concept-with-copy-space-office-desk-table-with-pen-focus-analysis-chart-computer-notebook-cup-coffee-desk-vintage-tone-retro-filter-selective-focus.jpg";
@@ -81,10 +84,27 @@ const createBusinessDetailsStyles = (theme: any) =>
 	});
 
 const BusinessDetails = () => {
+	const [isBookmarked, setIsBookmarked] = useState(false);
 	const { singleBusiness } = useBusiness();
+	const { saveABusiness, user } = useAuth();
 
 	const { theme } = useTheme();
 	const styles = createBusinessDetailsStyles(theme);
+	console.log("MUSAVED BUSSSSSSSS", user?.mySavedBusinesses);
+
+	useEffect(() => {
+		if (singleBusiness?._id && user?.mySavedBusinesses) {
+			console.log("singleBusiness._id:", singleBusiness._id);
+			console.log("mySavedBusinesses:", user.mySavedBusinesses);
+			const isSaved = user.mySavedBusinesses.some((business) =>
+				typeof business === "object" && business?._id
+					? business._id.toString() === singleBusiness._id.toString()
+					: business === singleBusiness._id,
+			);
+			console.log("isSaved:", isSaved);
+			setIsBookmarked(isSaved);
+		}
+	}, [singleBusiness, user?.mySavedBusinesses]);
 
 	const businessBasicInfo = [
 		{
@@ -108,6 +128,35 @@ const BusinessDetails = () => {
 			icon: <Foundation name="web" size={14} color={theme.text.secondary} />,
 		},
 	].filter((item) => item.name);
+
+	const saveThisBusiness = async () => {
+		const businessId = singleBusiness?._id;
+		await saveABusiness({
+			business: businessId,
+		});
+	};
+
+	const removeBusinessFromSavedFunc = async () => {
+		const businessId = singleBusiness?._id;
+		await saveABusiness(businessId)
+	};
+	
+	const removeThisBusiness = () => {
+		Alert.alert(
+			"Warning",
+			`Do you want to remove business ${singleBusiness?.businessName} from my saved list?`,
+			[
+				{
+					text: "Cancel",
+					style: "cancel",
+				},
+				{
+					text: "Confirm",
+					onPress: removeBusinessFromSavedFunc,
+				}
+			]
+		)
+	}
 
 	return (
 		<SafeAreaView
@@ -277,13 +326,57 @@ const BusinessDetails = () => {
 						<Text
 							style={{
 								color: theme.palette.primary.contrastText,
-								fontSize: 20,
+								fontSize: 15,
 								fontWeight: "bold",
 							}}
 						>
 							Message This Business
 						</Text>
 					</TouchableOpacity>
+
+					{isBookmarked ? (
+						<TouchableOpacity
+							style={{
+								justifyContent: "center",
+								alignItems: "center",
+								borderRadius: 5,
+								backgroundColor: theme.error.main,
+								height: 50,
+							}}
+							onPress={() => removeThisBusiness()}
+						>
+							<Text
+								style={{
+									color: theme.error.contrastText,
+									fontSize: 15,
+									fontWeight: "bold",
+								}}
+							>
+								Remove from Saved
+							</Text>
+						</TouchableOpacity>
+					) : (
+						<TouchableOpacity
+							style={{
+								justifyContent: "center",
+								alignItems: "center",
+								borderRadius: 5,
+								backgroundColor: theme.palette.primary.main,
+								height: 50,
+							}}
+							onPress={() => saveThisBusiness()}
+						>
+							<Text
+								style={{
+									color: theme.palette.primary.contrastText,
+									fontSize: 15,
+									fontWeight: "bold",
+								}}
+							>
+								Save This Business
+							</Text>
+						</TouchableOpacity>
+					)}
 				</View>
 			</ScrollView>
 		</SafeAreaView>
