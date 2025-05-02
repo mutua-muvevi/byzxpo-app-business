@@ -74,8 +74,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 	};
 
 	const login = async (credentials: LoginCredentials) => {
-		console.log("running")
 		setState((prev) => ({ ...prev, loading: true, error: null }));
+
 		try {
 			const response = await loginAPI(credentials);
 			if (!response || !response.accessTkn || !response.refreshTkn || !response.user) {
@@ -124,32 +124,96 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 	const register = async (credentials: RegisterCredentials) => {
 		setState((prev) => ({ ...prev, loading: true, error: null }));
+
 		try {
-			const { accessToken, refreshToken, user } = await registerAPI(credentials);
-			setState({
-				user,
-				accessToken,
-				refreshToken,
-				isAuthenticated: true,
+			
+			const response = await registerAPI(credentials);
+			if (!response || !response.accessTkn || !response.refreshTkn || !response.user) {
+				throw new Error("Invalid response from loginAPI");
+			}
+			const { accessTkn: accessToken, refreshTkn: refreshToken } = response;
+			
+			if(accessToken && refreshToken) {
+				//@ts-ignore
+				const { user } = await fetchMeAPI(accessToken);
+
+				if (!user) {
+					throw new Error("Invalid response from fetchMeAPI");
+				}
+
+
+				setState({
+					user,
+					accessToken,
+					refreshToken,
+					isAuthenticated: true,
+					loading: false,
+					error: null,
+				});
+				Toast.show({ type: "success", text1: "Success", text2: "Registered successfully" });
+				return { accessToken, refreshToken, user };
+			}
+		} catch (error: any) {
+			console.log("The error is", error, error.message, error.error);
+			setState((prev) => ({
+				...prev,
 				loading: false,
-				error: null,
+				error: error instanceof Error ? error?.error : "An unknown error occurred",
+			}));
+			Toast.show({
+				type: "error",
+				text1: "Error",
+				text2: error instanceof Error ? error?.error : "An unknown error occurred",
 			});
-			Toast.show({ type: "success", text1: "Success", text2: "Registered successfully" });
-		} catch (error) {
-			setState((prev) => ({ ...prev, loading: false, error: error.message }));
-			Toast.show({ type: "error", text1: "Error", text2: error.message });
+			throw error;
 		}
 	};
 
 	const forgotPassword = async (credentials: ForgotPasswordCredentials) => {
 		setState((prev) => ({ ...prev, loading: true, error: null }));
 		try {
-			await forgotPasswordAPI(credentials);
-			setState((prev) => ({ ...prev, loading: false }));
-			Toast.show({ type: "success", text1: "Success", text2: "Reset email sent" });
+			const response = await forgotPasswordAPI(credentials);
+			
+			if (!response || !response.accessTkn || !response.refreshTkn || !response.user) {
+				throw new Error("Invalid response from loginAPI");
+			}
+			const { accessTkn: accessToken, refreshTkn: refreshToken } = response;
+
+			if(accessToken && refreshToken) {
+				//@ts-ignore
+				const { user } = await fetchMeAPI(accessToken);
+
+				if (!user) {
+					throw new Error("Invalid response from fetchMeAPI");
+				}
+
+
+				setState({
+					user,
+					accessToken,
+					refreshToken,
+					isAuthenticated: true,
+					loading: false,
+					error: null,
+				});
+				Toast.show({ type: "success", text1: "Success", text2: "Logged in successfully" });
+				return {accessToken, refreshToken, user};
+
+			}
+
 		} catch (error) {
-			setState((prev) => ({ ...prev, loading: false, error: error.message }));
-			Toast.show({ type: "error", text1: "Error", text2: error.message });
+			console.log("THE ERROR IS", error)
+			setState((prev) => ({
+				...prev,
+				loading: false,
+				error: error instanceof Error ? error?.error : "An unknown error occurred",
+			}));
+			Toast.show({
+				type: "error",
+				text1: "Error",
+				text2: error instanceof Error ? error?.error : "An unknown error occurred",
+			});
+			throw error;
 		}
 	};
 

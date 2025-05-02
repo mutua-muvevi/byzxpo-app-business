@@ -10,6 +10,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { primary } from '../../../theme/palette';
 
 const Profile = () => {
 	const {
@@ -149,13 +150,13 @@ const Profile = () => {
 				style={{
 					width: "100%",
 					borderWidth: 1,
-					borderColor: theme.text.disabled,
+					borderColor: theme.palette.primary.main,
 					padding: 10,
 					borderRadius: 5,
 					alignItems: "center",
 				}}
 			>
-				<Text style={{ color: theme.text.secondary, fontWeight: "bold" }}>Logout</Text>
+				<Text style={{ color: theme.palette.primary.main, fontWeight: "bold" }}>Logout</Text>
 			</TouchableOpacity>
 		</SafeAreaView>
 	);

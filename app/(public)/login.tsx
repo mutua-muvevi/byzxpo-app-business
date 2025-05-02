@@ -10,7 +10,6 @@ import { useAuth } from "@/auth/provider";
 import FormProvider from "@/components/hook-form/form-provider";
 import RHFTextField from "@/components/hook-form/rhf-text-field";
 import LoadingStateIndicator from "@/components/ui/LoadingStateIndicator";
-// import { useAuth } from "../../auth/provider";
 
 const loginSchema = yup
 	.object({
@@ -27,8 +26,7 @@ const Login = () => {
 	const router = useRouter();
 	const auth = useAuth();
 	const [errorMsg, setError] = React.useState<any | null>(null);
-	const [ loadingState, setLoading ] = React.useState<boolean>(false);
-
+	const [loadingState, setLoading] = React.useState<boolean>(false);
 
 	const methods = useForm<LoginFormValues>({
 		resolver: yupResolver(loginSchema),
@@ -43,24 +41,25 @@ const Login = () => {
 			setError(null);
 
 			const result = await login(data);
-			
+
 			if (result) {
 				router.push("/");
 			}
-			
 		} catch (error) {
 			console.log("error >>>>>>>>>>>>>>>>>>", error);
-			
+
 			if (error instanceof Error) {
 				setError(error.message);
 			}
 		} finally {
 			// setLoading(false);
-			setLoading(false)
+			setLoading(false);
 		}
 	};
 
-	return loading === true ? <LoadingStateIndicator text={"Authenticating ..."} /> : (
+	return loading === true ? (
+		<LoadingStateIndicator text={"Authenticating ..."} />
+	) : (
 		<View
 			style={{
 				flex: 1,
@@ -69,27 +68,22 @@ const Login = () => {
 				justifyContent: "center",
 			}}
 		>
-
-			{
-				errorMsg && (
-					<View
-						style={{
-							backgroundColor: theme.error.main,
-							padding: 12,
-							borderRadius: 5,
-							alignItems: "center",
-							marginTop: 16,
-							marginBottom: 16,
-							
-
-						}}
-					>
-						<Text style={{ color: theme.error.contrastText, fontWeight: "bold" }}>
-							{errorMsg}
-						</Text>
-					</View>
-				)
-			}
+			{errorMsg && (
+				<View
+					style={{
+						backgroundColor: theme.error.main,
+						padding: 12,
+						borderRadius: 5,
+						alignItems: "center",
+						marginTop: 16,
+						marginBottom: 16,
+					}}
+				>
+					<Text style={{ color: theme.error.contrastText, fontWeight: "bold" }}>
+						{errorMsg}
+					</Text>
+				</View>
+			)}
 			<Text
 				style={{
 					fontSize: 24,
@@ -101,8 +95,7 @@ const Login = () => {
 				Login
 			</Text>
 			<FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-				<View style={{gap:10}} >
-
+				<View style={{ gap: 10 }}>
 					<RHFTextField name="email" placeholder="Email" helperText="Enter your email" />
 					<RHFTextField name="password" placeholder="Password" type="password" />
 					<TouchableOpacity
@@ -122,17 +115,15 @@ const Login = () => {
 					</TouchableOpacity>
 				</View>
 			</FormProvider>
-			
+
 			<TouchableOpacity onPress={() => router.push("/forgot-password")}>
-				<Text style={{ color: theme.primary.main, marginTop: 16 }}>
-					Forgot Password?
-				</Text>
+				<Text style={{ color: theme.primary.main, marginTop: 16 }}>Forgot Password?</Text>
 			</TouchableOpacity>
 			<TouchableOpacity onPress={() => router.push("/register")}>
 				<Text style={{ color: theme.primary.main, marginTop: 8 }}>
 					Don't have an account? Register
 				</Text>
-			</TouchableOpacity> 
+			</TouchableOpacity>
 		</View>
 	);
 };

@@ -51,17 +51,27 @@ export const loginAPI = async (credentials: LoginCredentials) => {
 export const registerAPI = async (credentials: RegisterCredentials) => {
 	try {
 		const response = await axios.post(`${API_URL}/user/register`, credentials);
-		const { accessToken, refreshToken, user } = response.data;
+		const { accessToken, refreshToken, user, message } = response.data;
 
-		await AsyncStorage.setItem("accessToken", accessToken);
-		await AsyncStorage.setItem("refreshToken", refreshToken);
-		await AsyncStorage.setItem("user", JSON.stringify(user));
-		setAuthToken(accessToken);
+		if(accessToken && refreshToken && user) {
+			const { expiresIn : accessTokenexpiresIn, token	: accessTkn } = accessToken
+			const { expiresIn : refreshTokenexpiresIn, token : refreshTkn } = refreshToken
 
-		return { accessToken, refreshToken, user };
+			await AsyncStorage.setItem("accessToken", accessTkn);
+			await AsyncStorage.setItem("refreshToken", refreshTkn);
+			await AsyncStorage.setItem("user", JSON.stringify(user));
+			setAuthToken(accessTkn);
+			
+			return { accessTkn, refreshTkn, user, message };
+		} 
+
+		return null
+
 	} catch (error) {
+		console.log("Error", error)
 		throw new Error(
-			(error as AxiosError<{ message?: string }>).response?.data?.message ||
+			// @ts-ignore
+			(error as AxiosError<{ message?: string }>).response?.data?.error ||
 				"Registration failed",
 		);
 	}
