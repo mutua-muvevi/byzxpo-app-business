@@ -128,10 +128,14 @@ export const fetchMeAPI = async (token: string): Promise<User> => {
 };
 
 export const logoutAPI = async () => {
-	await AsyncStorage.removeItem("accessToken");
-	await AsyncStorage.removeItem("refreshToken");
-	await AsyncStorage.removeItem("user");
-	setAuthToken(null);
+	try {
+		await AsyncStorage.removeItem("accessToken");
+		await AsyncStorage.removeItem("refreshToken");
+		await AsyncStorage.removeItem("user");
+		setAuthToken(null);
+	} catch (error : any) {
+		console.log("Error", error);		
+	}
 };
 
 export const saveBusiness = async (token : string, credentials : object) => {

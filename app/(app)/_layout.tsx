@@ -1,13 +1,14 @@
 import { useEffect } from "react";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import { useAuth } from "@/auth/provider";
 import { Stack } from "expo-router";
 import { BusinessProvider } from "@/contexts/business/fetch";
 import { CategoryProvider } from "@/contexts/categories/fetch";
 import { ActivityIndicator } from "react-native";
+import { AuthGuard } from "@/auth";
 
 const AppLayout = () => {
-	const { accessToken, loading } = useAuth();
+	const { accessToken, loading, isAuthenticated } = useAuth();
 	const router = useRouter();
 
 	useEffect(() => {
@@ -20,24 +21,29 @@ const AppLayout = () => {
 	if (!accessToken) return null;
 
 	return (
-		<BusinessProvider>
-			<CategoryProvider>
-				<Stack>
-					<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-					<Stack.Screen name="business-details/[id]" options={{ headerShown: false }} />
-					<Stack.Screen name="category/[id]" options={{ headerShown: false }} />
-					<Stack.Screen
-						name="my-business-details/(tabs)"
-						options={{ headerShown: false }} // Header disabled
-					/>
-					<Stack.Screen name="my-businesses" options={{ headerShown: false }} />
-					<Stack.Screen name="profile" options={{ headerShown: false }} />
-					<Stack.Screen name="account" options={{ headerShown: false }} />
-					<Stack.Screen name="edit" options={{ headerShown: false }} />
-					<Stack.Screen name="settings" options={{ headerShown: false }} />
-				</Stack>
-			</CategoryProvider>
-		</BusinessProvider>
+		<AuthGuard>
+			<BusinessProvider>
+				<CategoryProvider>
+					<Stack>
+						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+						<Stack.Screen
+							name="business-details/[id]"
+							options={{ headerShown: false }}
+						/>
+						<Stack.Screen name="category/[id]" options={{ headerShown: false }} />
+						<Stack.Screen
+							name="my-business-details/(tabs)"
+							options={{ headerShown: false }} // Header disabled
+						/>
+						<Stack.Screen name="my-businesses" options={{ headerShown: false }} />
+						<Stack.Screen name="profile" options={{ headerShown: false }} />
+						<Stack.Screen name="account" options={{ headerShown: false }} />
+						<Stack.Screen name="edit" options={{ headerShown: false }} />
+						<Stack.Screen name="settings" options={{ headerShown: false }} />
+					</Stack>
+				</CategoryProvider>
+			</BusinessProvider>
+		</AuthGuard>
 	);
 };
 

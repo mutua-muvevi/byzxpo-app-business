@@ -2,7 +2,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
-import { error } from '../theme/palette';
 import {
 	AuthContextType,
 	AuthState,
@@ -88,6 +87,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 			if(accessToken && refreshToken) {
 				//@ts-ignore
 				const { user } = await fetchMeAPI(accessToken);
+				
 
 				if (!user) {
 					throw new Error("Invalid response from fetchMeAPI");
@@ -267,6 +267,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 		setState((prev) => ({ ...prev, loading: true }));
 		try {
 			const user = await fetchMeAPI(state.accessToken!);
+			console.log("USER FETCHED ||||||||", user)
 			setState((prev) => ({ ...prev, user, loading: false }));
 		} catch (error) {
 			setState((prev) => ({ ...prev, loading: false, error: "Failed to fetch user data" }));

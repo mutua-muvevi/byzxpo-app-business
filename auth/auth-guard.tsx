@@ -10,7 +10,6 @@ interface AuthGuardProps {
 
 const AuthGuard = ({ children }: AuthGuardProps) => {
 	const { isAuthenticated, loading } = useAuth();
-	const router = useRouter();
 
 	if (loading) {
 		return (
@@ -21,7 +20,6 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
 	}
 
 	if (!isAuthenticated) {
-		// Use Redirect to navigate to login
 		return <Redirect href="/login" />;
 	}
 

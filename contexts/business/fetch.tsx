@@ -1,15 +1,10 @@
-import {
-	createContext,
-	useContext,
-	useState,
-	useEffect,
-	ReactNode,
-	useMemo,
-} from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from "react";
 import axios, { AxiosError } from "axios";
 import Toast from "react-native-toast-message";
 import { BusinessInterface, BusinessResponse } from "@/types/business";
 import { useAuth } from "@/auth";
+import { createNewBusiness } from "@/actions/business";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface BusinessContextType {
 	allBusinesses: BusinessInterface[];
@@ -20,19 +15,16 @@ interface BusinessContextType {
 	fetchAllBusinesses: (pageNo?: number, pageLimit?: number) => Promise<void>;
 	pagination: any;
 
-	singleBusiness: BusinessInterface | null
-	setSingleBusinessFunction: (business: BusinessInterface) => void
+	singleBusiness: BusinessInterface | null;
+	setSingleBusinessFunction: (business: BusinessInterface) => void;
 
-	myBusinesses: BusinessInterface[]
+	myBusinesses: BusinessInterface[];
 
-	myBusiness: BusinessInterface | null
-	setMySingleBusinessFunction: (business: BusinessInterface) => void,
+	myBusiness: BusinessInterface | null;
+	setMySingleBusinessFunction: (business: BusinessInterface) => void;
 }
 
-const BusinessContext = createContext<BusinessContextType | undefined>(
-	undefined,
-);
-
+const BusinessContext = createContext<BusinessContextType | undefined>(undefined);
 
 const BusinessProvider = ({ children }: { children: ReactNode }) => {
 	const [allBusinesses, setAllBusinesses] = useState<BusinessInterface[]>([]);
@@ -41,16 +33,12 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
 	const [pagination, setPagination] = useState<any>(null);
-	const [singleBusiness, setSingleBusiness ] = useState<BusinessInterface | null>(null);
+	const [singleBusiness, setSingleBusiness] = useState<BusinessInterface | null>(null);
 	const [myBusinesses, setMyBusinesses] = useState<BusinessInterface[]>([]);
 	const [myBusiness, setMyBusiness] = useState<BusinessInterface | null>(null);
-	const { user } = useAuth() // Updated line without destructuring
+	const { user, accessToken } = useAuth(); // Updated line without destructuring
 
-
-	const fetchAllBusinesses = async (
-		pageNo: number = 1,
-		pageLimit: number = 50,
-	) => {
+	const fetchAllBusinesses = async (pageNo: number = 1, pageLimit: number = 50) => {
 		setLoading(true);
 		setError(null);
 
@@ -67,14 +55,19 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 				},
 			);
 
-			const { businesses, success, meta: responseMeta, pagination: paginationResponse } = response.data;
+			const {
+				businesses,
+				success,
+				meta: responseMeta,
+				pagination: paginationResponse,
+			} = response.data;
 
 			if (!success) {
 				throw new Error("Failed to fetch businesses");
 			}
 
 			setAllBusinesses(businesses);
-			setSponsoredBusinesses(businesses.filter((b : any) => b.isSponsored === true));
+			setSponsoredBusinesses(businesses.filter((b: any) => b.isSponsored === true));
 			setMeta({
 				pageNum: responseMeta?.pageNum ?? 0,
 				limit: responseMeta?.limit ?? 0,
@@ -86,15 +79,12 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 				totalItems: paginationResponse?.totalItems ?? 0,
 				totalPages: paginationResponse?.totalPages ?? 0,
 				currentPage: paginationResponse?.currentPage ?? 0,
-				pageSize: paginationResponse?.pageSize ?? 0
-			})
-
-			
+				pageSize: paginationResponse?.pageSize ?? 0,
+			});
 		} catch (err) {
 			let errorMessage: string;
 			if (err instanceof AxiosError) {
-				errorMessage =
-					err.response?.data?.error || "An unexpected error occurred";
+				errorMessage = err.response?.data?.error || "An unexpected error occurred";
 			} else if (err instanceof Error) {
 				errorMessage = err.message;
 			} else {
@@ -118,7 +108,7 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 
 	const setMySingleBusinessFunction = (business: BusinessInterface) => {
 		setMyBusiness(business);
-	}
+	};
 
 	useEffect(() => {
 		if (user) {
@@ -130,6 +120,9 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 	useEffect(() => {
 		fetchAllBusinesses();
 	}, []);
+
+	// register a business
+	
 
 	const memoizedContext = useMemo(
 		() => ({
@@ -145,7 +138,7 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 			myBusinesses,
 
 			myBusiness,
-			setMySingleBusinessFunction
+			setMySingleBusinessFunction,
 		}),
 		[
 			allBusinesses,
@@ -161,13 +154,7 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 		],
 	);
 
-	return (
-		<BusinessContext.Provider
-			value={memoizedContext}
-		>
-			{children}
-		</BusinessContext.Provider>
-	);
+	return <BusinessContext.Provider value={memoizedContext}>{children}</BusinessContext.Provider>;
 };
 
 const useBusiness = () => {
