@@ -3,7 +3,7 @@ import axios, { AxiosError } from "axios";
 import Toast from "react-native-toast-message";
 import { BusinessInterface, BusinessResponse } from "@/types/business";
 import { useAuth } from "@/auth";
-import { createNewBusiness } from "@/actions/business";
+import { createNewBusiness } from "@/actions/business/new";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface BusinessContextType {
@@ -22,6 +22,9 @@ interface BusinessContextType {
 
 	myBusiness: BusinessInterface | null;
 	setMySingleBusinessFunction: (business: BusinessInterface) => void;
+
+	businessToEdit: BusinessInterface | null;
+	setBusinessToEditFunction: (business: BusinessInterface) => void;
 }
 
 const BusinessContext = createContext<BusinessContextType | undefined>(undefined);
@@ -37,6 +40,7 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 	const [myBusinesses, setMyBusinesses] = useState<BusinessInterface[]>([]);
 	const [myBusiness, setMyBusiness] = useState<BusinessInterface | null>(null);
 	const { user, accessToken } = useAuth(); // Updated line without destructuring
+	const [businessToEdit, setBusinessToEdit] = useState<BusinessInterface | null>(null);
 
 	const fetchAllBusinesses = async (pageNo: number = 1, pageLimit: number = 50) => {
 		setLoading(true);
@@ -110,6 +114,10 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 		setMyBusiness(business);
 	};
 
+	const setBusinessToEditFunction = (business: BusinessInterface) => {
+		setBusinessToEdit(business);
+	};
+
 	useEffect(() => {
 		if (user) {
 			//@ts-ignore
@@ -122,7 +130,6 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 	}, []);
 
 	// register a business
-	
 
 	const memoizedContext = useMemo(
 		() => ({
@@ -139,6 +146,9 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 
 			myBusiness,
 			setMySingleBusinessFunction,
+
+			businessToEdit,
+			setBusinessToEditFunction,
 		}),
 		[
 			allBusinesses,
@@ -151,6 +161,7 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 			singleBusiness,
 			myBusinesses,
 			myBusiness,
+			
 		],
 	);
 

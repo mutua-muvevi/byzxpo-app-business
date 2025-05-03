@@ -2,7 +2,8 @@ import axios from "axios";
 
 const API_URL = "https://byzxpo-server.onrender.com/api";
 
-export const createNewBusiness = async (
+export const editBusinessActtion = async (
+	businessId: string,
 	data: any,
 	setAlertMessage: (message: string) => void,
 	setAlertSeverity: (severity: "info" | "success" | "error") => void,
@@ -19,35 +20,39 @@ export const createNewBusiness = async (
 		if (data?.basicInfo.website) formData.append("website", data?.basicInfo.website);
 		if (data?.basicInfo.tags) formData.append("tags", data?.basicInfo.tags);
 
-	
-	
 		// Append location
 		if (data.location.city) formData.append("city", data.location.city);
 		if (data.location.country) formData.append("country", data.location.country);
 		if (data.location.street) formData.append("street", data.location.street);
 		if (data.location.state) formData.append("state", data.location.state);
-		
 
 		// Append images
-		if (data?.thumbnail) {
+		if (data?.thumbnail && typeof data.thumbnail !== "string") {
 			formData.append("thumbnail", {
-			  uri: data.thumbnail.uri,
-			  name: data.thumbnail.fileName || `thumbnail.${data.thumbnail.mimeType.split("/")[1]}`,
-			  type: data.thumbnail.mimeType,
-			} as any); // Cast to any to satisfy FormData type
-		  }
-	  
-		  if (data?.logo) {
-			formData.append("logo", {
-			  uri: data.logo.uri,
-			  name: data.logo.fileName || `logo.${data.logo.mimeType.split("/")[1]}`,
-			  type: data.logo.mimeType,
+				uri: data.thumbnail.uri,
+				name:
+					data.thumbnail.fileName || `thumbnail.${data.thumbnail.mimeType.split("/")[1]}`,
+				type: data.thumbnail.mimeType,
 			} as any);
-		  }
+		} else if (data?.thumbnail && typeof data.thumbnail === "string") {
+			// Optionally send the existing URL if required by the API
+			formData.append("thumbnail", data.thumbnail);
+		}
+
+		if (data?.logo && typeof data.logo !== "string") {
+			formData.append("logo", {
+				uri: data.logo.uri,
+				name: data.logo.fileName || `logo.${data.logo.mimeType.split("/")[1]}`,
+				type: data.logo.mimeType,
+			} as any);
+		} else if (data?.logo && typeof data.logo === "string") {
+			// Optionally send the existing URL if required by the API
+			formData.append("logo", data.logo);
+		}
 
 		// Posting the data
-		const response = await axios.post(
-			`${API_URL}/business/create`,
+		const response = await axios.patch(
+			`${API_URL}/business/edit/${businessId}`,
 			formData, // Use formData instead of data
 			{
 				headers: {
@@ -66,7 +71,10 @@ export const createNewBusiness = async (
 
 		return response.data;
 	} catch (error: any) {
-		console.error("EEEEEEEEEEEEEERRRRRRRRRRRRRRRRROOOOOOOOOOOOOORRRRRRRRRR",JSON.stringify(error));
+		console.error(
+			"EEEEEEEEEEEEEERRRRRRRRRRRRRRRRROOOOOOOOOOOOOORRRRRRRRRR",
+			JSON.stringify(error),
+		);
 		throw error?.response?.data?.error || error;
 	}
 };

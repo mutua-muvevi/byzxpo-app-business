@@ -2,6 +2,7 @@ import React from "react";
 import {
 	Image,
 	ImageBackground,
+	Modal,
 	ScrollView,
 	StyleSheet,
 	Text,
@@ -13,6 +14,8 @@ import { useBusiness } from "@/contexts/business/fetch";
 import { StatusBar } from "expo-status-bar";
 import { useTheme } from "@/theme";
 import { TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import EditBusinessForm from "@/sections/business/form/edit";
 
 const randomData = [
 	{
@@ -50,13 +53,18 @@ const randomData = [
 ];
 
 const MyBusinessDetails = () => {
-	const { myBusiness } = useBusiness();
+	const { myBusiness, setBusinessToEditFunction } = useBusiness();
 	const { theme } = useTheme();
 	const { primary, red, success, warning, brown } = theme;
 	const colors = [primary, red, success, warning, brown];
+	const [openEditBusinessForm, setOpenEditBusinessForm] = React.useState(false);
 
-	console.log("useTHEME", theme);
-	console.log("Mybusibness", myBusiness);
+	const handleSetOpenModal = () => {
+		if (myBusiness) {
+			setBusinessToEditFunction(myBusiness);
+		}
+		setOpenEditBusinessForm(true);
+	};
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: theme.background.default }} edges={["top", "left", "right"]}>
@@ -116,6 +124,7 @@ const MyBusinessDetails = () => {
 							gap: 10,
 							justifyContent: "space-between",
 							alignItems: "flex-end",
+							flexWrap: "wrap"
 						}}
 					>
 						<View>
@@ -140,9 +149,7 @@ const MyBusinessDetails = () => {
 								alignItems: "center",
 								height: 40,
 							}}
-							onPress={() => {
-								// Handle button press
-							}}
+							onPress={handleSetOpenModal}
 						>
 							<Text
 								style={{
@@ -199,6 +206,62 @@ const MyBusinessDetails = () => {
 					))}
 				</View>
 			</ScrollView>
+
+			<Modal
+				visible={openEditBusinessForm}
+				onRequestClose={() => setOpenEditBusinessForm(false)}
+				animationType="fade"
+				transparent={true}
+			>
+				<View
+					style={{
+						flex: 1,
+						justifyContent: "center",
+						alignItems: "center",
+						backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+					}}
+				>
+					<View
+						style={{
+							width: "90%", // Fixed width
+							height: "90%", // Fixed height
+							backgroundColor: theme.background.paper,
+							borderRadius: 5,
+							padding: 10,
+							position: "relative", // Allow absolute positioning of children
+						}}
+					>
+						{/* Close Icon Button */}
+						<TouchableOpacity
+							style={{
+								position: "absolute",
+								top: 10,
+								right: 10,
+								padding: 5, // Smaller padding for icon button
+								zIndex: 1, // Ensure it’s above other content
+							}}
+							onPress={() => setOpenEditBusinessForm(false)}
+						>
+							<Ionicons
+								name="close"
+								size={24} // Adjust size as needed
+								color={theme.error.main} // Match your theme
+							/>
+						</TouchableOpacity>
+
+						{/* Modal Content */}
+						<View
+							style={{
+								flex: 1,
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						>
+							<EditBusinessForm onClose={() => setOpenEditBusinessForm(false)} />
+						</View>
+					</View>
+				</View>
+			</Modal>
 		</SafeAreaView>
 	);
 };

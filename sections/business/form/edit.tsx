@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Image } from "react-native";
 import { useTheme } from "@/theme";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -14,7 +14,7 @@ import { useAuth } from "@/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createNewBusiness } from "@/actions/business/new";
 import Toast from "react-native-toast-message";
-import { success } from "../../../theme/palette";
+import { editBusinessActtion } from "@/actions/business/edit";
 
 // Stepper Steps
 const steps = ["Basic Info", "Location", "Images"];
@@ -26,7 +26,11 @@ const NewBusinessSchema = Yup.object().shape({
 		email: Yup.string().email("Email must be a valid email address"),
 		phone: Yup.string(),
 		website: Yup.string().url("Invalid website URL"),
-		tags: Yup.string(),
+		tags: Yup.mixed().test(
+			"is-string-or-array",
+			"Tags must be a string or an array of strings",
+			(value) => typeof value === "string" || Array.isArray(value),
+		),
 	}),
 	location: Yup.object().shape({
 		street: Yup.string(),
@@ -38,34 +42,21 @@ const NewBusinessSchema = Yup.object().shape({
 	logo: Yup.mixed().nullable(),
 });
 
-// Initial Form Values
-const initialValues = {
-	businessName: "",
-	basicInfo: {
-		email: "",
-		phone: "",
-		website: "",
-		tags: "",
-	},
-	location: {
-		street: "",
-		city: "",
-		country: "",
-		// coordinates: [0, 0],
-		state: "",
-	},
-	thumbnail: null,
-	logo: null,
-};
+const placeholderImage = require("@/assets/images/image-placeholder.png");
 
 // Image Upload Component
-const RHFImageUpload = ({ name, label }: { name: string; label: string }) => {
+interface RHFImageUploadProps {
+	name: string;
+	label: string;
+	existingImage?: string | null; // URL of existing image from businessToEdit
+}
+
+const RHFImageUpload = ({ name, label, existingImage }: RHFImageUploadProps) => {
 	const { control } = useFormContext();
 	const { theme } = useTheme();
 
 	const pickImage = async (onChange: (file: any) => void) => {
 		const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
 		if (status !== "granted") {
 			alert("Sorry, we need camera roll permissions to make this work!");
 			return;
@@ -105,16 +96,53 @@ const RHFImageUpload = ({ name, label }: { name: string; label: string }) => {
 							borderWidth: 1,
 							borderColor: error ? theme.error.main : theme.grey[300],
 							alignItems: "center",
+							justifyContent: "center",
+							height: 150, // Fixed height for consistency
 						}}
 						onPress={() => pickImage(field.onChange)}
 					>
-						<Text
-							style={{
-								color: field.value ? theme.text.primary : theme.grey[500],
-							}}
-						>
-							{field.value ? "Image Selected" : `Upload ${label}`}
-						</Text>
+						{field.value ? (
+							// Display selected image
+							<Image
+								source={{ uri: field.value.uri }}
+								style={{
+									width: "100%",
+									height: "100%",
+									borderRadius: 5,
+									resizeMode: "cover",
+								}}
+							/>
+						) : existingImage ? (
+							// Display existing image from businessToEdit
+							<Image
+								source={{ uri: existingImage }}
+								style={{
+									width: "100%",
+									height: "100%",
+									borderRadius: 5,
+									resizeMode: "cover",
+								}}
+							/>
+						) : (
+							// Display placeholder (icon or image)
+							<View
+								style={{
+									alignItems: "center",
+									justifyContent: "center",
+								}}
+							>
+								<FontAwesome name="image" size={40} color={theme.grey[500]} />
+								<Text
+									style={{
+										color: theme.grey[500],
+										marginTop: 8,
+										fontSize: 12,
+									}}
+								>
+									Upload {label}
+								</Text>
+							</View>
+						)}
 					</TouchableOpacity>
 					{error && (
 						<Text
@@ -223,6 +251,7 @@ const LocationSection = () => {
 // Images Section
 const ImagesSection = () => {
 	const { theme } = useTheme();
+	const { businessToEdit } = useBusiness();
 
 	return (
 		<View style={{ padding: 10, gap: 10 }}>
@@ -236,20 +265,45 @@ const ImagesSection = () => {
 			>
 				Images
 			</Text>
-			<RHFImageUpload name="thumbnail" label="Thumbnail" />
-			<RHFImageUpload name="logo" label="Logo" />
+			<RHFImageUpload
+				name="thumbnail"
+				label="Thumbnail"
+				existingImage={businessToEdit?.thumbnail}
+			/>
+			<RHFImageUpload name="logo" label="Logo" existingImage={businessToEdit?.logo} />
 		</View>
 	);
 };
 
 // Main Form Component
-const AddBusinessForm = ({ onClose }: { onClose: () => void }) => {
+const EditBusinessForm = ({ onClose }: { onClose: () => void }) => {
 	const [activeStep, setActiveStep] = useState(0);
 	const { theme } = useTheme();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
 	const { accessToken, user } = useAuth();
+	const { businessToEdit, myBusiness } = useBusiness();
+
+	// Initial Form Values
+	const initialValues = {
+		businessName: businessToEdit?.businessName || "",
+		basicInfo: {
+			email: businessToEdit?.basicInfo?.email || "",
+			phone: businessToEdit?.basicInfo?.phone || "",
+			website: businessToEdit?.basicInfo?.website || "",
+			tags: businessToEdit?.basicInfo?.tags || "",
+		},
+		location: {
+			street: businessToEdit?.location?.street || "",
+			city: businessToEdit?.location?.city || "",
+			country: businessToEdit?.location?.country || "",
+			// coordinates: [0, 0],
+			state: businessToEdit?.location?.state || "",
+		},
+		thumbnail: businessToEdit?.thumbnail || null,
+		logo: businessToEdit?.logo || null,
+	};
 
 	const methods = useForm({
 		resolver: yupResolver(NewBusinessSchema),
@@ -281,7 +335,8 @@ const AddBusinessForm = ({ onClose }: { onClose: () => void }) => {
 			}
 
 			// Call the createNewBusiness API
-			const response = await createNewBusiness(
+			const response = await editBusinessActtion(
+				businessToEdit?._id || myBusiness?._id || "",
 				data,
 				(message: string) => {
 					Toast.show({
@@ -489,4 +544,4 @@ const AddBusinessForm = ({ onClose }: { onClose: () => void }) => {
 	);
 };
 
-export default AddBusinessForm;
+export default EditBusinessForm;
