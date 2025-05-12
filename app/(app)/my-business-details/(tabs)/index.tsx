@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import {
 	Image,
 	ImageBackground,
 	Modal,
+	RefreshControl,
 	ScrollView,
 	StyleSheet,
 	Text,
@@ -16,6 +17,7 @@ import { useTheme } from "@/theme";
 import { TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import EditBusinessForm from "@/sections/business/form/edit";
+import LoadingStateIndicator from "@/components/ui/LoadingStateIndicator";
 
 const randomData = [
 	{
@@ -53,11 +55,18 @@ const randomData = [
 ];
 
 const MyBusinessDetails = () => {
-	const { myBusiness, setBusinessToEditFunction } = useBusiness();
+	const {
+		myBusiness,
+		setBusinessToEditFunction,
+		loading,
+		fetchAllBusinesses,
+		setMySingleBusinessFunction,
+	} = useBusiness();
 	const { theme } = useTheme();
 	const { primary, red, success, warning, brown } = theme;
 	const colors = [primary, red, success, warning, brown];
 	const [openEditBusinessForm, setOpenEditBusinessForm] = React.useState(false);
+	const [refreshing, setRefreshing] = useState(false);
 
 	const handleSetOpenModal = () => {
 		if (myBusiness) {
@@ -66,11 +75,46 @@ const MyBusinessDetails = () => {
 		setOpenEditBusinessForm(true);
 	};
 
+	// Handle pull-to-refresh
+	const onRefresh = async () => {
+		setRefreshing(true);
+		try {
+			// Assuming fetchBusiness is provided by useBusiness context
+			const allBusinesses = await fetchAllBusinesses();
+
+			const currentBusiness = allBusinesses?.find(
+				(business) => business._id === myBusiness?._id,
+			);
+
+			if (currentBusiness) {
+				setMySingleBusinessFunction(currentBusiness);
+			}
+		} catch (error) {
+			console.error("Error refreshing business data:", error);
+			// Optionally show an alert or toast for user feedback
+		} finally {
+			setRefreshing(false);
+		}
+	};
+
+	if (loading) return <LoadingStateIndicator text="Loading, please wait..."/>;
+
 	return (
-		<SafeAreaView style={{ flex: 1, backgroundColor: theme.background.default }} edges={["top", "left", "right"]}>
+		<SafeAreaView
+			style={{ flex: 1, backgroundColor: theme.background.default }}
+			edges={["top", "left", "right"]}
+		>
 			<StatusBar backgroundColor={theme.palette.primary.main} style="light" />
 
-			<ScrollView>
+			<ScrollView
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={onRefresh}
+						tintColor={theme.palette.primary.main} // Customize refresh indicator color
+					/>
+				}
+			>
 				<ImageBackground
 					source={{
 						uri: (myBusiness?.thumbnail ||
@@ -124,7 +168,7 @@ const MyBusinessDetails = () => {
 							gap: 10,
 							justifyContent: "space-between",
 							alignItems: "flex-end",
-							flexWrap: "wrap"
+							flexWrap: "wrap",
 						}}
 					>
 						<View>
@@ -137,7 +181,9 @@ const MyBusinessDetails = () => {
 							>
 								{myBusiness?.businessName}
 							</Text>
-							<Text style={{ color: theme.text.secondary }}>{myBusiness?.basicInfo?.email || "Email Not Available"}</Text>
+							<Text style={{ color: theme.text.secondary }}>
+								{myBusiness?.basicInfo?.email || "Email Not Available"}
+							</Text>
 						</View>
 
 						<TouchableOpacity

@@ -12,7 +12,7 @@ interface BusinessContextType {
 	meta: any;
 	loading: boolean;
 	error: string | null;
-	fetchAllBusinesses: (pageNo?: number, pageLimit?: number) => Promise<void>;
+	fetchAllBusinesses: (pageNo?: number, pageLimit?: number) => Promise<BusinessInterface[]>;
 	pagination: any;
 
 	singleBusiness: BusinessInterface | null;
@@ -85,6 +85,8 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 				currentPage: paginationResponse?.currentPage ?? 0,
 				pageSize: paginationResponse?.pageSize ?? 0,
 			});
+
+			return businesses || [];
 		} catch (err) {
 			let errorMessage: string;
 			if (err instanceof AxiosError) {
@@ -101,6 +103,7 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 				text1: "Error",
 				text2: errorMessage,
 			});
+			return [];
 		} finally {
 			setLoading(false);
 		}
@@ -109,6 +112,8 @@ const BusinessProvider = ({ children }: { children: ReactNode }) => {
 	const setSingleBusinessFunction = (business: BusinessInterface) => {
 		setSingleBusiness(business);
 	};
+
+	
 
 	const setMySingleBusinessFunction = (business: BusinessInterface) => {
 		setMyBusiness(business);

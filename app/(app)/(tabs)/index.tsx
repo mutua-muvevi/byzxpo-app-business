@@ -58,7 +58,7 @@ const HomeScreen = () => {
 	const styles = createStyles(theme);
 
 	const auth = useAuth();
-	console.log("auth", auth);
+	console.log(auth);
 
 	return sponsoredBusinessLoading || categoryLoading ? (
 		<LoadingStateIndicator text={"Loading businesses..."} />
@@ -100,10 +100,9 @@ const HomeScreen = () => {
 					<View
 						style={{
 							borderWidth: 1,
-							borderColor: theme.palette.primary.main,
+							borderColor: "#ccc",
 							marginVertical: 10,
 							borderStyle: "dashed",
-							height:1
 						}}
 					/>
 				)}

@@ -24,9 +24,14 @@ const Login = () => {
 	const { login, loading, error } = useAuth();
 	const { theme } = useTheme();
 	const router = useRouter();
-	const auth = useAuth();
+	const { user, isAuthenticated } = useAuth();
 	const [errorMsg, setError] = React.useState<any | null>(null);
 	const [loadingState, setLoading] = React.useState<boolean>(false);
+
+	if(user && isAuthenticated) {
+		router.push("/");
+	}
+
 
 	const methods = useForm<LoginFormValues>({
 		resolver: yupResolver(loginSchema),

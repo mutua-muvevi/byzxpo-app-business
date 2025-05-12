@@ -77,6 +77,7 @@ const BusinessCategoryCards = ({ business }: { business: BusinessInterface }) =>
 
 	const handleOpenBusiness = () => {
 		setSingleBusinessFunction(business);
+		
 		router.push({
 			pathname: "/business-details/[id]",
 			params: { id: business._id },

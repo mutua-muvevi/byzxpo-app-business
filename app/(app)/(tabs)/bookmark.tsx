@@ -47,8 +47,11 @@ const BookmarkHeader = () => {
 const BookmarkCardComponents = ({ business }: any) => {
 	const { theme } = useTheme();
 	const router = useRouter();
+	const { setSingleBusinessFunction } = useBusiness();
 
 	const handleNavigateToBusinessDetails = () => {
+		setSingleBusinessFunction(business);
+		
 		router.push({
 			pathname: "/business-details/[id]",
 			params: { id: business._id },
@@ -121,7 +124,7 @@ const Bookmark = () => {
 	const { theme, mode } = useTheme();
 
 	return (
-		<SafeAreaView>
+		<SafeAreaView style={{minHeight: "100%", backgroundColor: theme.background.default}}>
 			<StatusBar backgroundColor={theme.palette.primary.main} />
 			<FlatList
 				data={mySavedBusinesses}

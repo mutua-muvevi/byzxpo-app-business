@@ -15,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createNewBusiness } from "@/actions/business/new";
 import Toast from "react-native-toast-message";
 import { editBusinessActtion } from "@/actions/business/edit";
+import { useRouter } from "expo-router";
 
 // Stepper Steps
 const steps = ["Basic Info", "Location", "Images"];
@@ -285,6 +286,8 @@ const EditBusinessForm = ({ onClose }: { onClose: () => void }) => {
 	const { accessToken, user } = useAuth();
 	const { businessToEdit, myBusiness } = useBusiness();
 
+	const router = useRouter()
+
 	// Initial Form Values
 	const initialValues = {
 		businessName: businessToEdit?.businessName || "",
@@ -365,6 +368,8 @@ const EditBusinessForm = ({ onClose }: { onClose: () => void }) => {
 				setActiveStep(0);
 
 				onClose();
+
+				router.push("/")
 			}
 		} catch (errorMessage: any) {
 			console.log("ERROR", errorMessage);
