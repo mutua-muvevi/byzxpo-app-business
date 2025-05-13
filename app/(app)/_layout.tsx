@@ -9,6 +9,7 @@ import { AuthGuard } from "@/auth";
 import { EnquiriesContextProvider } from "@/contexts/enquiries/provider";
 import { LeadsContextProvider } from "@/contexts/leads/provider";
 import { ReviewsContextProvider } from "@/contexts/reviews/provider";
+import { AnalyticsProvider } from "@/contexts/analytics/provider";
 
 const AppLayout = () => {
 	const { accessToken, loading, isAuthenticated } = useAuth();
@@ -30,23 +31,25 @@ const AppLayout = () => {
 					<EnquiriesContextProvider>
 						<LeadsContextProvider>
 							<ReviewsContextProvider>
-								<Stack>
-									<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-									<Stack.Screen
-										name="business-details/[id]"
-										options={{ headerShown: false }}
-									/>
-									<Stack.Screen name="category/[id]" options={{ headerShown: false }} />
-									<Stack.Screen
-										name="my-business-details/(tabs)"
-										options={{ headerShown: false }} // Header disabled
-									/>
-									<Stack.Screen name="my-businesses" options={{ headerShown: false }} />
-									<Stack.Screen name="profile" options={{ headerShown: false }} />
-									<Stack.Screen name="account" options={{ headerShown: false }} />
-									<Stack.Screen name="edit" options={{ headerShown: false }} />
-									<Stack.Screen name="settings" options={{ headerShown: false }} />
-								</Stack>
+								<AnalyticsProvider>
+									<Stack>
+										<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+										<Stack.Screen
+											name="business-details/[id]"
+											options={{ headerShown: false }}
+										/>
+										<Stack.Screen name="category/[id]" options={{ headerShown: false }} />
+										<Stack.Screen
+											name="my-business-details/(tabs)"
+											options={{ headerShown: false }} // Header disabled
+										/>
+										<Stack.Screen name="my-businesses" options={{ headerShown: false }} />
+										<Stack.Screen name="profile" options={{ headerShown: false }} />
+										<Stack.Screen name="account" options={{ headerShown: false }} />
+										<Stack.Screen name="edit" options={{ headerShown: false }} />
+										<Stack.Screen name="settings" options={{ headerShown: false }} />
+									</Stack>
+								</AnalyticsProvider>
 							</ReviewsContextProvider>
 						</LeadsContextProvider>
 					</EnquiriesContextProvider>
