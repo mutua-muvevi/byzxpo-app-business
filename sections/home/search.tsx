@@ -7,6 +7,8 @@ import {
 	TouchableOpacity,
 	FlatList,
 	ActivityIndicator,
+	Modal,
+	TouchableWithoutFeedback,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@/theme";
@@ -24,6 +26,7 @@ const createStyles = (theme: any) =>
 			flexDirection: "row",
 			alignItems: "center",
 			marginBottom: 20,
+			zIndex: 20, // Ensure search bar is above modal
 		},
 		searchContainer: {
 			flex: 1,
@@ -65,20 +68,23 @@ const createStyles = (theme: any) =>
 			height: 50,
 			width: 45,
 		},
+		modalContainer: {
+			flex: 1,
+			backgroundColor: "rgba(0, 0, 0, 0.3)", // Semi-transparent background
+			justifyContent: "flex-start",
+			paddingTop: 70, // Space for search bar
+		},
 		resultsContainer: {
-			position: "absolute",
-			top: 60,
-			left: 0,
-			right: 0,
+			marginHorizontal: 10,
 			backgroundColor: theme.background.default,
 			borderRadius: theme.shape.borderRadius,
-			maxHeight: 300,
-			zIndex: 10,
+			maxHeight: "80%", // Limit height to avoid covering entire screen
 			shadowColor: theme.common.black,
 			shadowOffset: { width: 0, height: 2 },
 			shadowOpacity: 0.2,
 			shadowRadius: 4,
 			elevation: 5,
+			zIndex: 15, // Ensure results are above parent content
 		},
 		loadingContainer: {
 			padding: 10,
@@ -90,7 +96,6 @@ const Search = () => {
 	const { theme } = useTheme();
 	const styles = createStyles(theme);
 	const router = useRouter();
-	const { setSingleBusinessFunction } = useBusiness();
 	const [searchQuery, setSearchQuery] = useState("");
 	const [filters, setFilters] = useState({
 		name: "",
@@ -105,6 +110,8 @@ const Search = () => {
 	const [results, setResults] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isModalVisible, setIsModalVisible] = useState(false);
+	const [isResultsVisible, setIsResultsVisible] = useState(false);
+	const { setSingleBusinessFunction } = useBusiness();
 
 	// Debounced search function
 	const fetchSearchResults = useCallback(async (query: string, filterParams: typeof filters) => {
@@ -128,9 +135,11 @@ const Search = () => {
 				},
 			);
 			setResults(response.data.businesses);
+			setIsResultsVisible(response.data.businesses.length > 0);
 		} catch (error) {
 			console.error("Search error:", error);
 			setResults([]);
+			setIsResultsVisible(false);
 		} finally {
 			setIsLoading(false);
 		}
@@ -159,18 +168,22 @@ const Search = () => {
 
 	// Handle result click
 	const handleResultClick = (business: BusinessInterface) => {
-			console.log("business of mine >>>>>>>>>>>>>>>>>>>>>>", business);
-
-			if(business) {
-				setSingleBusinessFunction(business);
-				router.push(`/business-details/${business._id}`);
-				setSearchQuery("");
-				setResults([]);
-			}
+			setSingleBusinessFunction(business);
+			router.push(`/business-details/${business._id}`);
+			setSearchQuery("");
+			setResults([]);
+			setIsResultsVisible(false);
 		};
 
+	// Close results modal when clicking outside
+	const handleCloseResults = () => {
+		setIsResultsVisible(false);
+		setSearchQuery("");
+		setResults([]);
+	};
+
 	return (
-		<View>
+		<View style={{ zIndex: 20 }}>
 			<View style={styles.container}>
 				<View style={styles.searchContainer}>
 					<Ionicons
@@ -195,31 +208,43 @@ const Search = () => {
 				</TouchableOpacity>
 			</View>
 
-			{/* Search Results */}
-			{results.length > 0 && (
-				<View style={styles.resultsContainer}>
-					<FlatList
-						data={results}
-						keyExtractor={(item) => item._id}
-						renderItem={({ item }) => (
-							<SearchResultCard
-								business={item}
-								onPress={() => handleResultClick(item)}
-							/>
-						)}
-						ListFooterComponent={
-							isLoading ? (
-								<View style={styles.loadingContainer}>
-									<ActivityIndicator
-										size="small"
-										color={theme.palette.primary.main}
-									/>
-								</View>
-							) : null
-						}
-					/>
-				</View>
-			)}
+			{/* Search Results Modal */}
+			<Modal
+				visible={isResultsVisible}
+				transparent
+				animationType="fade"
+				onRequestClose={handleCloseResults}
+			>
+				<TouchableWithoutFeedback onPress={handleCloseResults}>
+					<View style={styles.modalContainer}>
+						<TouchableWithoutFeedback>
+							<View style={styles.resultsContainer}>
+								<FlatList
+									data={results}
+									keyExtractor={(item: any) => item._id}
+									renderItem={({ item }: any) => (
+										<SearchResultCard
+											business={item}
+											onPress={() => handleResultClick(item)}
+										/>
+									)}
+									ListFooterComponent={
+										isLoading ? (
+											<View style={styles.loadingContainer}>
+												<ActivityIndicator
+													size="small"
+													color={theme.palette.primary.main}
+												/>
+											</View>
+										) : null
+									}
+									showsVerticalScrollIndicator={false}
+								/>
+							</View>
+						</TouchableWithoutFeedback>
+					</View>
+				</TouchableWithoutFeedback>
+			</Modal>
 
 			{/* Filter Modal */}
 			<FilterModal

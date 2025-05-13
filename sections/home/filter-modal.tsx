@@ -89,7 +89,8 @@ const FilterModal = ({ visible, onClose, onSubmit, initialFilters }: Props) => {
 	const [filters, setFilters] = useState(initialFilters);
 
 	const handleSubmit = () => {
-		onSubmit(filters);
+		onSubmit(filters); // Trigger search with filter values
+		onClose(); // Close the filter modal
 	};
 
 	return (
