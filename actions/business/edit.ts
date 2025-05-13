@@ -10,7 +10,6 @@ export const editBusinessActtion = async (
 	token: string,
 ) => {
 	try {
-		console.log("Data coming from the form to api", data);
 		const formData = new FormData();
 
 		// Append basic info
@@ -62,8 +61,6 @@ export const editBusinessActtion = async (
 			},
 		);
 
-		console.log("response >>>>>>>>>", response);
-
 		const { message, success } = response.data;
 
 		setAlertMessage(message);
@@ -71,10 +68,7 @@ export const editBusinessActtion = async (
 
 		return response.data;
 	} catch (error: any) {
-		console.error(
-			"EEEEEEEEEEEEEERRRRRRRRRRRRRRRRROOOOOOOOOOOOOORRRRRRRRRR",
-			JSON.stringify(error),
-		);
+		
 		throw error?.response?.data?.error || error;
 	}
 };

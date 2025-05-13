@@ -9,7 +9,6 @@ export const createNewBusiness = async (
 	token: string,
 ) => {
 	try {
-		console.log("Data coming from the form to api", data);
 		const formData = new FormData();
 
 		// Append basic info
@@ -56,8 +55,6 @@ export const createNewBusiness = async (
 				},
 			},
 		);
-
-		console.log("response >>>>>>>>>", response);
 
 		const { message, success } = response.data;
 

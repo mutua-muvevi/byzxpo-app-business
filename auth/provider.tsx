@@ -107,7 +107,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 			}
 
-			return null
+			throw new Error("Login failed: Missing accessToken or refreshToken");
 
 
 		} catch (error : any) {

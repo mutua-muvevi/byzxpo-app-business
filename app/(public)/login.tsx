@@ -1,5 +1,5 @@
 // auth/login.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { useForm } from "react-hook-form";
@@ -25,13 +25,14 @@ const Login = () => {
 	const { theme } = useTheme();
 	const router = useRouter();
 	const { user, isAuthenticated } = useAuth();
-	const [errorMsg, setError] = React.useState<any | null>(null);
-	const [loadingState, setLoading] = React.useState<boolean>(false);
+	const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 
-	if(user && isAuthenticated) {
-		router.push("/");
-	}
-
+	// Handle navigation when user is authenticated
+	useEffect(() => {
+		if (user && isAuthenticated) {
+			router.replace("/"); // Use replace instead of push to avoid stacking
+		}
+	}, [user, isAuthenticated, router]);
 
 	const methods = useForm<LoginFormValues>({
 		resolver: yupResolver(loginSchema),
@@ -42,29 +43,25 @@ const Login = () => {
 
 	const onSubmit = async (data: LoginFormValues) => {
 		try {
-			setLoading(true);
-			setError(null);
-
+			setErrorMsg(null);
 			const result = await login(data);
-
 			if (result) {
-				router.push("/");
+				router.replace("/");
 			}
 		} catch (error) {
-			console.log("error >>>>>>>>>>>>>>>>>>", error);
-
+			
 			if (error instanceof Error) {
-				setError(error.message);
+				setErrorMsg(error.message);
 			}
-		} finally {
-			// setLoading(false);
-			setLoading(false);
 		}
 	};
 
-	return loading === true ? (
-		<LoadingStateIndicator text={"Authenticating ..."} />
-	) : (
+	// Show loading indicator when authenticating
+	if (loading) {
+		return <LoadingStateIndicator text={"Authenticating ..."} />;
+	}
+
+	return (
 		<View
 			style={{
 				flex: 1,

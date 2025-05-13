@@ -4,6 +4,7 @@ import UnavailableContentPage from "@/components/ui/UnavailablePage";
 import { useBusiness } from "@/contexts/business/fetch";
 import { useEnquiries } from "@/contexts/enquiries/provider";
 import { useTheme } from "@/theme";
+import { fDate } from "@/utils/format-time";
 import { FontAwesome5 } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { Text, View, TouchableOpacity, FlatList, RefreshControl } from "react-native";
@@ -99,23 +100,26 @@ const ConversationCards = ({ item }: { item: any }) => {
 					<Text style={{ fontSize: 16, fontWeight: "bold", color: theme.text.primary }}>
 						{item.name}
 					</Text>
-					<Text style={{ color: theme.text.secondary }}>{item?.subject}</Text>
+					{item?.createdAt ? (
+						<Text style={{ color: theme.text.secondary }}>{fDate(item?.createdAt)}</Text>
+					) : null}
+
 				</View>
 			</View>
 
 			<View style={{ marginTop: 10, gap: 5 }}>
-				<Text style={{ fontWeight: "bold", color: theme.text.primary }}>{item?.subject}</Text>
+				<Text style={{ fontWeight: "bold", color: theme.text.primary }}>
+					{item?.subject}
+				</Text>
 
 				<Text style={{ color: theme.text.secondary }}>{item.message}</Text>
 
-				<View style={{ flexDirection: "row", alignItems: "flex-start", gap: 5 }}>
-					<FontAwesome5 name="clock" size={16} color={theme.text.primary} />
-					<Text style={{ color: theme.text.secondary }}>Last updated: {item.date}</Text>
-				</View>
+				
 			</View>
 		</View>
 	);
 };
+
 
 const Conversations = () => {
 	const { theme } = useTheme();
@@ -140,13 +144,12 @@ const Conversations = () => {
 			<FlatList
 				data={businessEnquiries}
 				renderItem={({ item }) => {
-					console.log("Item>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", item);
 					return <ConversationCards item={item} />;
 				}}
 				keyExtractor={(item) => item._id.toString()}
 				ListHeaderComponent={<ConversationHeader list={businessEnquiries} />}
 				contentContainerStyle={{ paddingBottom: 20 }}
-				ListEmptyComponent={<UnavailableContentPage text="No Enquiries Present" />}
+				ListEmptyComponent={<UnavailableContentPage text="No Enquiries Present for this Business" />}
 				refreshControl={
 					<RefreshControl
 						refreshing={allBusinessEnquiriesLoading}

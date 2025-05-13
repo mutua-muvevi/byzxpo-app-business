@@ -7,7 +7,6 @@ import {
 	fetchLeadAsPerBusinessAPI,
 } from "@/actions/leads/fetch";
 import { useAuth } from "@/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { deleteLeadAPI } from "@/actions/leads/delete";
 
 interface LeadsContextInterface {
@@ -84,6 +83,7 @@ const LeadsContextProvider = ({ children }: { children: ReactNode }) => {
 				businessId,
 				token,
 			);
+			console.log("REEEEEDPONSEEEEEEEEEEEEEE", response)
 			setBusinessLeads(response.leads);
 			setAllBusinessLeadsLoading(false);
 		} catch (error) {

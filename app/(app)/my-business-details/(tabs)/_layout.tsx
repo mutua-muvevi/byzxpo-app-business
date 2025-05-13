@@ -131,10 +131,10 @@ const BusinessLayout = () => {
 				}}
 			/>
 			<Tabs.Screen
-				name="conversations"
+				name="enquiries"
 				options={{
-					title: "Conversations",
-					href: "/my-business-details/conversations",
+					title: "Enquiries",
+					href: "/my-business-details/enquiries",
 					tabBarIcon: ({ color }) => (
 						<MaterialIcons size={24} name="message" color={color} />
 					),
@@ -151,10 +151,10 @@ const BusinessLayout = () => {
 				}}
 			/>
 			<Tabs.Screen
-				name="customers"
+				name="leads"
 				options={{
-					title: "My Customers",
-					href: "/my-business-details/customers",
+					title: "My Leads",
+					href: "/my-business-details/leads",
 					tabBarIcon: ({ color }) => (
 						<MaterialIcons size={24} name="people" color={color} />
 					),

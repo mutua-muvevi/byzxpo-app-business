@@ -54,14 +54,7 @@ const Settings = () => {
 	const handleSetPresets = (props: any) => {
 		setPresetFunction(props);
 
-		console.log("PresetProps:", props);
 	};
-
-	// console.log("the theme", theme);
-	// console.log("currentPreset", currentPreset);
-	// console.log("parent theme", parenttheme);
-	console.log("mode", mode);
-	console.log("preset", preset);
 
 	return (
 		<SafeAreaView

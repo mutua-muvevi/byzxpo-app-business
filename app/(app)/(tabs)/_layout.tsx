@@ -156,15 +156,6 @@ const TabLayout = () => {
 				}}
 			/>
 			<Tabs.Screen
-				name="messages"
-				options={{
-					title: "Messages",
-					tabBarIcon: ({ color }) => (
-						<IconSymbol size={24} name="message.fill" color={color} />
-					),
-				}}
-			/>
-			<Tabs.Screen
 				name="profile"
 				options={{
 					title: "Profile",

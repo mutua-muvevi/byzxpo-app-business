@@ -43,7 +43,6 @@ export const fetchLeadAsPerBusinessAPI = async (
 	businessId: string,
 	token: string,
 ) => {
-	console.log("businessId", businessId);
 	try {
 		const response = await axios.get(`${API_URL}/leads/fetch/business/all/${businessId}`, {
 			headers: { Authorization: token },
@@ -52,7 +51,6 @@ export const fetchLeadAsPerBusinessAPI = async (
 				limit: pageLimit,
 			}
 		});
-		console.log("response", response.data)
 		return response.data;
 	} catch (error) {
 		throw new Error(

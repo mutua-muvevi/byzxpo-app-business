@@ -1,10 +1,14 @@
 import { useTheme } from "@/theme";
-import React from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { FlatList, RefreshControl, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Review } from "../../../../types/business";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Rating } from "react-native-ratings";
+import { useReviews } from "@/contexts/reviews/provider";
+import { useBusiness } from "@/contexts/business/fetch";
+import LoadingStateIndicator from "@/components/ui/LoadingStateIndicator";
+import UnavailableContentPage from "@/components/ui/UnavailablePage";
 
 const reviews = [
 	{
@@ -244,7 +248,7 @@ const ReviewItems = ({ item }: { item: any }) => {
 					paddingBottom: 5,
 				}}
 			>
-				{item.name}
+				{item?.createdBy?.name}
 			</Text>
 			<Text style={{ color: theme.text.secondary, fontWeight: "bold" }}>{item.title}</Text>
 			<Text style={{ color: theme.text.secondary }}>{item.description}</Text>
@@ -260,7 +264,7 @@ const ReviewItems = ({ item }: { item: any }) => {
 						justifyContent: "flex-start",
 						marginLeft: 0,
 						backgroundColor: theme.background.default,
-					 }}
+					}}
 					ratingColor={theme.palette.primary.main}
 				/>
 			</View>
@@ -269,15 +273,46 @@ const ReviewItems = ({ item }: { item: any }) => {
 };
 
 const BusinessReviews = () => {
-	return (
+	const { theme } = useTheme();
+	const {
+		businessReviews: reviews,
+		fetchBusinessReviews,
+		allBusinessReviewsLoading,
+	} = useReviews();
+	const { myBusiness } = useBusiness();
+
+	const [pageNumber, setPageNumber] = useState(1);
+	const [pageLimit, setPageLimit] = useState(100);
+
+	useEffect(() => {
+		if (myBusiness) {
+			fetchBusinessReviews(myBusiness._id, pageNumber, pageLimit);
+		}
+	}, []);
+	
+	return allBusinessReviewsLoading ? (
+		<LoadingStateIndicator text="Loading Reviews" />
+	) : (
 		<SafeAreaView style={{ flex: 1 }}>
 			<FlatList
 				data={reviews}
-				keyExtractor={(item) => item.id.toString()}
+				keyExtractor={(item) => item._id.toString()}
 				renderItem={({ item }) => <ReviewItems item={item} />}
 				ListHeaderComponent={<ReviewsHeader />}
 				contentContainerStyle={{ paddingBottom: 20 }}
+				ListEmptyComponent={<UnavailableContentPage text="No Reviews Present for this Business" />}
+				refreshControl={
+					<RefreshControl
+						refreshing={allBusinessReviewsLoading}
+						onRefresh={() => {
+							if (myBusiness) {
+								fetchBusinessReviews(myBusiness._id, pageNumber, pageLimit);
+							}
+						}}
+					/>
+				}
 			/>
+
 		</SafeAreaView>
 	);
 };
