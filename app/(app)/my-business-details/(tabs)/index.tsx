@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	Image,
 	ImageBackground,
@@ -7,52 +7,21 @@ import {
 	ScrollView,
 	StyleSheet,
 	Text,
-	Touchable,
+	TouchableOpacity,
 	View,
+	ActivityIndicator,
+	Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useBusiness } from "@/contexts/business/fetch";
+import { useAnalytics } from "@/contexts/analytics/provider";
 import { StatusBar } from "expo-status-bar";
 import { useTheme } from "@/theme";
-import { TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import EditBusinessForm from "@/sections/business/form/edit";
 import LoadingStateIndicator from "@/components/ui/LoadingStateIndicator";
-
-const randomData = [
-	{
-		name: "impressions",
-		value: 1000,
-	},
-	{
-		name: "clicks",
-		value: 500,
-	},
-	{
-		name: "conversions",
-		value: 50,
-	},
-	{
-		name: "customers",
-		value: 20,
-	},
-	{
-		name: "enquiries",
-		value: 10,
-	},
-	{
-		name: "leads",
-		value: 5,
-	},
-	{
-		name: "sales",
-		value: 2,
-	},
-	{
-		name: "revenue",
-		value: 1000,
-	},
-];
+import SegmentedControl from "@react-native-segmented-control/segmented-control"; // For duration selector
+import { LineChart } from "react-native-chart-kit";
 
 const MyBusinessDetails = () => {
 	const {
@@ -62,11 +31,12 @@ const MyBusinessDetails = () => {
 		fetchAllBusinesses,
 		setMySingleBusinessFunction,
 	} = useBusiness();
+	const { analytics, loading: analyticsLoading, error, fetchAnalytics } = useAnalytics();
 	const { theme } = useTheme();
 	const { primary, red, success, warning, brown } = theme;
-	const colors = [primary, red, success, warning, brown];
-	const [openEditBusinessForm, setOpenEditBusinessForm] = React.useState(false);
+	const [openEditBusinessForm, setOpenEditBusinessForm] = useState(false);
 	const [refreshing, setRefreshing] = useState(false);
+	const [duration, setDuration] = useState<"Daily" | "Monthly" | "Annual">("Daily");
 
 	const handleSetOpenModal = () => {
 		if (myBusiness) {
@@ -79,25 +49,140 @@ const MyBusinessDetails = () => {
 	const onRefresh = async () => {
 		setRefreshing(true);
 		try {
-			// Assuming fetchBusiness is provided by useBusiness context
 			const allBusinesses = await fetchAllBusinesses();
-
 			const currentBusiness = allBusinesses?.find(
 				(business) => business._id === myBusiness?._id,
 			);
-
 			if (currentBusiness) {
 				setMySingleBusinessFunction(currentBusiness);
 			}
 		} catch (error) {
 			console.error("Error refreshing business data:", error);
-			// Optionally show an alert or toast for user feedback
 		} finally {
 			setRefreshing(false);
 		}
 	};
 
-	if (loading) return <LoadingStateIndicator text="Loading, please wait..."/>;
+	// Fetch analytics based on duration
+	useEffect(() => {
+		if (myBusiness?._id) {
+			const endDate = new Date();
+			let startDate = new Date();
+
+			switch (duration) {
+				case "Daily":
+					startDate.setDate(endDate.getDate() - 30); // Last 30 days
+					break;
+				case "Monthly":
+					startDate.setFullYear(endDate.getFullYear() - 1); // Last 12 months
+					break;
+				case "Annual":
+					startDate.setFullYear(endDate.getFullYear() - 5); // Last 5 years
+					break;
+			}
+
+			fetchAnalytics(myBusiness._id, startDate.toISOString(), endDate.toISOString());
+		}
+	}, [myBusiness?._id, duration, fetchAnalytics]);
+
+	// Prepare chart data
+	const prepareChartData = (eventType: "click" | "impression") => {
+		if (!analytics?.dailyCounts) return { labels: [], data: [] };
+
+		// Group data by duration
+		const groupedData = analytics.dailyCounts
+			.filter((d) => d.eventType === eventType)
+			.reduce((acc, curr) => {
+				let key: string;
+				const date = new Date(curr.date);
+				if (duration === "Daily") {
+					key = curr.date; // YYYY-MM-DD
+				} else if (duration === "Monthly") {
+					key = `${date.getFullYear()}-${(date.getMonth() + 1)
+						.toString()
+						.padStart(2, "0")}`; // YYYY-MM
+				} else {
+					key = date.getFullYear().toString(); // YYYY
+				}
+
+				acc[key] = (acc[key] || 0) + curr.count;
+				return acc;
+			}, {} as Record<string, number>);
+
+		// Generate labels and data
+		const labels: string[] = [];
+		const data: number[] = [];
+		if (duration === "Daily") {
+			// Last 30 days
+			for (let i = 29; i >= 0; i--) {
+				const d = new Date();
+				d.setDate(d.getDate() - i);
+				const key = d.toISOString().slice(0, 10); // YYYY-MM-DD
+				labels.push(key.slice(5, 10)); // MM-DD
+				data.push(groupedData[key] || 0);
+			}
+		} else if (duration === "Monthly") {
+			// Last 12 months
+			for (let i = 11; i >= 0; i--) {
+				const d = new Date();
+				d.setMonth(d.getMonth() - i);
+				const key = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}`;
+				labels.push(key.slice(5)); // MM-YYYY
+				data.push(groupedData[key] || 0);
+			}
+		} else {
+			// Last 5 years
+			const currentYear = new Date().getFullYear();
+			for (let i = 4; i >= 0; i--) {
+				const year = (currentYear - i).toString();
+				labels.push(year);
+				data.push(groupedData[year] || 0);
+			}
+		}
+
+		return { labels, data };
+	};
+
+	const clickChartData = {
+		labels: prepareChartData("click").labels,
+		datasets: [
+			{
+				data: prepareChartData("click").data,
+				color: () => primary.main,
+				strokeWidth: 2,
+			},
+		],
+	};
+
+	const impressionChartData = {
+		labels: prepareChartData("impression").labels,
+		datasets: [
+			{
+				data: prepareChartData("impression").data,
+				color: () => success.main,
+				strokeWidth: 2,
+			},
+		],
+	};
+
+	const chartConfig = {
+		backgroundColor: theme.background.default,
+		backgroundGradientFrom: theme.background.default,
+		backgroundGradientTo: theme.background.default,
+		decimalPlaces: 0,
+		color: () => theme.text.primary,
+		labelColor: () => theme.text.primary,
+		style: {
+			borderRadius: 16,
+		},
+		propsForDots: {
+			r: "6",
+			strokeWidth: "2",
+			stroke: primary.main,
+		},
+	};
+
+	if (loading) return <LoadingStateIndicator text="Loading, please wait..." />;
 
 	return (
 		<SafeAreaView
@@ -111,7 +196,7 @@ const MyBusinessDetails = () => {
 					<RefreshControl
 						refreshing={refreshing}
 						onRefresh={onRefresh}
-						tintColor={theme.palette.primary.main} // Customize refresh indicator color
+						tintColor={theme.palette.primary.main}
 					/>
 				}
 			>
@@ -156,12 +241,7 @@ const MyBusinessDetails = () => {
 					</View>
 				</ImageBackground>
 
-				<View
-					style={{
-						padding: 5,
-						gap: 10,
-					}}
-				>
+				<View style={{ padding: 5, gap: 10 }}>
 					<View
 						style={{
 							flexDirection: "row",
@@ -217,39 +297,79 @@ const MyBusinessDetails = () => {
 						}}
 					/>
 
-					{randomData.map((item, index) => (
-						<View
-							key={index}
-							style={{
-								flexDirection: "row",
-								justifyContent: "space-between",
-								alignItems: "center",
-								paddingVertical: 5,
-								paddingHorizontal: 10,
-								backgroundColor: colors[index % colors.length].main,
-								borderRadius: 5,
-								marginVertical: 5,
-								height: 50,
-							}}
-						>
-							<Text
-								style={{
-									fontWeight: "bold",
-									color: colors[index % colors.length].contrastText,
-								}}
-							>
-								{item.name}
+					{/* Duration Selector */}
+					<SegmentedControl
+						values={["Daily", "Monthly", "Annual"]}
+						selectedIndex={["Daily", "Monthly", "Annual"].indexOf(duration)}
+						onChange={(event) => {
+							setDuration(event.nativeEvent.value as "Daily" | "Monthly" | "Annual");
+						}}
+						style={{
+							marginHorizontal: 10,
+							marginVertical: 10,
+							backgroundColor: theme.background.paper,
+						}}
+						tintColor={theme.palette.primary.main}
+						fontStyle={{ color: theme.text.primary }}
+						activeFontStyle={{ color: theme.palette.primary.contrastText }}
+					/>
+
+					{/* Analytics Graphs */}
+					<View style={{ paddingHorizontal: 10, gap: 20 }}>
+						{analyticsLoading ? (
+							<ActivityIndicator size="large" color={theme.palette.primary.main} />
+						) : error || !analytics?.dailyCounts.length ? (
+							<Text style={{ color: theme.text.secondary, textAlign: "center" }}>
+								No analytics data available
 							</Text>
-							<Text
-								style={{
-									fontWeight: "bold",
-									color: colors[index % colors.length].contrastText,
-								}}
-							>
-								{item.value}
-							</Text>
-						</View>
-					))}
+						) : (
+							<>
+								{/* Clicks Graph */}
+								<View>
+									<Text
+										style={{
+											fontSize: 16,
+											fontWeight: "bold",
+											color: theme.text.primary,
+											marginBottom: 10,
+										}}
+									>
+										Clicks
+									</Text>
+									<LineChart
+										data={clickChartData}
+										width={Dimensions.get("window").width - 40} // Responsive width
+										height={200}
+										chartConfig={chartConfig}
+										bezier
+										style={{ borderRadius: 16 }}
+									/>
+								</View>
+
+								{/* Impressions Graph */}
+								<View>
+									<Text
+										style={{
+											fontSize: 16,
+											fontWeight: "bold",
+											color: theme.text.primary,
+											marginBottom: 10,
+										}}
+									>
+										Impressions
+									</Text>
+									<LineChart
+										data={impressionChartData}
+										width={Dimensions.get("window").width - 40}
+										height={200}
+										chartConfig={chartConfig}
+										bezier
+										style={{ borderRadius: 16 }}
+									/>
+								</View>
+							</>
+						)}
+					</View>
 				</View>
 			</ScrollView>
 
@@ -264,45 +384,32 @@ const MyBusinessDetails = () => {
 						flex: 1,
 						justifyContent: "center",
 						alignItems: "center",
-						backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+						backgroundColor: "rgba(0, 0, 0, 0.5)",
 					}}
 				>
 					<View
 						style={{
-							width: "90%", // Fixed width
-							height: "90%", // Fixed height
+							width: "90%",
+							height: "90%",
 							backgroundColor: theme.background.paper,
 							borderRadius: 5,
 							padding: 10,
-							position: "relative", // Allow absolute positioning of children
+							position: "relative",
 						}}
 					>
-						{/* Close Icon Button */}
 						<TouchableOpacity
 							style={{
 								position: "absolute",
 								top: 10,
 								right: 10,
-								padding: 5, // Smaller padding for icon button
-								zIndex: 1, // Ensure it’s above other content
+								padding: 5,
+								zIndex: 1,
 							}}
 							onPress={() => setOpenEditBusinessForm(false)}
 						>
-							<Ionicons
-								name="close"
-								size={24} // Adjust size as needed
-								color={theme.error.main} // Match your theme
-							/>
+							<Ionicons name="close" size={24} color={theme.error.main} />
 						</TouchableOpacity>
-
-						{/* Modal Content */}
-						<View
-							style={{
-								flex: 1,
-								justifyContent: "center",
-								alignItems: "center",
-							}}
-						>
+						<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
 							<EditBusinessForm onClose={() => setOpenEditBusinessForm(false)} />
 						</View>
 					</View>
