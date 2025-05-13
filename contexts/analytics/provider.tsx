@@ -39,15 +39,18 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 						},
 					},
 				);
+				console.log("Analytics response:", response.data);
 
 				if (response.data.success) {
 					setAnalytics(response.data.analytics);
 				} else {
+
 					throw new Error(response.data.message || "Failed to fetch analytics");
 				}
 			} catch (err: any) {
+				console.log("Error fetching analytics:", err);
 				const errorMessage =
-					err.response?.data?.message || err.message || "Error fetching analytics";
+					err.response?.data?.error || err.error || "Error fetching analytics";
 				console.error("Analytics fetch error:", errorMessage);
 				setError(errorMessage);
 			} finally {
