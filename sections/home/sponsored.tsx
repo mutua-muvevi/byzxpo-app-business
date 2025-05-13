@@ -28,15 +28,7 @@ interface SlideCardProps {
 
 const createSlideCardTheme = (theme: any) =>
 	StyleSheet.create({
-		container: {
-			backgroundColor: theme.background.default,
-			borderRadius: theme.shape.borderRadius,
-			marginRight: 10,
-			height: 150,
-			width: 120,
-			shadowColor: theme.common.black,
-			shadowOffset: { width: 0, height: 20 },
-		},
+		
 		thumbnail: {
 			width: "100%",
 			height: 80,
@@ -83,7 +75,13 @@ const SlideCard = ({ business }: SlideCardProps) => {
 
 	return (
 		<TouchableOpacity onPress={handleOpenBusiness}>
-			<View style={styles.container}>
+			<View style={{backgroundColor: theme.background.paper,
+			borderRadius: theme.shape.borderRadius,
+			marginRight: 10,
+			height: 150,
+			width: 120,
+			shadowColor: theme.common.black,
+			shadowOffset: { width: 0, height: 20 },}}>
 				{business.thumbnail ||
 				business.logo ||
 				//@ts-ignore
@@ -96,13 +94,24 @@ const SlideCard = ({ business }: SlideCardProps) => {
 								//@ts-ignore
 								business?.otherImages[0],
 						}}
-						style={styles.thumbnail}
+						style={{
+							width: "100%",
+							height: 80,
+							borderTopLeftRadius: theme.shape.borderRadius,
+							borderTopRightRadius: theme.shape.borderRadius,
+						}}
 						resizeMode="cover"
 					/>
 				) : (
 					<Image
 						source={{ uri: ALT_THUMBNAIL_IMAGE }}
-						style={styles.thumbnail}
+						style={{
+							width: "100%",
+							height: 80,
+							borderTopLeftRadius: theme.shape.borderRadius,
+							borderTopRightRadius: theme.shape.borderRadius,
+							
+						}}
 						resizeMode="cover"
 					/>
 				)}
@@ -116,7 +125,6 @@ const SlideCard = ({ business }: SlideCardProps) => {
 
 					{business?.location ? (
 						<View style={styles.locationSection}>
-							<Ionicons name="location" size={12} color={theme.text.secondary} />
 							<Text style={styles.otherText}>
 								{business.location
 									? truncateStr(
@@ -132,7 +140,6 @@ const SlideCard = ({ business }: SlideCardProps) => {
 
 					{business.basicInfo?.phone ? (
 						<View style={styles.locationSection}>
-							<Entypo name="old-phone" size={12} color={theme.text.secondary} />
 							<Text style={styles.otherText}>
 								{business.basicInfo
 									? truncateStr(business.basicInfo.phone, 18)

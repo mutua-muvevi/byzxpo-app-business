@@ -27,7 +27,7 @@ const ALT_LOGO_IMAGE =
 const createBusinessCardStyle = (theme: any) =>
 	StyleSheet.create({
 		container: {
-			backgroundColor: theme.background.default,
+			backgroundColor: theme.background.paper,
 			borderRadius: theme.shape.borderRadius,
 			marginRight: 10,
 			height: 150,
@@ -47,7 +47,7 @@ const createBusinessCardStyle = (theme: any) =>
 		},
 		businessName: {
 			fontSize: 12,
-			color: theme.text.secondary,
+			color: theme.text.primary,
 			fontWeight: "bold",
 		},
 		otherText: {
@@ -77,6 +77,7 @@ const BusinessCategoryCards = ({ business }: { business: BusinessInterface }) =>
 
 	const handleOpenBusiness = () => {
 		setSingleBusinessFunction(business);
+		
 		router.push({
 			pathname: "/business-details/[id]",
 			params: { id: business._id },
@@ -98,20 +99,12 @@ const BusinessCategoryCards = ({ business }: { business: BusinessInterface }) =>
 					</Text>
 					{business?.location && (
 						<View style={styles.locationSection}>
-							<Ionicons name="location" size={12} color={theme.text.secondary} />
+							
 							<Text style={styles.otherText}>
 								{truncateStr(
 									`${business.location.city}, ${business.location.country}`,
-									18,
+									40,
 								)}
-							</Text>
-						</View>
-					)}
-					{business.basicInfo?.phone && (
-						<View style={styles.locationSection}>
-							<Entypo name="old-phone" size={12} color={theme.text.secondary} />
-							<Text style={styles.otherText}>
-								{truncateStr(business.basicInfo.phone, 18)}
 							</Text>
 						</View>
 					)}

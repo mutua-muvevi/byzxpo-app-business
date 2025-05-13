@@ -7,18 +7,20 @@ import {
 	ActivityIndicator,
 	FlatList,
 	Image,
+	RefreshControl,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
 	View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { palette } from '../../../theme/palette';
+import { palette } from "../../../theme/palette";
 import { useBusiness } from "@/contexts/business/fetch";
 import { useRouter } from "expo-router";
 import UnavailableContentPage from "@/components/ui/UnavailablePage";
+import { truncateStr } from "@/utils/format-strings";
 
-const businessImagePlaceHolder =
+const ALT_IMAGE =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/business-concept-with-copy-space-office-desk-table-with-pen-focus-analysis-chart-computer-notebook-cup-coffee-desk-vintage-tone-retro-filter-selective-focus.jpg";
 
 //-----------------------------------------------------------------------------
@@ -26,13 +28,11 @@ const businessImagePlaceHolder =
 const FlatListHeaderComponent = () => {
 	const { singleCategory: category } = useCategory();
 	const { theme } = useTheme();
-	console.log("Single Category", category);
 
 	return (
 		<View
 			style={{
-				paddingHorizontal: 5,
-				paddingVertical: 10,
+				padding: 10,
 				backgroundColor: theme.palette.primary.main,
 			}}
 		>
@@ -50,6 +50,7 @@ const FlatListHeaderComponent = () => {
 					style={{
 						color: theme.palette.primary.contrastText,
 						marginTop: 5,
+						textAlign: "justify",
 					}}
 				>
 					{category?.description}
@@ -76,46 +77,48 @@ const FlatListComponent = ({ business }: { business: BusinessInterface }) => {
 	};
 
 	return (
-		<TouchableOpacity onPress={handleOpenBusiness} style={{
-			
-			borderRadius: 5,
-		}}>
-			<View
-				style={{
-					flexDirection: "row",
-					gap: 5,
-					backgroundColor: theme.background.paper,
-					height: 80,
-					padding: 0,
-				}}
-			>
+		<TouchableOpacity
+			onPress={handleOpenBusiness}
+			style={{
+				padding: 10,
+				gap: 10,
+				width: "50%",
+			}}
+		>
+			<View style={{ backgroundColor: theme.background.paper, borderRadius: 5 }}>
 				<Image
-					resizeMode="cover"
-					source={{
-						uri: businessImagePlaceHolder,
-					}}
+					source={{ uri: business.thumbnail || ALT_IMAGE }}
 					style={{
-						width: 80,
-						height: "100%",
+						width: "100%",
+						height: 100,
+						marginBottom: 5,
+						borderTopLeftRadius: 5,
+						borderTopRightRadius: 5,
 					}}
+					resizeMethod="resize"
+					resizeMode="cover"
+					blurRadius={1}
+					loadingIndicatorSource={{ uri: ALT_IMAGE }}
 				/>
 				<View
 					style={{
-						flexDirection: "column",
-						overflowY: "scroll",
-						padding:5,
-						justifyContent: "center"
+						paddingVertical: 12,
+						paddingHorizontal: 10,
+						gap: 5,
+						backgroundColor: theme.background.paper,
+						borderBottomLeftRadius: 5,
+						borderBottomRightRadius: 5,
 					}}
 				>
-					<Text style={{ color: theme.text.primary, fontWeight: "bold" }}>
-						{business?.businessName}
+					<Text style={{ fontWeight: "bold", color: theme.text.primary }}>
+						{business.businessName}
 					</Text>
 
-					{business?.location?.city && business?.location?.country && (
-						<Text style={{color: theme.text.secondary }}>
-							{business?.location?.city}, {business?.location?.country}
+					{business?.basicInfo?.email ? (
+						<Text style={{ color: theme.text.secondary }}>
+							{truncateStr(business?.basicInfo?.email, 20)}{" "}
 						</Text>
-					)}
+					) : null}
 				</View>
 			</View>
 		</TouchableOpacity>
@@ -136,24 +139,35 @@ const Category = () => {
 				renderItem={({ item }) => <FlatListComponent business={item} />}
 				keyExtractor={(item) => item._id}
 				ListHeaderComponent={<FlatListHeaderComponent />}
-				ListEmptyComponent={
-					loading ? (
-						<ActivityIndicator size="large" color={theme.palette.primary.main} />
-					) : (
-						<UnavailableContentPage text="No Businesses" />
-					)
-				}
+				ListHeaderComponentStyle={{
+					paddingBottom: 10,
+				}}
+				ListFooterComponentStyle={{
+					paddingBottom: 500,
+				}}
+				numColumns={2}
+				columnWrapperStyle={{
+					width: "100%",
+				}}
 				ItemSeparatorComponent={() => (
 					<View
 						style={{
-							marginVertical: 5,
+							padding: 5,
 						}}
 					/>
 				)}
+				refreshControl={
+					<RefreshControl
+						refreshing={false}
+						onRefresh={() => {
+							/* Add refresh logic here */
+							//fetch bookmark businesses for this user here
+						}}
+					/>
+				}
 				style={{
 					backgroundColor: theme.background.default,
-					marginBottom: 10,
-					height: "100%",
+					paddingBottom: 10,
 				}}
 			/>
 		</SafeAreaView>

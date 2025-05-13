@@ -112,7 +112,7 @@ const CategoriesSection = ({
 				<View
 					style={{
 						borderWidth: 1,
-						borderColor: "#ccc",
+						borderColor: theme.palette.primary.main,
 						marginVertical: 20,
 						borderStyle: "dashed",
 					}}

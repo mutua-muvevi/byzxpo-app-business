@@ -1,5 +1,5 @@
 // auth/login.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { useForm } from "react-hook-form";
@@ -10,7 +10,6 @@ import { useAuth } from "@/auth/provider";
 import FormProvider from "@/components/hook-form/form-provider";
 import RHFTextField from "@/components/hook-form/rhf-text-field";
 import LoadingStateIndicator from "@/components/ui/LoadingStateIndicator";
-// import { useAuth } from "../../auth/provider";
 
 const loginSchema = yup
 	.object({
@@ -25,10 +24,15 @@ const Login = () => {
 	const { login, loading, error } = useAuth();
 	const { theme } = useTheme();
 	const router = useRouter();
-	const auth = useAuth();
-	const [errorMsg, setError] = React.useState<any | null>(null);
-	const [ loadingState, setLoading ] = React.useState<boolean>(false);
+	const { user, isAuthenticated } = useAuth();
+	const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 
+	// Handle navigation when user is authenticated
+	useEffect(() => {
+		if (user && isAuthenticated) {
+			router.replace("/"); // Use replace instead of push to avoid stacking
+		}
+	}, [user, isAuthenticated, router]);
 
 	const methods = useForm<LoginFormValues>({
 		resolver: yupResolver(loginSchema),
@@ -39,28 +43,25 @@ const Login = () => {
 
 	const onSubmit = async (data: LoginFormValues) => {
 		try {
-			setLoading(true);
-			setError(null);
-
+			setErrorMsg(null);
 			const result = await login(data);
-			
 			if (result) {
-				router.push("/");
+				router.replace("/");
 			}
-			
 		} catch (error) {
-			console.log("error >>>>>>>>>>>>>>>>>>", error);
 			
 			if (error instanceof Error) {
-				setError(error.message);
+				setErrorMsg(error.message);
 			}
-		} finally {
-			// setLoading(false);
-			setLoading(false)
 		}
 	};
 
-	return loading === true ? <LoadingStateIndicator text={"Authenticating ..."} /> : (
+	// Show loading indicator when authenticating
+	if (loading) {
+		return <LoadingStateIndicator text={"Authenticating ..."} />;
+	}
+
+	return (
 		<View
 			style={{
 				flex: 1,
@@ -69,27 +70,22 @@ const Login = () => {
 				justifyContent: "center",
 			}}
 		>
-
-			{
-				errorMsg && (
-					<View
-						style={{
-							backgroundColor: theme.error.main,
-							padding: 12,
-							borderRadius: 5,
-							alignItems: "center",
-							marginTop: 16,
-							marginBottom: 16,
-							
-
-						}}
-					>
-						<Text style={{ color: theme.error.contrastText, fontWeight: "bold" }}>
-							{errorMsg}
-						</Text>
-					</View>
-				)
-			}
+			{errorMsg && (
+				<View
+					style={{
+						backgroundColor: theme.error.main,
+						padding: 12,
+						borderRadius: 5,
+						alignItems: "center",
+						marginTop: 16,
+						marginBottom: 16,
+					}}
+				>
+					<Text style={{ color: theme.error.contrastText, fontWeight: "bold" }}>
+						{errorMsg}
+					</Text>
+				</View>
+			)}
 			<Text
 				style={{
 					fontSize: 24,
@@ -101,8 +97,7 @@ const Login = () => {
 				Login
 			</Text>
 			<FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-				<View style={{gap:10}} >
-
+				<View style={{ gap: 10 }}>
 					<RHFTextField name="email" placeholder="Email" helperText="Enter your email" />
 					<RHFTextField name="password" placeholder="Password" type="password" />
 					<TouchableOpacity
@@ -122,17 +117,15 @@ const Login = () => {
 					</TouchableOpacity>
 				</View>
 			</FormProvider>
-			
+
 			<TouchableOpacity onPress={() => router.push("/forgot-password")}>
-				<Text style={{ color: theme.primary.main, marginTop: 16 }}>
-					Forgot Password?
-				</Text>
+				<Text style={{ color: theme.primary.main, marginTop: 16 }}>Forgot Password?</Text>
 			</TouchableOpacity>
 			<TouchableOpacity onPress={() => router.push("/register")}>
 				<Text style={{ color: theme.primary.main, marginTop: 8 }}>
 					Don't have an account? Register
 				</Text>
-			</TouchableOpacity> 
+			</TouchableOpacity>
 		</View>
 	);
 };

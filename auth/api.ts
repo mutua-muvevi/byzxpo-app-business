@@ -29,18 +29,17 @@ export const loginAPI = async (credentials: LoginCredentials) => {
 		console.log("RESPONSE", response.data);
 		const { accessToken, refreshToken, user, message } = response.data;
 
-		if(accessToken && refreshToken && user) {
-			const { expiresIn : accessTokenexpiresIn, token	: accessTkn } = accessToken
-			const { expiresIn : refreshTokenexpiresIn, token : refreshTkn } = refreshToken
+		if (accessToken && refreshToken && user) {
+			const { expiresIn: accessTokenexpiresIn, token: accessTkn } = accessToken;
+			const { expiresIn: refreshTokenexpiresIn, token: refreshTkn } = refreshToken;
 
 			await AsyncStorage.setItem("accessToken", accessTkn);
 			await AsyncStorage.setItem("refreshToken", refreshTkn);
 			await AsyncStorage.setItem("user", JSON.stringify(user));
 			setAuthToken(accessTkn);
-			
+
 			return { accessTkn, refreshTkn, user, message };
 		}
-
 	} catch (error) {
 		throw new Error(
 			(error as AxiosError<{ error?: string }>).response?.data?.error || "Login failed",
@@ -51,17 +50,26 @@ export const loginAPI = async (credentials: LoginCredentials) => {
 export const registerAPI = async (credentials: RegisterCredentials) => {
 	try {
 		const response = await axios.post(`${API_URL}/user/register`, credentials);
-		const { accessToken, refreshToken, user } = response.data;
+		const { accessToken, refreshToken, user, message } = response.data;
 
-		await AsyncStorage.setItem("accessToken", accessToken);
-		await AsyncStorage.setItem("refreshToken", refreshToken);
-		await AsyncStorage.setItem("user", JSON.stringify(user));
-		setAuthToken(accessToken);
+		if (accessToken && refreshToken && user) {
+			const { expiresIn: accessTokenexpiresIn, token: accessTkn } = accessToken;
+			const { expiresIn: refreshTokenexpiresIn, token: refreshTkn } = refreshToken;
 
-		return { accessToken, refreshToken, user };
+			await AsyncStorage.setItem("accessToken", accessTkn);
+			await AsyncStorage.setItem("refreshToken", refreshTkn);
+			await AsyncStorage.setItem("user", JSON.stringify(user));
+			setAuthToken(accessTkn);
+
+			return { accessTkn, refreshTkn, user, message };
+		}
+
+		return null;
 	} catch (error) {
+		console.log("Error", error);
 		throw new Error(
-			(error as AxiosError<{ message?: string }>).response?.data?.message ||
+			// @ts-ignore
+			(error as AxiosError<{ message?: string }>).response?.data?.error ||
 				"Registration failed",
 		);
 	}
@@ -120,8 +128,49 @@ export const fetchMeAPI = async (token: string): Promise<User> => {
 };
 
 export const logoutAPI = async () => {
-	await AsyncStorage.removeItem("accessToken");
-	await AsyncStorage.removeItem("refreshToken");
-	await AsyncStorage.removeItem("user");
-	setAuthToken(null);
+	try {
+		await AsyncStorage.removeItem("accessToken");
+		await AsyncStorage.removeItem("refreshToken");
+		await AsyncStorage.removeItem("user");
+		setAuthToken(null);
+	} catch (error : any) {
+		console.log("Error", error);		
+	}
+};
+
+export const saveBusiness = async (token : string, credentials : object) => {
+	try {
+		const response = await axios.post(
+			`${API_URL}/saved-business/new`,
+			credentials,
+			{ headers: { Authorization: token } },
+		)
+
+		return response.data
+	} catch (error) {
+		console.log("Error", error);
+		throw new Error(
+			// @ts-ignore
+			(error as AxiosError<{ message?: string }>).response?.data?.error ||
+				"Registration failed",
+		);
+	}
+};
+
+export const removeBusiness = async (token : string, businessId: string) => {
+	try {
+		const response = await axios.delete(
+			`${API_URL}/saved-business/delete/business/${businessId}`,
+			{ headers: { Authorization: token } },
+		)
+
+		return response.data
+	} catch (error) {
+		console.log("Error", error);
+		throw new Error(
+			// @ts-ignore
+			(error as AxiosError<{ message?: string }>).response?.data?.error ||
+				"Registration failed",
+		);
+	}
 };

@@ -6,7 +6,14 @@ const LoadingStateIndicator = ({ text }: { text?: string }) => {
 	const { theme } = useTheme();
 
 	return (
-		<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+		<View
+			style={{
+				flex: 1,
+				justifyContent: "center",
+				alignItems: "center",
+				backgroundColor: theme.background.paper,
+			}}
+		>
 			<ActivityIndicator
 				size="large"
 				color={theme.palette.primary.main}
@@ -14,7 +21,7 @@ const LoadingStateIndicator = ({ text }: { text?: string }) => {
 				style={{ marginBottom: 20 }}
 			/>
 			<Text style={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
-				{ text || "Loading, please wait..." }
+				{text || "Loading, please wait..."}
 			</Text>
 		</View>
 	);

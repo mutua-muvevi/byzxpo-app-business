@@ -79,13 +79,22 @@ const TabLayout = () => {
 						};
 
 						return (
-							<HapticTab key={route.key} onPress={onPress} style={styles.tabButton}>
+							<HapticTab
+								key={route.key}
+								onPress={onPress}
+								style={{
+									flex: 1,
+									justifyContent: "center",
+									alignItems: "center",
+								}}
+							>
 								{options.tabBarIcon?.({
 									color: isFocused
 										? theme.palette.primary.main
 										: theme.text.secondary,
 									focused: isFocused,
 									size: 24,
+									lineHeight: 0,
 								})}
 								<Text
 									style={{
@@ -147,15 +156,6 @@ const TabLayout = () => {
 				}}
 			/>
 			<Tabs.Screen
-				name="messages"
-				options={{
-					title: "Messages",
-					tabBarIcon: ({ color }) => (
-						<IconSymbol size={24} name="message.fill" color={color} />
-					),
-				}}
-			/>
-			<Tabs.Screen
 				name="profile"
 				options={{
 					title: "Profile",
@@ -168,13 +168,5 @@ const TabLayout = () => {
 		</Tabs>
 	);
 };
-
-const styles = StyleSheet.create({
-	tabButton: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-});
 
 export default TabLayout;

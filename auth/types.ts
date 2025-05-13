@@ -1,3 +1,5 @@
+import { BusinessInterface } from "@/types/business";
+
 // auth/types.ts
 export interface User {
 	_id: string;
@@ -15,6 +17,7 @@ export interface User {
 	createdAt?: string;
 	updatedAt?: string;
 	memberType?: string;
+	mySavedBusinesses?: BusinessInterface[] | any[];
 }
 
 export interface AuthState {
@@ -59,4 +62,6 @@ export interface AuthContextType extends AuthState {
 	authenticated: boolean;
 	unauthenticated: boolean;
 	user: User | null;
+	saveABusiness: (credentials: any) => Promise<void>;
+	removeABusiness: (credentials: any) => Promise<void>;
 }

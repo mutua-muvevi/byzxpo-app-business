@@ -6,10 +6,12 @@ import { truncateStr } from "@/utils/format-strings";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { FlatList, StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { FlatList, StyleSheet, Text, View, Image, TouchableOpacity, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { palette } from "../../theme/palette";
+import ModalComponent from "@/components/ui/Modal";
+import AddBusinessForm from "@/sections/business/form/add";
 
 const imageHolderUri =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/a-white-text-on-a-blue-background-that-s_o6eumMMYQwic5GGGDhZ3ow_qdCWpEhDShKoXRu01jruXg.jpeg";
@@ -100,27 +102,92 @@ const BusinessCard = ({ business }: { business: any }) => {
 };
 
 const BusinessFooterButton = () => {
+	const [addBusinessModal, setAddBusinessModal] = useState(false);
 	const { theme } = useTheme();
 
+	const handleOpenAddBusinessModal = () => {
+		setAddBusinessModal(true);
+	};
+
 	return (
-		<TouchableOpacity
-			style={{
-				padding: 20,
-				backgroundColor: theme.palette.primary.main,
-				marginVertical: 10,
-				alignItems: "center",
-			}}
-		>
-			<Text
+		<>
+			<StatusBar backgroundColor={theme.palette.primary.main} style="light" />
+			<TouchableOpacity
 				style={{
-					color: theme.palette.primary.contrastText,
-					fontSize: 16,
-					fontWeight: "bold",
+					padding: 20,
+					backgroundColor: theme.palette.primary.main,
+					marginVertical: 10,
+					alignItems: "center",
 				}}
+				onPress={handleOpenAddBusinessModal}
 			>
-				Add New Business
-			</Text>
-		</TouchableOpacity>
+				<Text
+					style={{
+						color: theme.palette.primary.contrastText,
+						fontSize: 16,
+						fontWeight: "bold",
+					}}
+				>
+					Add New Business
+				</Text>
+			</TouchableOpacity>
+
+			<Modal
+				visible={addBusinessModal}
+				onRequestClose={() => setAddBusinessModal(false)}
+				animationType="fade"
+				transparent={true}
+			>
+				<View
+					style={{
+						flex: 1,
+						justifyContent: "center",
+						alignItems: "center",
+						backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+					}}
+				>
+					<View
+						style={{
+							width: "90%", // Fixed width
+							height: "90%", // Fixed height
+							backgroundColor: theme.background.paper,
+							borderRadius: 5,
+							padding: 10,
+							position: "relative", // Allow absolute positioning of children
+						}}
+					>
+						{/* Close Icon Button */}
+						<TouchableOpacity
+							style={{
+								position: "absolute",
+								top: 10,
+								right: 10,
+								padding: 5, // Smaller padding for icon button
+								zIndex: 1, // Ensure it’s above other content
+							}}
+							onPress={() => setAddBusinessModal(false)}
+						>
+							<Ionicons
+								name="close"
+								size={24} // Adjust size as needed
+								color={theme.error.main} // Match your theme
+							/>
+						</TouchableOpacity>
+
+						{/* Modal Content */}
+						<View
+							style={{
+								flex: 1,
+								justifyContent: "center",
+								alignItems: "center",
+							}}
+						>
+							<AddBusinessForm onClose={() => setAddBusinessModal(false)} />
+						</View>
+					</View>
+				</View>
+			</Modal>
+		</>
 	);
 };
 

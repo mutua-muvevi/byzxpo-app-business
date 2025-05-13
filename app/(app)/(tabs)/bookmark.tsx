@@ -16,6 +16,7 @@ import {
 import { Rating } from "react-native-ratings";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { useAuth } from "@/auth";
 
 const ALT_IMAGE =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/a-white-text-on-a-blue-background-that-s_o6eumMMYQwic5GGGDhZ3ow_qdCWpEhDShKoXRu01jruXg.jpeg";
@@ -46,8 +47,11 @@ const BookmarkHeader = () => {
 const BookmarkCardComponents = ({ business }: any) => {
 	const { theme } = useTheme();
 	const router = useRouter();
+	const { setSingleBusinessFunction } = useBusiness();
 
 	const handleNavigateToBusinessDetails = () => {
+		setSingleBusinessFunction(business);
+		
 		router.push({
 			pathname: "/business-details/[id]",
 			params: { id: business._id },
@@ -62,7 +66,13 @@ const BookmarkCardComponents = ({ business }: any) => {
 			<View style={{ backgroundColor: theme.background.paper, borderRadius: 5 }}>
 				<Image
 					source={{ uri: business.thumbnail || ALT_IMAGE }}
-					style={{ width: "100%", height: 100, marginBottom: 5 }}
+					style={{
+						width: "100%",
+						height: 100,
+						marginBottom: 5,
+						borderTopLeftRadius: 5,
+						borderTopRightRadius: 5,
+					}}
 					resizeMethod="resize"
 					resizeMode="cover"
 					blurRadius={1}
@@ -109,15 +119,15 @@ const BookmarkCardComponents = ({ business }: any) => {
 
 const Bookmark = () => {
 	const { allBusinesses } = useBusiness();
+	//@ts-ignore
+	const { user : { mySavedBusinesses }, fetchMe} = useAuth()
 	const { theme, mode } = useTheme();
 
 	return (
-		<SafeAreaView>
-			<StatusBar
-				backgroundColor={theme.palette.primary.main}
-			/>
+		<SafeAreaView style={{minHeight: "100%", backgroundColor: theme.background.default}}>
+			<StatusBar backgroundColor={theme.palette.primary.main} />
 			<FlatList
-				data={allBusinesses}
+				data={mySavedBusinesses}
 				keyExtractor={(item) => item._id.toString()}
 				renderItem={({ item }) => <BookmarkCardComponents business={item} />}
 				contentContainerStyle={{ paddingBottom: 20 }}
@@ -146,6 +156,7 @@ const Bookmark = () => {
 						onRefresh={() => {
 							/* Add refresh logic here */
 							//fetch bookmark businesses for this user here
+							fetchMe();
 						}}
 					/>
 				}
@@ -157,7 +168,5 @@ const Bookmark = () => {
 		</SafeAreaView>
 	);
 };
-
-const styles = StyleSheet.create({});
 
 export default Bookmark;
