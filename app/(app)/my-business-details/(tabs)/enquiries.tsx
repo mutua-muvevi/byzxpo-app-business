@@ -3,6 +3,7 @@ import LoadingStateIndicator from "@/components/ui/LoadingStateIndicator";
 import UnavailableContentPage from "@/components/ui/UnavailablePage";
 import { useBusiness } from "@/contexts/business/fetch";
 import { useEnquiries } from "@/contexts/enquiries/provider";
+import FooterSection from "@/sections/footer/footer";
 import { useTheme } from "@/theme";
 import { fDate } from "@/utils/format-time";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -101,9 +102,10 @@ const ConversationCards = ({ item }: { item: any }) => {
 						{item.name}
 					</Text>
 					{item?.createdAt ? (
-						<Text style={{ color: theme.text.secondary }}>{fDate(item?.createdAt)}</Text>
+						<Text style={{ color: theme.text.secondary }}>
+							{fDate(item?.createdAt)}
+						</Text>
 					) : null}
-
 				</View>
 			</View>
 
@@ -113,13 +115,10 @@ const ConversationCards = ({ item }: { item: any }) => {
 				</Text>
 
 				<Text style={{ color: theme.text.secondary }}>{item.message}</Text>
-
-				
 			</View>
 		</View>
 	);
 };
-
 
 const Conversations = () => {
 	const { theme } = useTheme();
@@ -149,7 +148,9 @@ const Conversations = () => {
 				keyExtractor={(item) => item._id.toString()}
 				ListHeaderComponent={<ConversationHeader list={businessEnquiries} />}
 				contentContainerStyle={{ paddingBottom: 20 }}
-				ListEmptyComponent={<UnavailableContentPage text="No Enquiries Present for this Business" />}
+				ListEmptyComponent={
+					<UnavailableContentPage text="No Enquiries Present for this Business" />
+				}
 				refreshControl={
 					<RefreshControl
 						refreshing={allBusinessEnquiriesLoading}
@@ -158,6 +159,14 @@ const Conversations = () => {
 								fetchBusinessEnquiries(myBusiness._id, pageNumber, pageLimit);
 							}
 						}}
+					/>
+				}
+				ListFooterComponent={
+					<FooterSection
+						pageNumber={pageNumber}
+						setPageNumber={setPageNumber}
+						pageLimit={pageLimit}
+						setLimit={setPageLimit}
 					/>
 				}
 			/>

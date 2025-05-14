@@ -22,6 +22,9 @@ const ForgotPassword = () => {
 	const { forgotPassword, loading } = useAuth();
 	const { theme } = useTheme();
 	const router = useRouter();
+	const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+	const [forgetPasswordLoading, setForgetPasswordLoading] = React.useState<boolean>(false);
+	const [successMessage, setSuccessMessage] = React.useState<string | null>(null);
 
 	const methods = useForm<ForgotPasswordFormValues>({
 		resolver: yupResolver(forgotPasswordSchema),
@@ -31,12 +34,39 @@ const ForgotPassword = () => {
 	const { handleSubmit } = methods;
 
 	const onSubmit = async (data: ForgotPasswordFormValues) => {
-		await forgotPassword(data);
-		router.push("/login");
+		try {
+			await forgotPassword(data);
+		} catch (error: any) {
+			setErrorMsg(error?.response?.error);
+		} finally {
+			setSuccessMessage(
+				"If the email exists in our system, you will receive an email with instructions on how to reset your password.",
+			);
+
+			setTimeout(() => {
+				router.push("/login");
+			}, 5500);
+		}
 	};
 
 	return (
 		<View style={{ flex: 1, padding: 16, backgroundColor: theme.background.default }}>
+			{successMessage && (
+				<View
+					style={{
+						backgroundColor: theme.success.main,
+						padding: 12,
+						borderRadius: 5,
+						alignItems: "center",
+						marginTop: 16,
+						marginBottom: 16,
+					}}
+				>
+					<Text style={{ color: theme.success.contrastText, fontWeight: "bold" }}>
+						{successMessage}
+					</Text>
+				</View>
+			)}
 			<Text
 				style={{
 					fontSize: 24,
@@ -66,9 +96,7 @@ const ForgotPassword = () => {
 				</TouchableOpacity>
 			</FormProvider>
 			<TouchableOpacity onPress={() => router.push("/login")}>
-				<Text style={{ color: theme.primary.main, marginTop: 16 }}>
-					Back to Login
-				</Text>
+				<Text style={{ color: theme.primary.main, marginTop: 16 }}>Back to Login</Text>
 			</TouchableOpacity>
 		</View>
 	);
