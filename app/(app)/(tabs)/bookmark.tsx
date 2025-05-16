@@ -17,32 +17,10 @@ import { Rating } from "react-native-ratings";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { useAuth } from "@/auth";
+import NavHeader from "@/components/ui/NavHeader";
 
 const ALT_IMAGE =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/a-white-text-on-a-blue-background-that-s_o6eumMMYQwic5GGGDhZ3ow_qdCWpEhDShKoXRu01jruXg.jpeg";
-
-const BookmarkHeader = () => {
-	const { theme } = useTheme();
-
-	return (
-		<View
-			style={{
-				padding: 10,
-				backgroundColor: theme.palette.primary.main,
-			}}
-		>
-			<Text
-				style={{
-					fontSize: 20,
-					color: theme.palette.primary.contrastText,
-					fontWeight: "bold",
-				}}
-			>
-				My saved businesses
-			</Text>
-		</View>
-	);
-};
 
 const BookmarkCardComponents = ({ business }: any) => {
 	const { theme } = useTheme();
@@ -122,17 +100,21 @@ const Bookmark = () => {
 	//@ts-ignore
 	const { user : { mySavedBusinesses }, fetchMe} = useAuth()
 	const { theme, mode } = useTheme();
+	
 
 	return (
 		<SafeAreaView style={{minHeight: "100%", backgroundColor: theme.background.default}}>
-			<StatusBar backgroundColor={theme.palette.primary.main} />
+			<NavHeader
+				headerTitle="Bookmarked Businesses"
+				backUrl="/"
+				isTransparent={false}
+			/>
 			<FlatList
 				data={mySavedBusinesses}
 				keyExtractor={(item) => item._id.toString()}
 				renderItem={({ item }) => <BookmarkCardComponents business={item} />}
 				contentContainerStyle={{ paddingBottom: 20 }}
 				ListEmptyComponent={<UnavailableContentPage text="No Businesses Present" />}
-				ListHeaderComponent={<BookmarkHeader />}
 				ListHeaderComponentStyle={{
 					paddingBottom: 10,
 				}}

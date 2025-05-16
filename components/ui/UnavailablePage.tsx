@@ -11,16 +11,17 @@ const UnavailableContentPage = ({text} : { text: string }) => {
 				flex: 1,
 				padding: 20,
 				gap: 10,
-				backgroundColor: theme.theme.background.paper
+				backgroundColor: theme.theme.background.paper,
+				height: "100%",
 			}}
 		>
 			<Image
 				source={require("../../assets/images/unavailable.png")}
 				alt="Business not available"
 				style={{
-					height: 300,
+					height: 500,
 					width: "100%",
-					// resizeMode: "contain"
+					resizeMode: "cover"
 				}}
 			/>
 			<Text style={{ fontSize: 18, fontWeight: "bold", color: theme.theme.text.primary }}>

@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { RHFSelect } from "@/components/hook-form";
 import { countries } from "@/constants";
+import NavHeader from "@/components/ui/NavHeader";
 
 interface EditProfileFormValues {
 	name: string;
@@ -70,6 +71,7 @@ const EditProfile = () => {
 			style={{ flex: 1, backgroundColor: theme.background.default }}
 			edges={["top", "left", "right"]}
 		>
+			<NavHeader headerTitle="Edit Profile" backUrl="/account"  />
 			<ScrollView>
 				<ProfileEditHeader />
 

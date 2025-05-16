@@ -10,7 +10,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { primary } from '../../../theme/palette';
+import { primary } from "../../../theme/palette";
+import NavHeader from "@/components/ui/NavHeader";
 
 const Profile = () => {
 	const {
@@ -58,106 +59,112 @@ const Profile = () => {
 		<SafeAreaView
 			style={{
 				gap: 10,
-				paddingTop: 10,
 				flex: 1,
-				paddingBottom: 10,
-				paddingLeft: 5,
-				paddingRight: 5,
-				justifyContent: "center",
 				backgroundColor: theme.background.default,
 			}}
 		>
-			{/* <StatusBar
-				backgroundColor={theme.palette.primary.main}
-			/> */}
-			<View
-				style={{
-					justifyContent: "center",
-					width: "100%",
-					alignItems: "center",
-					gap: 10,
-				}}
-			>
+			<NavHeader headerTitle="My Profile" backUrl="/"  />
+
+			<View style={{
+				justifyContent: "center",
+				width: "100%",
+				height: "100%",
+				gap: 10,
+				paddingHorizontal: 10,
+			}}>
+
 				<View
 					style={{
-						alignItems: "center",
 						justifyContent: "center",
-						height: 70,
-						width: 70,
-						borderRadius: 35,
-						borderWidth: 5,
-						borderColor: theme.background.default,
-						backgroundColor: theme.palette.primary.main,
+						width: "100%",
+						alignItems: "center",
+						gap: 10,
 					}}
 				>
-					<Text
+					<View
 						style={{
-							color: theme.palette.primary.contrastText,
-							fontSize: 35,
-							fontWeight: "900",
+							alignItems: "center",
+							justifyContent: "center",
+							height: 70,
+							width: 70,
+							borderRadius: 35,
+							borderWidth: 5,
+							borderColor: theme.background.default,
+							backgroundColor: theme.palette.primary.main,
 						}}
 					>
-						{user?.name[0]}
-					</Text>
+						<Text
+							style={{
+								color: theme.palette.primary.contrastText,
+								fontSize: 35,
+								fontWeight: "900",
+							}}
+						>
+							{user?.name[0]}
+						</Text>
+					</View>
+
+					<View style={{ alignItems: "center", paddingBottom: 20 }}>
+						<Text
+							style={{
+								fontSize: 18,
+								color: theme.palette.primary.main,
+								fontWeight: "bold",
+								textAlign: "center",
+							}}
+						>
+							{user?.name}
+						</Text>
+						<Text
+							style={{
+								fontSize: 16,
+								color: theme.palette.primary.main,
+								fontWeight: "bold",
+								textAlign: "center",
+							}}
+						>
+							{user?.email}
+						</Text>
+					</View>
 				</View>
 
-				<View style={{ alignItems: "center", paddingBottom: 20 }}>
-					<Text
-						style={{
-							fontSize: 18,
-							color: theme.palette.primary.main,
-							fontWeight: "bold",
-							textAlign: "center",
-						}}
-					>
-						{user?.name}
-					</Text>
-					<Text
-						style={{
-							fontSize: 16,
-							color: theme.palette.primary.main,
-							fontWeight: "bold",
-							textAlign: "center",
-						}}
-					>
-						{user?.email}
-					</Text>
-				</View>
-			</View>
+				<View style={{ gap: 20 }}>
+					{profileList.map((item, index) => (
+						<TouchableOpacity
+							key={index}
+							onPress={() => {
+								navigationHandler(item.route);
+							}}
+						>
+							<View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+								<View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+									{item.icon}
+									<Text style={{ color: theme.text.primary }}>{item.name}</Text>
+								</View>
 
-			<View style={{ gap: 20 }}>
-				{profileList.map((item, index) => (
-					<TouchableOpacity
-						key={index}
-						onPress={() => {
-							navigationHandler(item.route);
-						}}
-					>
-						<View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-							<View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-								{item.icon}
-								<Text style={{ color: theme.text.primary }}>{item.name}</Text>
+								<Entypo name="chevron-right" size={24} color={theme.text.primary} />
 							</View>
+						</TouchableOpacity>
+					))}
+				</View>
 
-							<Entypo name="chevron-right" size={24} color={theme.text.primary} />
-						</View>
-					</TouchableOpacity>
-				))}
+				<TouchableOpacity
+					onPress={() => handleLogout()}
+					style={{
+						width: "100%",
+						borderWidth: 1,
+						borderColor: theme.palette.primary.main,
+						padding: 10,
+						borderRadius: 5,
+						alignItems: "center",
+					}}
+				>
+					<Text style={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
+						Logout
+					</Text>
+				</TouchableOpacity>
 			</View>
-
-			<TouchableOpacity
-				onPress={() => handleLogout()}
-				style={{
-					width: "100%",
-					borderWidth: 1,
-					borderColor: theme.palette.primary.main,
-					padding: 10,
-					borderRadius: 5,
-					alignItems: "center",
-				}}
-			>
-				<Text style={{ color: theme.palette.primary.main, fontWeight: "bold" }}>Logout</Text>
-			</TouchableOpacity>
+		
 		</SafeAreaView>
 	);
 };

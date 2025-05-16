@@ -18,6 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import EditBusinessForm from "@/sections/business/form/edit";
 import LoadingStateIndicator from "@/components/ui/LoadingStateIndicator";
 import { logger } from "react-native-logs";
+import NavHeader from "@/components/ui/NavHeader";
 
 const MyBusinessDetails = () => {
 	const {
@@ -187,7 +188,7 @@ const MyBusinessDetails = () => {
 			style={{ flex: 1, backgroundColor: theme.background.default }}
 			edges={["top", "left", "right"]}
 		>
-			<StatusBar backgroundColor={primary.main} style="light" />
+			<NavHeader headerTitle="Overview" backUrl="/profile"  />
 			<ScrollView
 				refreshControl={
 					<RefreshControl

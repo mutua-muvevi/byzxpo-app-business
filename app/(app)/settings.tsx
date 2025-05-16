@@ -4,37 +4,8 @@ import { StyleSheet, Text, View, ScrollView, Switch, TouchableOpacity } from "re
 import { SafeAreaView } from "react-native-safe-area-context";
 import { presetOptions } from "@/theme/presets";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { StatusBar } from "expo-status-bar";
+import NavHeader from "@/components/ui/NavHeader";
 
-const SettingsHeader = () => {
-	const { theme } = useTheme();
-
-	return (
-		<View style={{ padding: 16, backgroundColor: theme.palette.primary.main }}>
-			<Text
-				style={{
-					fontSize: 24,
-					fontWeight: "bold",
-					color: theme.palette.primary.contrastText,
-				}}
-			>
-				My Settings
-			</Text>
-		</View>
-	);
-};
-
-interface PushNotificationFormValues {
-	pushNotifications: boolean;
-}
-
-interface PresetFormValues {
-	preset: string;
-}
-
-interface ThemeModeFormValues {
-	themeMode: string;
-}
 
 const Settings = () => {
 	const { theme, setModeFunction, mode, preset: currentPreset, setPresetFunction } = useTheme();
@@ -61,12 +32,9 @@ const Settings = () => {
 			style={{ flex: 1, backgroundColor: theme.background.default }}
 			edges={["top", "left", "right"]}
 		>
-			<StatusBar
-				backgroundColor={theme.palette.primary.main}
-			/>
+			<NavHeader headerTitle="My Settings" backUrl="/profile"  />
 
 			<ScrollView>
-				<SettingsHeader />
 				<View style={styles.container}>
 					{/* Theme Mode Section */}
 

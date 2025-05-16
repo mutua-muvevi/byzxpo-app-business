@@ -1,5 +1,6 @@
 import Avatar from "@/components/ui/Avatar";
 import LoadingStateIndicator from "@/components/ui/LoadingStateIndicator";
+import NavHeader from "@/components/ui/NavHeader";
 import UnavailableContentPage from "@/components/ui/UnavailablePage";
 import { useBusiness } from "@/contexts/business/fetch";
 import { useEnquiries } from "@/contexts/enquiries/provider";
@@ -11,67 +12,6 @@ import React, { useEffect, useState } from "react";
 import { Text, View, TouchableOpacity, FlatList, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const ConversationHeader = ({ list }: { list: any }) => {
-	const { theme } = useTheme();
-
-	return (
-		<View
-			style={{
-				padding: 20,
-				backgroundColor: theme.palette.primary.main,
-				borderBottomWidth: 1,
-				borderBottomColor: "#ccc",
-				flexDirection: "row",
-				justifyContent: "space-between",
-				alignItems: "center",
-				gap: 5,
-			}}
-		>
-			<View>
-				<Text
-					style={{
-						fontSize: 18,
-						fontWeight: "bold",
-						color: theme.palette.primary.contrastText,
-					}}
-				>
-					My Enquiries
-				</Text>
-
-				<Text
-					style={{
-						color: theme.palette.primary.contrastText,
-						fontSize: 14,
-					}}
-				>
-					{list.length} Enquiries in total
-				</Text>
-			</View>
-
-			<TouchableOpacity
-				style={{
-					padding: 10,
-					backgroundColor: theme.success.main,
-					borderRadius: 5,
-					flexDirection: "row",
-					gap: 5,
-				}}
-			>
-				<Text
-					style={{
-						color: theme.success.contrastText,
-						fontSize: 16,
-						fontWeight: "bold",
-					}}
-				>
-					Filter
-				</Text>
-
-				<FontAwesome5 name="filter" size={16} color={theme.palette.primary.contrastText} />
-			</TouchableOpacity>
-		</View>
-	);
-};
 
 const ConversationCards = ({ item }: { item: any }) => {
 	const { theme } = useTheme();
@@ -140,13 +80,13 @@ const Conversations = () => {
 		<LoadingStateIndicator text="Loading Enquiries" />
 	) : (
 		<SafeAreaView style={{ flex: 1, backgroundColor: theme.background.default }}>
+			<NavHeader headerTitle="Categories" backUrl="/" />
 			<FlatList
 				data={businessEnquiries}
 				renderItem={({ item }) => {
 					return <ConversationCards item={item} />;
 				}}
 				keyExtractor={(item) => item._id.toString()}
-				ListHeaderComponent={<ConversationHeader list={businessEnquiries} />}
 				contentContainerStyle={{ paddingBottom: 20 }}
 				ListEmptyComponent={
 					<UnavailableContentPage text="No Enquiries Present for this Business" />

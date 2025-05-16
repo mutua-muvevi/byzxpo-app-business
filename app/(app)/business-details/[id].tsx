@@ -20,6 +20,7 @@ import { Rating } from "react-native-ratings";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@/auth";
 import { saveBusiness } from "../../../auth/api";
+import NavHeader from "@/components/ui/NavHeader";
 
 const CLAIM_BUSINESS_IMAGE =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/business-concept-with-copy-space-office-desk-table-with-pen-focus-analysis-chart-computer-notebook-cup-coffee-desk-vintage-tone-retro-filter-selective-focus.jpg";
@@ -138,9 +139,9 @@ const BusinessDetails = () => {
 
 	const removeBusinessFromSavedFunc = async () => {
 		const businessId = singleBusiness?._id;
-		await saveABusiness(businessId)
+		await saveABusiness(businessId);
 	};
-	
+
 	const removeThisBusiness = () => {
 		Alert.alert(
 			"Warning",
@@ -153,10 +154,10 @@ const BusinessDetails = () => {
 				{
 					text: "Confirm",
 					onPress: removeBusinessFromSavedFunc,
-				}
-			]
-		)
-	}
+				},
+			],
+		);
+	};
 
 	return (
 		<SafeAreaView
@@ -164,7 +165,8 @@ const BusinessDetails = () => {
 			edges={["top", "left", "right"]}
 		>
 			<ScrollView>
-				<StatusBar backgroundColor="transparent" />
+				<NavHeader headerTitle={singleBusiness?.businessName || "Business Details"} backUrl="/categories" isTransparent={false} />
+
 				<ImageBackground
 					source={{
 						uri: (singleBusiness?.thumbnail ||

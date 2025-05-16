@@ -1,5 +1,6 @@
 import Avatar from "@/components/ui/Avatar";
 import LoadingStateIndicator from "@/components/ui/LoadingStateIndicator";
+import NavHeader from "@/components/ui/NavHeader";
 import UnavailableContentPage from "@/components/ui/UnavailablePage";
 import { useBusiness } from "@/contexts/business/fetch";
 import { useLeads } from "@/contexts/leads/provider";
@@ -143,13 +144,13 @@ const Leads = () => {
 		<LoadingStateIndicator text="Loading Leads" />
 	) : (
 		<SafeAreaView style={{ flex: 1, backgroundColor: theme.background.default }}>
+			<NavHeader headerTitle="Leads" backUrl="/my-business-details"  />
 			<FlatList
 				data={businessLeads}
 				renderItem={({ item }) => {
 					return <LeadCards item={item} />;
 				}}
 				keyExtractor={(item) => item._id.toString()}
-				ListHeaderComponent={<LeadHeader list={businessLeads} />}
 				contentContainerStyle={{ paddingBottom: 20 }}
 				ListEmptyComponent={<UnavailableContentPage text="No Leads Present" />}
 				refreshControl={

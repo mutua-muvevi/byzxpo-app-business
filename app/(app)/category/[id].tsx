@@ -19,46 +19,12 @@ import { useBusiness } from "@/contexts/business/fetch";
 import { useRouter } from "expo-router";
 import UnavailableContentPage from "@/components/ui/UnavailablePage";
 import { truncateStr } from "@/utils/format-strings";
+import NavHeader from "@/components/ui/NavHeader";
 
 const ALT_IMAGE =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/business-concept-with-copy-space-office-desk-table-with-pen-focus-analysis-chart-computer-notebook-cup-coffee-desk-vintage-tone-retro-filter-selective-focus.jpg";
 
 //-----------------------------------------------------------------------------
-
-const FlatListHeaderComponent = () => {
-	const { singleCategory: category } = useCategory();
-	const { theme } = useTheme();
-
-	return (
-		<View
-			style={{
-				padding: 10,
-				backgroundColor: theme.palette.primary.main,
-			}}
-		>
-			<Text
-				style={{
-					fontSize: 20,
-					color: theme.palette.primary.contrastText,
-					fontWeight: "bold",
-				}}
-			>
-				{category?.name}
-			</Text>
-			{category?.description && (
-				<Text
-					style={{
-						color: theme.palette.primary.contrastText,
-						marginTop: 5,
-						textAlign: "justify",
-					}}
-				>
-					{category?.description}
-				</Text>
-			)}
-		</View>
-	);
-};
 
 //-----------------------------------------------------------------------------
 
@@ -131,14 +97,19 @@ const Category = () => {
 	const { singleCategory: category, loading } = useCategory();
 	const { theme } = useTheme();
 	return (
-		<SafeAreaView style={{ gap: 5, backgroundColor: theme.background.default }}>
-			<StatusBar backgroundColor={theme.primary.main} />
+		<SafeAreaView
+			style={{ gap: 5, backgroundColor: theme.background.default, minHeight: "100%" }}
+		>
+			<NavHeader
+				headerTitle={category?.name || "Category item"}
+				backUrl="/categories"
+				isTransparent={false}
+			/>
 
 			<FlatList
 				data={category?.businesses}
 				renderItem={({ item }) => <FlatListComponent business={item} />}
 				keyExtractor={(item) => item._id}
-				ListHeaderComponent={<FlatListHeaderComponent />}
 				ListHeaderComponentStyle={{
 					paddingBottom: 10,
 				}}
