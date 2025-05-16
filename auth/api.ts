@@ -77,7 +77,7 @@ export const registerAPI = async (credentials: RegisterCredentials) => {
 
 export const forgotPasswordAPI = async (credentials: ForgotPasswordCredentials) => {
 	try {
-		const response = await axios.post(`${API_URL}/user/forgot-password`, credentials);
+		const response = await axios.post(`${API_URL}/user/reset/password`, credentials);
 		return response.data;
 	} catch (error) {
 		throw new Error(
@@ -87,9 +87,9 @@ export const forgotPasswordAPI = async (credentials: ForgotPasswordCredentials) 
 	}
 };
 
-export const resetPasswordAPI = async (credentials: ResetPasswordCredentials) => {
+export const resetPasswordAPI = async (credentials: ResetPasswordCredentials, resetToken: string) => {
 	try {
-		const response = await axios.post(`${API_URL}/user/reset-password`, credentials);
+		const response = await axios.post(`${API_URL}/new/password/${resetToken}`, credentials);
 		console.log(response.data);
 		return response.data;
 	} catch (error) {

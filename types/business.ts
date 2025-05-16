@@ -28,6 +28,7 @@ export interface BusinessInterface {
 	location?: Location;
 	registrationDetails?: RegistrationDetails;
 	socialMedia?: SocialMedia;
+	leads: any[];
 }
 
 export interface Description {

@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@/theme/provider";
 import { palette, orange } from '../../theme/palette';
 import { useRouter } from "expo-router";
+import NavHeader from "@/components/ui/NavHeader";
 
 const HeaderComponent = () => {
 	const { theme } = useTheme();
@@ -73,6 +74,8 @@ const ProfileAccount = () => {
 
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
+			<NavHeader headerTitle="My Profile" backUrl="/profile"  />
+
 			<ScrollView style={{ flex: 1, gap: 10 }}>
 				{/* <Text>ProfileAccount</Text> */}
 				<HeaderComponent />

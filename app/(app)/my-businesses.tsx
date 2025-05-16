@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { palette } from "../../theme/palette";
 import ModalComponent from "@/components/ui/Modal";
 import AddBusinessForm from "@/sections/business/form/add";
+import NavHeader from "@/components/ui/NavHeader";
 
 const imageHolderUri =
 	"https://storage.googleapis.com/byzxpo-bucket/assets/a-white-text-on-a-blue-background-that-s_o6eumMMYQwic5GGGDhZ3ow_qdCWpEhDShKoXRu01jruXg.jpeg";
@@ -197,7 +198,8 @@ const MyBusinesses = () => {
 
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: theme.background.default }}>
-			<StatusBar backgroundColor={theme.palette.primary.main} style="light" />
+			<NavHeader headerTitle="My Businesses" backUrl="/"  />
+			
 			<FlatList
 				data={myBusinesses}
 				keyExtractor={(item) => item._id.toString()}
@@ -205,7 +207,6 @@ const MyBusinesses = () => {
 				ListEmptyComponent={<UnavailableContentPage text="No Businesses" />}
 				showsVerticalScrollIndicator={false}
 				style={{ backgroundColor: theme.background.default }}
-				ListHeaderComponent={HeaderComponent}
 				ItemSeparatorComponent={() => (
 					<View
 						style={{

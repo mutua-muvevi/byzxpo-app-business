@@ -1,8 +1,10 @@
 import Avatar from "@/components/ui/Avatar";
 import LoadingStateIndicator from "@/components/ui/LoadingStateIndicator";
+import NavHeader from "@/components/ui/NavHeader";
 import UnavailableContentPage from "@/components/ui/UnavailablePage";
 import { useBusiness } from "@/contexts/business/fetch";
 import { useEnquiries } from "@/contexts/enquiries/provider";
+import FooterSection from "@/sections/footer/footer";
 import { useTheme } from "@/theme";
 import { fDate } from "@/utils/format-time";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -10,67 +12,6 @@ import React, { useEffect, useState } from "react";
 import { Text, View, TouchableOpacity, FlatList, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const ConversationHeader = ({ list }: { list: any }) => {
-	const { theme } = useTheme();
-
-	return (
-		<View
-			style={{
-				padding: 20,
-				backgroundColor: theme.palette.primary.main,
-				borderBottomWidth: 1,
-				borderBottomColor: "#ccc",
-				flexDirection: "row",
-				justifyContent: "space-between",
-				alignItems: "center",
-				gap: 5,
-			}}
-		>
-			<View>
-				<Text
-					style={{
-						fontSize: 18,
-						fontWeight: "bold",
-						color: theme.palette.primary.contrastText,
-					}}
-				>
-					My Enquiries
-				</Text>
-
-				<Text
-					style={{
-						color: theme.palette.primary.contrastText,
-						fontSize: 14,
-					}}
-				>
-					{list.length} Enquiries in total
-				</Text>
-			</View>
-
-			<TouchableOpacity
-				style={{
-					padding: 10,
-					backgroundColor: theme.success.main,
-					borderRadius: 5,
-					flexDirection: "row",
-					gap: 5,
-				}}
-			>
-				<Text
-					style={{
-						color: theme.success.contrastText,
-						fontSize: 16,
-						fontWeight: "bold",
-					}}
-				>
-					Filter
-				</Text>
-
-				<FontAwesome5 name="filter" size={16} color={theme.palette.primary.contrastText} />
-			</TouchableOpacity>
-		</View>
-	);
-};
 
 const ConversationCards = ({ item }: { item: any }) => {
 	const { theme } = useTheme();
@@ -101,9 +42,10 @@ const ConversationCards = ({ item }: { item: any }) => {
 						{item.name}
 					</Text>
 					{item?.createdAt ? (
-						<Text style={{ color: theme.text.secondary }}>{fDate(item?.createdAt)}</Text>
+						<Text style={{ color: theme.text.secondary }}>
+							{fDate(item?.createdAt)}
+						</Text>
 					) : null}
-
 				</View>
 			</View>
 
@@ -113,13 +55,10 @@ const ConversationCards = ({ item }: { item: any }) => {
 				</Text>
 
 				<Text style={{ color: theme.text.secondary }}>{item.message}</Text>
-
-				
 			</View>
 		</View>
 	);
 };
-
 
 const Conversations = () => {
 	const { theme } = useTheme();
@@ -141,15 +80,17 @@ const Conversations = () => {
 		<LoadingStateIndicator text="Loading Enquiries" />
 	) : (
 		<SafeAreaView style={{ flex: 1, backgroundColor: theme.background.default }}>
+			<NavHeader headerTitle="Categories" backUrl="/" />
 			<FlatList
 				data={businessEnquiries}
 				renderItem={({ item }) => {
 					return <ConversationCards item={item} />;
 				}}
 				keyExtractor={(item) => item._id.toString()}
-				ListHeaderComponent={<ConversationHeader list={businessEnquiries} />}
 				contentContainerStyle={{ paddingBottom: 20 }}
-				ListEmptyComponent={<UnavailableContentPage text="No Enquiries Present for this Business" />}
+				ListEmptyComponent={
+					<UnavailableContentPage text="No Enquiries Present for this Business" />
+				}
 				refreshControl={
 					<RefreshControl
 						refreshing={allBusinessEnquiriesLoading}
@@ -158,6 +99,14 @@ const Conversations = () => {
 								fetchBusinessEnquiries(myBusiness._id, pageNumber, pageLimit);
 							}
 						}}
+					/>
+				}
+				ListFooterComponent={
+					<FooterSection
+						pageNumber={pageNumber}
+						setPageNumber={setPageNumber}
+						pageLimit={pageLimit}
+						setLimit={setPageLimit}
 					/>
 				}
 			/>

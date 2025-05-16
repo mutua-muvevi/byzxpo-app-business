@@ -128,9 +128,9 @@ const CategoriesSection = ({
 					}}
 				/>
 			}
-			ListHeaderComponent={
-				<CategoryHeaderComponent />
-			}
+			// ListHeaderComponent={
+			// 	<CategoryHeaderComponent />
+			// }
 		/>
 	);
 };
