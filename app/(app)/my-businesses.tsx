@@ -94,7 +94,7 @@ const BusinessCard = ({ business }: { business: any }) => {
 							fontWeight: "bold",
 						}}
 					>
-						{truncateStr(business?.businessName, 20)}
+						{truncateStr(business?.businessName, 50)}
 					</Text>
 				</View>
 			</View>
